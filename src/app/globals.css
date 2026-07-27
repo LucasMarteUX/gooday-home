@@ -31,9 +31,6 @@
   --gd-hairline: rgba(255, 255, 255, 0.06);
   --gd-hairline-strong: rgba(255, 255, 255, 0.08);
   --gd-shadow: 0 16px 48px rgba(0, 0, 0, 0.32);
-  --gd-cursor-fill: rgba(255, 255, 255, 0.22);
-  --gd-cursor-ring: rgba(255, 255, 255, 0.55);
-  --gd-cursor-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
   --gd-max-width: 1920px;
   --gd-sticky-top: 80px;
   --gd-desktop-scale: 1.08;
@@ -69,9 +66,6 @@
   --gd-hairline: rgba(18, 22, 28, 0.1);
   --gd-hairline-strong: rgba(18, 22, 28, 0.14);
   --gd-shadow: 0 16px 48px rgba(18, 22, 28, 0.14);
-  --gd-cursor-fill: rgba(70, 103, 245, 0.16);
-  --gd-cursor-ring: rgba(70, 103, 245, 0.45);
-  --gd-cursor-shadow: 0 2px 14px rgba(18, 22, 28, 0.12);
 }
 
 @theme inline {
@@ -191,36 +185,41 @@
   background-color: var(--gd-hover);
 }
 
-/* Cursor circular suave (desktop) — nunca captura clique */
+/* Cursor circular nativo — sempre alinhado ao clique (sem DOM / sem lag) */
 html.gd-soft-cursor,
 html.gd-soft-cursor body,
 html.gd-soft-cursor body * {
-  cursor: none !important;
+  cursor: var(--gd-cursor) !important;
 }
 
-.gd-cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2147483647;
-  width: 26px;
-  height: 26px;
-  margin: 0;
-  padding: 0;
-  border-radius: 999px;
-  pointer-events: none !important;
-  user-select: none;
-  touch-action: none;
-  will-change: transform, width, height, opacity;
-  background: var(--gd-cursor-fill);
-  border: 1.5px solid var(--gd-cursor-ring);
-  box-shadow: var(--gd-cursor-shadow);
-  transition:
-    width 160ms ease,
-    height 160ms ease,
-    opacity 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+html.gd-soft-cursor a,
+html.gd-soft-cursor button,
+html.gd-soft-cursor [role='button'],
+html.gd-soft-cursor label,
+html.gd-soft-cursor summary,
+html.gd-soft-cursor select,
+html.gd-soft-cursor [data-cursor='interactive'],
+html.gd-soft-cursor a:hover,
+html.gd-soft-cursor button:hover,
+html.gd-soft-cursor [role='button']:hover,
+html.gd-soft-cursor label:hover,
+html.gd-soft-cursor summary:hover,
+html.gd-soft-cursor [data-cursor='interactive']:hover {
+  cursor: var(--gd-cursor-hover) !important;
+}
+
+html.gd-soft-cursor a:active,
+html.gd-soft-cursor button:active,
+html.gd-soft-cursor [role='button']:active,
+html.gd-soft-cursor label:active,
+html.gd-soft-cursor summary:active,
+html.gd-soft-cursor [data-cursor='interactive']:active {
+  cursor: var(--gd-cursor-active) !important;
+}
+
+html.gd-soft-cursor input,
+html.gd-soft-cursor textarea {
+  cursor: text !important;
 }
 
 /* Inputs/campos em sheets e formulários — tema-aware */

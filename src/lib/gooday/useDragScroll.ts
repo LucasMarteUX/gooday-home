@@ -26,7 +26,8 @@ export function useDragScroll<T extends HTMLElement>(options: DragScrollOptions 
     const el = ref.current;
     if (!el) return;
 
-    el.style.cursor = 'grab';
+    const softCursor = () => document.documentElement.classList.contains('gd-soft-cursor');
+    if (!softCursor()) el.style.cursor = 'grab';
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
@@ -55,7 +56,7 @@ export function useDragScroll<T extends HTMLElement>(options: DragScrollOptions 
         } catch {
           /* ignore */
         }
-        el.style.cursor = 'grabbing';
+        if (!softCursor()) el.style.cursor = 'grabbing';
         el.style.userSelect = 'none';
       }
 
@@ -77,7 +78,7 @@ export function useDragScroll<T extends HTMLElement>(options: DragScrollOptions 
         /* ignore */
       }
 
-      el.style.cursor = 'grab';
+      if (!softCursor()) el.style.cursor = 'grab';
       el.style.removeProperty('user-select');
 
       if (wasDragging) {
