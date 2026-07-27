@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/lib/gooday/theme";
+import { SoftCursor } from "@/components/gooday/SoftCursor";
 import "./globals.css";
 
 const inter = Inter({
@@ -48,7 +49,10 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className={`${inter.className} mx-auto min-h-full w-full max-w-[1920px] bg-gd-bg font-sans text-gd-text antialiased`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SoftCursor />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
