@@ -8,95 +8,99 @@ type DragScrollOptions = {
 };
 
 /**
- * Scroll horizontal por click-and-drag (desktop), sem atrapalhar o toque no mobile.
+ * Scroll horizontal por click-and-drag (desktop).
+ * Só captura o pointer depois de ultrapassar o threshold — clicks nos stories continuam funcionando.
  */
 export function useDragScroll<T extends HTMLElement>(options: DragScrollOptions = {}) {
-  const { threshold = 6 } = options;
+  const { threshold = 8 } = options;
   const ref = useRef<T | null>(null);
   const state = useRef({
-    active: false,
-    moved: false,
+    tracking: false,
+    dragging: false,
     startX: 0,
     scrollLeft: 0,
     pointerId: -1,
   });
-
-  const onPointerDown = useCallback((e: PointerEvent) => {
-    const el = ref.current;
-    if (!el) return;
-    // Só mouse / pen — touch já tem scroll nativo
-    if (e.pointerType === 'touch') return;
-
-    state.current = {
-      active: true,
-      moved: false,
-      startX: e.clientX,
-      scrollLeft: el.scrollLeft,
-      pointerId: e.pointerId,
-    };
-    el.setPointerCapture(e.pointerId);
-    el.style.cursor = 'grabbing';
-    el.style.userSelect = 'none';
-  }, []);
-
-  const onPointerMove = useCallback((e: PointerEvent) => {
-    const el = ref.current;
-    const s = state.current;
-    if (!el || !s.active) return;
-
-    const dx = e.clientX - s.startX;
-    if (Math.abs(dx) > threshold) s.moved = true;
-    if (s.moved) {
-      el.scrollLeft = s.scrollLeft - dx;
-      e.preventDefault();
-    }
-  }, [threshold]);
-
-  const endDrag = useCallback((e: PointerEvent) => {
-    const el = ref.current;
-    const s = state.current;
-    if (!s.active) return;
-
-    s.active = false;
-    if (el) {
-      try {
-        el.releasePointerCapture(s.pointerId);
-      } catch {
-        /* ignore */
-      }
-      el.style.cursor = 'grab';
-      el.style.removeProperty('user-select');
-    }
-
-    // Se arrastou, bloqueia o click no botão filho
-    if (s.moved) {
-      const blockClick = (ev: Event) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-      };
-      el?.addEventListener('click', blockClick, { capture: true, once: true });
-    }
-  }, []);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     el.style.cursor = 'grab';
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return;
+      if (e.button !== 0) return;
+
+      state.current = {
+        tracking: true,
+        dragging: false,
+        startX: e.clientX,
+        scrollLeft: el.scrollLeft,
+        pointerId: e.pointerId,
+      };
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      const s = state.current;
+      if (!s.tracking) return;
+
+      const dx = e.clientX - s.startX;
+
+      if (!s.dragging) {
+        if (Math.abs(dx) < threshold) return;
+        s.dragging = true;
+        try {
+          el.setPointerCapture(s.pointerId);
+        } catch {
+          /* ignore */
+        }
+        el.style.cursor = 'grabbing';
+        el.style.userSelect = 'none';
+      }
+
+      el.scrollLeft = s.scrollLeft - dx;
+      e.preventDefault();
+    };
+
+    const onPointerUp = () => {
+      const s = state.current;
+      if (!s.tracking) return;
+
+      const wasDragging = s.dragging;
+      s.tracking = false;
+      s.dragging = false;
+
+      try {
+        if (el.hasPointerCapture(s.pointerId)) el.releasePointerCapture(s.pointerId);
+      } catch {
+        /* ignore */
+      }
+
+      el.style.cursor = 'grab';
+      el.style.removeProperty('user-select');
+
+      if (wasDragging) {
+        const blockClick = (ev: Event) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+        };
+        el.addEventListener('click', blockClick, { capture: true, once: true });
+      }
+    };
+
     el.addEventListener('pointerdown', onPointerDown);
-    el.addEventListener('pointermove', onPointerMove);
-    el.addEventListener('pointerup', endDrag);
-    el.addEventListener('pointercancel', endDrag);
-    el.addEventListener('lostpointercapture', endDrag);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
 
     return () => {
       el.removeEventListener('pointerdown', onPointerDown);
-      el.removeEventListener('pointermove', onPointerMove);
-      el.removeEventListener('pointerup', endDrag);
-      el.removeEventListener('pointercancel', endDrag);
-      el.removeEventListener('lostpointercapture', endDrag);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
     };
-  }, [onPointerDown, onPointerMove, endDrag]);
+  }, [threshold]);
 
   return ref;
 }

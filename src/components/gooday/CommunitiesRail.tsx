@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
 import { StickySidebarColumn, StickySidebarScroll, ScrollFadeRow } from "./StickySidebarColumn";
 import { PeopleSuggestions } from "./SidebarSuggestions";
@@ -77,59 +80,43 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
-function GroupsPanel({ vm }: Props) {
+function SearchIcon({ active }: { active?: boolean }) {
   return (
-    <>
-      <div className="mb-2.5 flex flex-none flex-col gap-2.5">
-        <div className="flex h-10 items-center gap-2 rounded-xl border border-gd-border bg-gd-surface px-3">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M20 20l-3.2-3.2" />
-          </svg>
-          <input
-            value={vm.groupsSearchQ}
-            onChange={vm.onGroupsSearch}
-            placeholder="Buscar grupos..."
-            aria-label="Buscar grupos"
-            className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
-          />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" className={active ? 'text-gd-brand-light' : undefined}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M20 20l-3.2-3.2" />
+    </svg>
+  );
+}
+
+function FilterIcon({ active }: { active?: boolean }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className={active ? 'text-gd-brand-light' : undefined}>
+      <path d="M4 6h16M7 12h10M10 18h4" />
+    </svg>
+  );
+}
+
+function GroupsList({ vm }: Props) {
+  return (
+    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" alwaysScrollable>
+      {vm.railCommunities.length === 0 ? (
+        <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-2.5">
+          {vm.railCommunities.map((c, i) => (
+            <CommunityCard key={i} c={c} />
+          ))}
         </div>
-        <ScrollFadeRow fadeColor="var(--gd-bg)" className="pb-0.5">
-          <div className="flex gap-1.5 pr-1">
-            {vm.groupsFilters.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={f.go}
-                className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
-                  f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </ScrollFadeRow>
-      </div>
-      <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" alwaysScrollable>
-        {vm.railCommunities.length === 0 ? (
-          <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
-        ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-2.5">
-            {vm.railCommunities.map((c, i) => (
-              <CommunityCard key={i} c={c} />
-            ))}
-          </div>
-        )}
-        <button
-          type="button"
-          onClick={vm.openAllGroups}
-          className="h-10 flex-none rounded-xl border border-white/[0.08] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-elevated"
-        >
-          Ver tudo
-        </button>
-      </StickySidebarScroll>
-    </>
+      )}
+      <button
+        type="button"
+        onClick={vm.openAllGroups}
+        className="h-10 flex-none rounded-xl border border-white/[0.08] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-elevated"
+      >
+        Ver tudo
+      </button>
+    </StickySidebarScroll>
   );
 }
 
@@ -148,28 +135,118 @@ export function CommunitiesCarousel({ vm }: Props) {
   );
 }
 
-/** Painel direito adaptável — tabs trocam o conteúdo (Grupos, Pessoas, …). */
+/** Painel direito minimalista — título/tabs à esquerda, lupa + filtro à direita. */
 export function RightRail({ vm }: Props) {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const isGroups = vm.railTab === 'groups';
+
   return (
     <StickySidebarColumn alwaysActive className="min-w-0">
-      <div className="flex flex-none gap-1 rounded-2xl bg-gd-card p-1">
-        {vm.railTabs.map((t) => (
+      <div className="flex flex-none items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          {vm.railTabs.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => {
+                t.go();
+                setSearchOpen(false);
+                setFilterOpen(false);
+              }}
+              className={`relative pb-1 text-[15px] font-semibold transition-colors ${
+                t.active ? 'text-white' : 'text-gd-text-subtle hover:text-gd-text-muted'
+              }`}
+            >
+              {t.label}
+              {t.active ? (
+                <span className="absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-gd-brand" />
+              ) : null}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-none items-center gap-0.5">
           <button
-            key={t.id}
             type="button"
-            onClick={t.go}
-            className={`h-9 flex-1 rounded-xl text-[12px] font-semibold transition-colors ${
-              t.active ? 'bg-gd-brand text-white' : 'text-gd-text-muted hover:text-white'
+            onClick={() => {
+              setSearchOpen((v) => !v);
+              if (!searchOpen) setFilterOpen(false);
+            }}
+            aria-label={isGroups ? 'Buscar grupos' : 'Buscar pessoas'}
+            aria-pressed={searchOpen}
+            className={`grid h-9 w-9 place-items-center rounded-xl transition-colors ${
+              searchOpen ? 'bg-gd-elevated text-gd-brand-light' : 'text-gd-text-muted hover:bg-gd-elevated hover:text-white'
             }`}
           >
-            {t.label}
+            <SearchIcon active={searchOpen} />
           </button>
-        ))}
+          {isGroups ? (
+            <button
+              type="button"
+              onClick={() => {
+                setFilterOpen((v) => !v);
+                if (!filterOpen) setSearchOpen(false);
+              }}
+              aria-label="Filtrar grupos"
+              aria-pressed={filterOpen}
+              className={`grid h-9 w-9 place-items-center rounded-xl transition-colors ${
+                filterOpen || vm.groupsFilters.some((f) => f.active && f.id !== 'all')
+                  ? 'bg-gd-elevated text-gd-brand-light'
+                  : 'text-gd-text-muted hover:bg-gd-elevated hover:text-white'
+              }`}
+            >
+              <FilterIcon active={filterOpen} />
+            </button>
+          ) : null}
+        </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden pt-1">
-        {vm.railTab === 'groups' ? <GroupsPanel vm={vm} /> : null}
-        {vm.railTab === 'people' ? <PeopleSuggestions vm={vm} /> : null}
+      {searchOpen ? (
+        <div className="flex h-10 flex-none items-center gap-2 rounded-xl border border-gd-border bg-gd-surface px-3">
+          <SearchIcon />
+          <input
+            autoFocus
+            value={isGroups ? vm.groupsSearchQ : vm.peopleSearchQ}
+            onChange={isGroups ? vm.onGroupsSearch : vm.onPeopleSearch}
+            placeholder={isGroups ? 'Buscar grupos...' : 'Buscar pessoas...'}
+            aria-label={isGroups ? 'Buscar grupos' : 'Buscar pessoas'}
+            className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
+          />
+          {(isGroups ? vm.groupsSearchQ : vm.peopleSearchQ) ? (
+            <button
+              type="button"
+              onClick={isGroups ? vm.clearGroupsSearch : vm.clearPeopleSearch}
+              aria-label="Limpar busca"
+              className="grid h-6 w-6 place-items-center rounded-full bg-gd-border text-[12px] text-gd-text-muted"
+            >
+              ×
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {isGroups && filterOpen ? (
+        <ScrollFadeRow fadeColor="var(--gd-bg)" className="pb-0.5">
+          <div className="flex gap-1.5 pr-1">
+            {vm.groupsFilters.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={f.go}
+                className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
+                  f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </ScrollFadeRow>
+      ) : null}
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        {isGroups ? <GroupsList vm={vm} /> : <PeopleSuggestions vm={vm} compact />}
       </div>
     </StickySidebarColumn>
   );

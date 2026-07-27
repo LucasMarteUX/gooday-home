@@ -258,6 +258,7 @@ export function useGoodayHome({
   const [createMode, setCreateMode] = useState<'post' | 'story'>('post');
   const [groupsSearchQ, setGroupsSearchQ] = useState('');
   const [groupsFilter, setGroupsFilter] = useState<GroupFilterId>('all');
+  const [peopleSearchQ, setPeopleSearchQ] = useState('');
   const [railTab, setRailTab] = useState<'groups' | 'people'>('groups');
   const [edit, setEdit] = useState<EditProfile>({
     name: 'Marcos Vinícius',
@@ -1945,15 +1946,25 @@ export function useGoodayHome({
         const u = U[k as keyof typeof U] as UserProfile;
         const f = !!following[k];
         return {
+          key: k,
           av: u.av,
           handle: u.handle,
+          name: u.name,
           open: () => go('person', k),
           btnLabel: f ? 'Seguindo' : 'Seguir',
           btnBg: f ? '#2B3037' : brand,
           btnColor: '#fff',
           follow: () => setFollowing((x) => ({ ...x, [k]: !x[k] })),
         };
+      }).filter((s) => {
+        const q = peopleSearchQ.trim().toLowerCase();
+        if (!q) return true;
+        return s.handle.toLowerCase().includes(q) || s.name.toLowerCase().includes(q);
       }),
+      peopleSearchQ,
+      onPeopleSearch: (e: ChangeEvent<HTMLInputElement>) => setPeopleSearchQ(e.target.value),
+      clearPeopleSearch: () => setPeopleSearchQ(''),
+      clearGroupsSearch: () => setGroupsSearchQ(''),
       feed,
       tabs,
       navItems,
@@ -2119,6 +2130,7 @@ export function useGoodayHome({
       searchQ,
       groupsSearchQ,
       groupsFilter,
+      peopleSearchQ,
       railTab,
       storiesList,
       joined,
