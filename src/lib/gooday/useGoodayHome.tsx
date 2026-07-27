@@ -1624,25 +1624,35 @@ export function useGoodayHome({
     const rail = showSuggestions && isDesktop;
     const brand = '#4667F5';
 
-    const stories = storiesList.map((s, i) => {
-      const isSeen = !!(s.seen || seen[i]);
-      return {
-        img: s.img,
-        alt: s.alt,
-        av: user(s.u).av,
-        unseen: !isSeen,
-        ring: isSeen
-          ? '#41474F'
-          : 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)',
-        filter: isSeen ? 'grayscale(1) brightness(.75)' : 'none',
-        open: () => openStory(i),
-      };
-    });
+    const stories = storiesList
+      .map((s, i) => ({ s, i }))
+      .filter(({ s }) => s.u !== 'me')
+      .map(({ s, i }) => {
+        const isSeen = !!(s.seen || seen[i]);
+        return {
+          img: s.img,
+          alt: s.alt,
+          av: user(s.u).av,
+          unseen: !isSeen,
+          ring: isSeen
+            ? '#41474F'
+            : 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)',
+          filter: isSeen ? 'grayscale(1) brightness(.75)' : 'none',
+          open: () => openStory(i),
+        };
+      });
 
+    const myStoryIndex = storiesList.findIndex((s) => s.u === 'me');
+    const myStoryCover = myStoryIndex >= 0 ? storiesList[myStoryIndex].img : U.me.av;
     const myStory = {
+      cover: myStoryCover,
       av: U.me.av,
-      hasStory: storiesList.some((s) => s.u === 'me'),
-      open: openCreateStorySheet,
+      hasStory: myStoryIndex >= 0,
+      open: () => {
+        if (myStoryIndex >= 0) openStory(myStoryIndex);
+        else openCreateStorySheet();
+      },
+      openCreate: openCreateStorySheet,
     };
 
     const filterCommunity = (c: CommunityData) => {

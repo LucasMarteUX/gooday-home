@@ -21,7 +21,7 @@ export function DesktopNav({ vm }: Props) {
       className="w-max justify-self-start"
       alwaysActive
       fillFirstFold
-      fillBottomMargin={20}
+      fillBottomMargin={24}
     >
       <nav
         aria-label="Navegação principal"

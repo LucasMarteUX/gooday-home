@@ -26,7 +26,7 @@ export function StickySidebarColumn({
   className = '',
   alwaysActive = false,
   fillFirstFold = false,
-  fillBottomMargin = 20,
+  fillBottomMargin = 24,
 }: ColumnProps) {
   const asideRef = useRef<HTMLElement>(null);
   const [stuck, setStuck] = useState(alwaysActive);

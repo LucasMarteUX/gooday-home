@@ -18,21 +18,34 @@ export function StoriesRow({ vm }: Props) {
       aria-label="Stories"
       className="no-scrollbar flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-4 pb-1 pt-3 pl-4 touch-pan-x select-none min-[800px]:gap-2.5 min-[800px]:px-6 min-[800px]:pl-6 min-[800px]:pt-4"
     >
-      <button
-        type="button"
-        onClick={vm.myStory.open}
-        className="relative h-[152px] w-[112px] flex-none overflow-hidden rounded-[20px] bg-gd-elevated scroll-snap-align-start min-[800px]:h-[158px] min-[800px]:w-[118px]"
-      >
-        <img src={vm.me.av} alt="" draggable={false} className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-80" />
-        <span className="absolute inset-0 bg-gradient-to-b from-transparent from-45% to-black/60" />
-        <span
-          className="absolute bottom-2.5 left-2.5 grid h-10 w-10 place-items-center rounded-full border-2 border-gd-bg bg-gd-brand text-lg leading-none text-white"
+      <div className="relative h-[152px] w-[112px] flex-none overflow-hidden rounded-[20px] bg-gd-elevated scroll-snap-align-start min-[800px]:h-[158px] min-[800px]:w-[118px]">
+        <button
+          type="button"
+          onClick={vm.myStory.open}
+          aria-label={vm.myStory.hasStory ? 'Ver seus stories' : 'Criar story'}
+          className="absolute inset-0"
+        >
+          <img
+            src={vm.myStory.cover}
+            alt=""
+            draggable={false}
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          />
+          <span className="absolute inset-0 bg-gradient-to-b from-transparent from-45% to-black/55" />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            vm.myStory.openCreate();
+          }}
+          aria-label="Postar novo story"
+          className="absolute bottom-2.5 left-2.5 z-[1] grid h-10 w-10 place-items-center rounded-full border-2 border-gd-bg text-lg leading-none text-white"
           style={{ background: vm.myStory.hasStory ? STORY_RING : '#4667F5' }}
         >
           +
-        </span>
-        <span className="absolute bottom-2.5 left-14 text-[11px] font-semibold text-white">Seu story</span>
-      </button>
+        </button>
+      </div>
       {vm.stories.map((s, i) => (
         <button
           key={i}

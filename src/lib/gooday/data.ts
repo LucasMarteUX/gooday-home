@@ -106,6 +106,9 @@ EXTRA_PEOPLE.forEach(([name, handle], i) => {
 export const EXTRA_KEYS = EXTRA_PEOPLE.map((_, i) => 'p' + i);
 
 export const STORIES = [
+  { u: 'me',       img: IMG('1552674605-db6ffd4facb5', 480, 640), alt: 'Corrida ao amanhecer', time: 'há 8 min', seen: false },
+  { u: 'me',       img: IMG('1517836357463-d25dfeac3438', 480, 640), alt: 'Treino de força', time: 'há 20 min', seen: false },
+  { u: 'me',       img: IMG('1541534741688-6078c6bfb5c5', 480, 640), alt: 'Homem no esporte', time: 'há 35 min', seen: false },
   { u: 'tiago',    img: IMG('1461896836934-ffe607ba8211', 480, 640), alt: 'Largada de corrida', time: 'há 12 min', seen: false },
   { u: 'nicole',   img: IMG('1490645935967-10de6ba17061', 480, 640), alt: 'Prato colorido', time: 'há 25 min', seen: false },
   { u: 'bruno',    img: IMG('1502224562085-639556652f33', 480, 640), alt: 'Corrida noturna', time: 'há 40 min', seen: false },
