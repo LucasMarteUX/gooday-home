@@ -1,5 +1,6 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
 import { StickySidebarColumn, StickySidebarScroll, ScrollFadeRow } from "./StickySidebarColumn";
+import { PeopleSuggestions } from "./SidebarSuggestions";
 
 type Community = GoodayHomeViewModel["communities"][number];
 
@@ -76,61 +77,40 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
-function GroupsSearchFilters({ vm }: Props) {
+function GroupsPanel({ vm }: Props) {
   return (
-    <div className="flex flex-none flex-col gap-2.5">
-      <div className="flex h-10 items-center gap-2 rounded-xl border border-gd-border bg-gd-surface px-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
-          <circle cx="11" cy="11" r="7" />
-          <path d="M20 20l-3.2-3.2" />
-        </svg>
-        <input
-          value={vm.groupsSearchQ}
-          onChange={vm.onGroupsSearch}
-          placeholder="Buscar grupos..."
-          aria-label="Buscar grupos"
-          className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
-        />
-      </div>
-      <ScrollFadeRow fadeColor="var(--gd-bg)" className="pb-0.5">
-        <div className="flex gap-1.5 pr-1">
-          {vm.groupsFilters.map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={f.go}
-              className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
-                f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+    <>
+      <div className="mb-2.5 flex flex-none flex-col gap-2.5">
+        <div className="flex h-10 items-center gap-2 rounded-xl border border-gd-border bg-gd-surface px-3">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.2-3.2" />
+          </svg>
+          <input
+            value={vm.groupsSearchQ}
+            onChange={vm.onGroupsSearch}
+            placeholder="Buscar grupos..."
+            aria-label="Buscar grupos"
+            className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
+          />
         </div>
-      </ScrollFadeRow>
-    </div>
-  );
-}
-
-export function CommunitiesCarousel({ vm }: Props) {
-  if (!vm.showCommunities) return null;
-
-  return (
-    <section
-      aria-label="Comunidades recomendadas"
-      className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 pl-6 pr-4"
-    >
-      {vm.communities.map((c, i) => (
-        <CommunityCard key={i} c={c} compact />
-      ))}
-    </section>
-  );
-}
-
-export function CommunitiesRail({ vm }: Props) {
-  return (
-    <StickySidebarColumn alwaysActive>
-      <GroupsSearchFilters vm={vm} />
+        <ScrollFadeRow fadeColor="var(--gd-bg)" className="pb-0.5">
+          <div className="flex gap-1.5 pr-1">
+            {vm.groupsFilters.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={f.go}
+                className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
+                  f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </ScrollFadeRow>
+      </div>
       <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" alwaysScrollable>
         {vm.railCommunities.length === 0 ? (
           <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
@@ -149,6 +129,53 @@ export function CommunitiesRail({ vm }: Props) {
           Ver tudo
         </button>
       </StickySidebarScroll>
+    </>
+  );
+}
+
+export function CommunitiesCarousel({ vm }: Props) {
+  if (!vm.showCommunities) return null;
+
+  return (
+    <section
+      aria-label="Comunidades recomendadas"
+      className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 pl-6 pr-4"
+    >
+      {vm.communities.map((c, i) => (
+        <CommunityCard key={i} c={c} compact />
+      ))}
+    </section>
+  );
+}
+
+/** Painel direito adaptável — tabs trocam o conteúdo (Grupos, Pessoas, …). */
+export function RightRail({ vm }: Props) {
+  return (
+    <StickySidebarColumn alwaysActive className="min-w-0">
+      <div className="flex flex-none gap-1 rounded-2xl bg-gd-card p-1">
+        {vm.railTabs.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={t.go}
+            className={`h-9 flex-1 rounded-xl text-[12px] font-semibold transition-colors ${
+              t.active ? 'bg-gd-brand text-white' : 'text-gd-text-muted hover:text-white'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden pt-1">
+        {vm.railTab === 'groups' ? <GroupsPanel vm={vm} /> : null}
+        {vm.railTab === 'people' ? <PeopleSuggestions vm={vm} /> : null}
+      </div>
     </StickySidebarColumn>
   );
+}
+
+/** Alias legado */
+export function CommunitiesRail({ vm }: Props) {
+  return <RightRail vm={vm} />;
 }

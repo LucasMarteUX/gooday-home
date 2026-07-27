@@ -5,8 +5,7 @@ import { HeaderDesktop } from './HeaderDesktop';
 import { HeaderMobile } from './HeaderMobile';
 import { StoriesRow } from './StoriesRow';
 import { FeedSection } from './FeedSection';
-import { SidebarSuggestions } from './SidebarSuggestions';
-import { CommunitiesCarousel, CommunitiesRail } from './CommunitiesRail';
+import { CommunitiesCarousel, RightRail } from './CommunitiesRail';
 import { MobileNav } from './MobileNav';
 import { DesktopNav } from './DesktopNav';
 import { OverlayScreens } from './OverlayScreens';
@@ -26,20 +25,22 @@ export function GoodayHome() {
       <StoriesRow vm={vm} />
 
       {/*
-        Sugestões = hug (max-content).
-        Timeline = cresce até ~640px.
-        Grupos = ocupa o resto → auto-fill aumenta as colunas de cards.
+        Esquerda: menu nav (hug).
+        Centro: timeline.
+        Direita: painel adaptável (Grupos / Pessoas / …).
+        Gap maior entre timeline e laterais.
       */}
       <div
         className={[
           'w-full pb-[calc(72px+env(safe-area-inset-bottom))]',
-          'min-[800px]:grid min-[800px]:items-start min-[800px]:gap-4 min-[800px]:px-5 min-[800px]:pb-[120px]',
-          'min-[800px]:grid-cols-[max-content_minmax(300px,640px)_minmax(200px,1fr)]',
-          'min-[1800px]:px-6',
+          'min-[800px]:grid min-[800px]:items-start min-[800px]:gap-8 min-[800px]:px-5 min-[800px]:pb-10',
+          'min-[800px]:grid-cols-[max-content_minmax(280px,560px)_minmax(240px,1fr)]',
+          'min-[1200px]:gap-10',
+          'min-[1800px]:px-8 min-[1800px]:gap-12',
         ].join(' ')}
       >
         <div className="hidden min-[800px]:contents">
-          <SidebarSuggestions vm={vm} />
+          <DesktopNav vm={vm} />
         </div>
 
         <main className="mx-auto w-full min-w-0 max-w-[640px] pt-1 min-[800px]:mx-0 min-[800px]:w-full min-[800px]:max-w-none min-[800px]:justify-self-stretch min-[800px]:pt-4">
@@ -53,13 +54,12 @@ export function GoodayHome() {
 
         {vm.showRail ? (
           <div className="hidden min-w-0 min-[800px]:contents">
-            <CommunitiesRail vm={vm} />
+            <RightRail vm={vm} />
           </div>
         ) : null}
       </div>
 
       <MobileNav vm={vm} />
-      <DesktopNav vm={vm} />
 
       <OverlayScreens vm={vm} />
       <StoryViewer vm={vm} />

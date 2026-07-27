@@ -258,6 +258,7 @@ export function useGoodayHome({
   const [createMode, setCreateMode] = useState<'post' | 'story'>('post');
   const [groupsSearchQ, setGroupsSearchQ] = useState('');
   const [groupsFilter, setGroupsFilter] = useState<GroupFilterId>('all');
+  const [railTab, setRailTab] = useState<'groups' | 'people'>('groups');
   const [edit, setEdit] = useState<EditProfile>({
     name: 'Marcos Vinícius',
     user: '@marcos_v',
@@ -1843,25 +1844,41 @@ export function useGoodayHome({
     const navItems = navDefs.map((n) => {
       const active = tab === n.id;
       return {
+        id: n.id,
         label: n.label,
-        bg: active ? brand : '#262B31',
-        color: active ? '#FFFFFF' : '#C3C7CF',
+        bg: active ? brand : 'transparent',
+        color: active ? '#FFFFFF' : '#9EA3AD',
         glyph:
           n.icon === 'create' ? (
-            <CreateIcon active={active} activeColor="#C3C7CF" size={16} />
+            <CreateIcon active={active} activeColor="#C3C7CF" size={18} />
           ) : (
-            icon(n.icon, active, '#FFFFFF', 16)
+            icon(n.icon, active, '#FFFFFF', 18)
           ),
         go: () => {
           setTab(n.id);
           if (n.id === 'create') openCreatePicker();
           else if (n.id === 'search') go('search');
           else if (n.id === 'chat') go('messages');
-          else if (n.id === 'groups') go('groups');
+          else if (n.id === 'groups') {
+            setRailTab('groups');
+            setView(null);
+            setViewParam(null);
+            setStack([]);
+          }
           else if (n.id === 'saved') go('profile');
+          else {
+            setView(null);
+            setViewParam(null);
+            setStack([]);
+          }
         },
       };
     });
+
+    const railTabs = [
+      { id: 'groups' as const, label: 'Grupos', active: railTab === 'groups', go: () => setRailTab('groups') },
+      { id: 'people' as const, label: 'Pessoas', active: railTab === 'people', go: () => setRailTab('people') },
+    ];
 
     const s = storyIdx === null ? null : storiesList[storyIdx];
     const story = s
@@ -1921,6 +1938,8 @@ export function useGoodayHome({
         active: groupsFilter === f.id,
         go: () => setGroupsFilter(f.id),
       })),
+      railTab,
+      railTabs,
       myStory,
       suggestions: SUGGESTION_POOL.map((k) => {
         const u = U[k as keyof typeof U] as UserProfile;
@@ -1954,6 +1973,10 @@ export function useGoodayHome({
       openCreateStory: openCreateStorySheet,
       openNotifications: () => setSheet('notifications'),
       openAvatarMenu: () => setSheet('avatar'),
+      openSettings: () => {
+        setSheet(null);
+        defer(() => flash('Configurações — próxima tela'));
+      },
       closeStory,
       storyNext,
       storyPrev,
@@ -1962,11 +1985,11 @@ export function useGoodayHome({
       rowGridStyle: isDesktop
         ? ({
             display: 'grid',
-            gridTemplateColumns: 'max-content minmax(300px,640px) minmax(200px,1fr)',
-            gap: 16,
+            gridTemplateColumns: 'max-content minmax(280px,560px) minmax(240px,1fr)',
+            gap: 40,
             maxWidth: 1920,
             margin: '0 auto',
-            padding: '0 24px 120px',
+            padding: '0 24px 40px',
             justifyContent: 'center',
             alignItems: 'flex-start',
           } as CSSProperties)
@@ -2096,6 +2119,7 @@ export function useGoodayHome({
       searchQ,
       groupsSearchQ,
       groupsFilter,
+      railTab,
       storiesList,
       joined,
       profileTab,

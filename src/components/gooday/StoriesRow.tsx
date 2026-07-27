@@ -1,4 +1,7 @@
+'use client';
+
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
+import { useDragScroll } from "@/lib/gooday/useDragScroll";
 
 type Props = {
   vm: GoodayHomeViewModel;
@@ -7,17 +10,20 @@ type Props = {
 const STORY_RING = 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)';
 
 export function StoriesRow({ vm }: Props) {
+  const scrollRef = useDragScroll<HTMLElement>();
+
   return (
     <section
+      ref={scrollRef}
       aria-label="Stories"
-      className="no-scrollbar flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-4 pb-1 pt-3 pl-4 min-[800px]:gap-2.5 min-[800px]:px-6 min-[800px]:pl-6 min-[800px]:pt-4"
+      className="no-scrollbar flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-4 pb-1 pt-3 pl-4 touch-pan-x select-none min-[800px]:gap-2.5 min-[800px]:px-6 min-[800px]:pl-6 min-[800px]:pt-4"
     >
       <button
         type="button"
         onClick={vm.myStory.open}
         className="relative h-[152px] w-[112px] flex-none overflow-hidden rounded-[20px] bg-gd-elevated scroll-snap-align-start min-[800px]:h-[158px] min-[800px]:w-[118px]"
       >
-        <img src={vm.me.av} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80" />
+        <img src={vm.me.av} alt="" draggable={false} className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-80" />
         <span className="absolute inset-0 bg-gradient-to-b from-transparent from-45% to-black/60" />
         <span
           className="absolute bottom-2.5 left-2.5 grid h-10 w-10 place-items-center rounded-full border-2 border-gd-bg bg-gd-brand text-lg leading-none text-white"
@@ -41,7 +47,8 @@ export function StoriesRow({ vm }: Props) {
             <img
               src={s.img}
               alt={s.alt}
-              className="absolute inset-0 h-full w-full object-cover"
+              draggable={false}
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
               style={{ filter: s.filter }}
             />
             <span className="absolute inset-0 bg-gradient-to-b from-transparent from-45% to-black/60" />
@@ -49,7 +56,7 @@ export function StoriesRow({ vm }: Props) {
               className="absolute bottom-2.5 left-2.5 h-10 w-10 rounded-full p-0.5"
               style={{ background: s.ring }}
             >
-              <img src={s.av} alt="" className="h-full w-full rounded-full border-2 border-gd-bg object-cover" />
+              <img src={s.av} alt="" draggable={false} className="pointer-events-none h-full w-full rounded-full border-2 border-gd-bg object-cover" />
             </span>
           </span>
         </button>

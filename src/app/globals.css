@@ -232,4 +232,12 @@ a:hover {
     height: calc(100dvh / var(--gd-desktop-scale) - var(--gd-sticky-top));
     max-height: calc(100dvh / var(--gd-desktop-scale) - var(--gd-sticky-top));
   }
+
+  /* Nav esquerda: altura controlada via JS (fill da 1ª dobra) */
+  .gooday-sidebar-sticky--active.gooday-sidebar-nav {
+    height: auto;
+    max-height: none;
+    margin-bottom: 0;
+    overflow: hidden;
+  }
 }

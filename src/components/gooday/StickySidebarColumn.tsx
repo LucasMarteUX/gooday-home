@@ -15,9 +15,19 @@ type ColumnProps = {
   children: ReactNode;
   className?: string;
   alwaysActive?: boolean;
+  /** Preenche até o bottom da 1ª dobra (viewport), a partir da posição atual do aside. */
+  fillFirstFold?: boolean;
+  /** Margem inferior em px quando fillFirstFold. */
+  fillBottomMargin?: number;
 };
 
-export function StickySidebarColumn({ children, className = '', alwaysActive = false }: ColumnProps) {
+export function StickySidebarColumn({
+  children,
+  className = '',
+  alwaysActive = false,
+  fillFirstFold = false,
+  fillBottomMargin = 20,
+}: ColumnProps) {
   const asideRef = useRef<HTMLElement>(null);
   const [stuck, setStuck] = useState(alwaysActive);
 
@@ -44,13 +54,41 @@ export function StickySidebarColumn({ children, className = '', alwaysActive = f
     };
   }, [alwaysActive]);
 
-  const active = stuck || alwaysActive;
+  useEffect(() => {
+    if (!fillFirstFold) return;
+    const el = asideRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      const stickyTop = getStickyTop();
+      const rect = el.getBoundingClientRect();
+      // Posição atual na 1ª dobra (quando sticky, respeita o sticky-top)
+      const top = Math.max(rect.top, stickyTop);
+      const vh = window.visualViewport?.height ?? window.innerHeight;
+      const height = Math.max(280, vh - top - fillBottomMargin);
+      el.style.height = `${height}px`;
+      el.style.maxHeight = `${height}px`;
+    };
+
+    updateHeight();
+    window.addEventListener('scroll', updateHeight, { passive: true });
+    window.addEventListener('resize', updateHeight);
+    window.visualViewport?.addEventListener('resize', updateHeight);
+
+    return () => {
+      window.removeEventListener('scroll', updateHeight);
+      window.removeEventListener('resize', updateHeight);
+      window.visualViewport?.removeEventListener('resize', updateHeight);
+    };
+  }, [fillFirstFold, fillBottomMargin]);
+
+  const active = stuck || alwaysActive || fillFirstFold;
 
   return (
     <StickySidebarContext.Provider value={active}>
       <aside
         ref={asideRef}
-        className={`gooday-sidebar-sticky flex min-h-0 min-w-0 flex-col gap-3.5 ${active ? 'gooday-sidebar-sticky--active' : ''} ${className}`}
+        className={`gooday-sidebar-sticky flex min-h-0 min-w-0 flex-col gap-3.5 ${active ? 'gooday-sidebar-sticky--active' : ''} ${fillFirstFold ? 'gooday-sidebar-nav' : ''} ${className}`}
       >
         {children}
       </aside>
