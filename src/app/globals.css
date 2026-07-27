@@ -240,4 +240,9 @@ a:hover {
     margin-bottom: 24px;
     overflow: visible;
   }
+
+  /* Painel direito: altura via JS (fillFirstFold) + fallback CSS */
+  .gooday-sidebar-sticky--active.gooday-sidebar-rail {
+    overflow: hidden;
+  }
 }

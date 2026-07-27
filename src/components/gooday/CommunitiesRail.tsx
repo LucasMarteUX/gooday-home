@@ -99,7 +99,7 @@ function FilterIcon({ active }: { active?: boolean }) {
 
 function GroupsList({ vm }: Props) {
   return (
-    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" alwaysScrollable>
+    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3 pb-2" alwaysScrollable>
       {vm.railCommunities.length === 0 ? (
         <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
       ) : (
@@ -112,7 +112,7 @@ function GroupsList({ vm }: Props) {
       <button
         type="button"
         onClick={vm.openAllGroups}
-        className="h-10 flex-none rounded-xl border border-white/[0.08] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-elevated"
+        className="mt-1 h-10 flex-none rounded-xl border border-white/[0.08] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-elevated"
       >
         Ver tudo
       </button>
@@ -142,7 +142,7 @@ export function RightRail({ vm }: Props) {
   const isGroups = vm.railTab === 'groups';
 
   return (
-    <StickySidebarColumn alwaysActive className="min-w-0">
+    <StickySidebarColumn alwaysActive fillFirstFold fillBottomMargin={24} className="gooday-sidebar-rail min-w-0">
       <div className="flex flex-none items-center gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           {vm.railTabs.map((t) => (
@@ -245,7 +245,7 @@ export function RightRail({ vm }: Props) {
         </ScrollFadeRow>
       ) : null}
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="flex min-h-0 flex-1 basis-0 flex-col overflow-hidden">
         {isGroups ? <GroupsList vm={vm} /> : <PeopleSuggestions vm={vm} compact />}
       </div>
     </StickySidebarColumn>

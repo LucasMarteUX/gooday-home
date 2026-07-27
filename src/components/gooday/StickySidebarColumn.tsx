@@ -88,7 +88,7 @@ export function StickySidebarColumn({
     <StickySidebarContext.Provider value={active}>
       <aside
         ref={asideRef}
-        className={`gooday-sidebar-sticky flex min-h-0 min-w-0 flex-col gap-3.5 ${active ? 'gooday-sidebar-sticky--active' : ''} ${fillFirstFold ? 'gooday-sidebar-nav' : ''} ${className}`}
+        className={`gooday-sidebar-sticky flex min-h-0 min-w-0 flex-col gap-3.5 ${active ? 'gooday-sidebar-sticky--active' : ''} ${fillFirstFold ? 'gooday-sidebar-rail-fill' : ''} ${className}`}
       >
         {children}
       </aside>
@@ -110,6 +110,7 @@ export function StickySidebarScroll({
   alwaysScrollable = false,
 }: ScrollProps) {
   const stuck = useContext(StickySidebarContext);
+  const outerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [fadeTop, setFadeTop] = useState(false);
   const [fadeBottom, setFadeBottom] = useState(false);
@@ -130,6 +131,9 @@ export function StickySidebarScroll({
     el.addEventListener('scroll', updateFades, { passive: true });
     const ro = new ResizeObserver(updateFades);
     ro.observe(el);
+    for (const child of el.children) {
+      ro.observe(child);
+    }
 
     return () => {
       el.removeEventListener('scroll', updateFades);
@@ -148,36 +152,38 @@ export function StickySidebarScroll({
   }, [canScroll, updateFades]);
 
   useEffect(() => {
+    const outer = outerRef.current;
     const el = scrollRef.current;
-    if (!el || !canScroll) return;
+    if (!outer || !el || !canScroll) return;
 
-    const onWheelNative = (e: globalThis.WheelEvent) => {
-      const { scrollTop, scrollHeight, clientHeight } = el;
+    const onWheelCapture = (e: globalThis.WheelEvent) => {
+      if (!outer.contains(e.target as Node)) return;
+
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      if (maxScroll <= 0) return;
+
+      const { scrollTop } = el;
       const atTop = scrollTop <= 0;
-      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+      const atBottom = scrollTop >= maxScroll - 2;
       const scrollingDown = e.deltaY > 0;
       const scrollingUp = e.deltaY < 0;
 
-      // Enquanto houver conteúdo interno para rolar, trava o scroll da página
       if ((scrollingDown && !atBottom) || (scrollingUp && !atTop)) {
+        e.preventDefault();
         e.stopPropagation();
-        return;
+        el.scrollTop = Math.min(maxScroll, Math.max(0, scrollTop + e.deltaY));
       }
-
-      // No limite: não deixa o wheel “vazar” para a timeline
-      e.preventDefault();
-      e.stopPropagation();
     };
 
-    el.addEventListener('wheel', onWheelNative, { passive: false });
-    return () => el.removeEventListener('wheel', onWheelNative);
+    outer.addEventListener('wheel', onWheelCapture, { passive: false, capture: true });
+    return () => outer.removeEventListener('wheel', onWheelCapture, { capture: true });
   }, [canScroll]);
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+    <div ref={outerRef} className="relative flex min-h-0 flex-1 basis-0 flex-col overflow-hidden">
       <div
         ref={scrollRef}
-        className={`no-scrollbar flex min-h-0 flex-col overscroll-contain ${canScroll ? 'flex-1 overflow-y-auto' : ''} ${className}`}
+        className={`no-scrollbar flex min-h-0 flex-col overscroll-y-contain ${canScroll ? 'flex-1 overflow-y-auto' : ''} ${className}`}
       >
         {children}
       </div>
