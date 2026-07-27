@@ -22,7 +22,7 @@
   --gd-header-desktop: rgba(14, 18, 22, 0.88);
   --gd-max-width: 1920px;
   --gd-sticky-top: 80px;
-  --gd-desktop-scale: 1.25;
+  --gd-desktop-scale: 1.15;
 }
 
 @theme inline {
