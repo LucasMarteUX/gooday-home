@@ -10,8 +10,8 @@ export function OverlayScreens({ vm }: Props) {
   if (!vm.view) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] animate-[gd-slide_240ms_cubic-bezier(0.2,0,0,1)] overflow-y-auto overscroll-contain bg-gd-screen">
-      <header className="sticky top-0 z-[5] flex items-center gap-3 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-overlay)] px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-2xl">
+    <div className="fixed inset-0 z-[60] animate-[gd-slide_240ms_cubic-bezier(0.2,0,0,1)] overflow-y-auto overscroll-contain bg-gd-bg">
+      <header className="sticky top-0 z-[5] flex items-center gap-3 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-mobile)] px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-2xl min-[800px]:bg-[color:var(--gd-header-desktop)]">
         <button
           type="button"
           onClick={vm.back}
