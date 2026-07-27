@@ -14,20 +14,18 @@ function SettingsIcon() {
   );
 }
 
-/** Nav principal desktop — fill da 1ª dobra, Configurações fixa no rodapé do card. */
+/** Nav principal desktop — altura hug no conteúdo. */
 export function DesktopNav({ vm }: Props) {
   return (
     <StickySidebarColumn
-      className="w-max justify-self-start"
+      className="gooday-sidebar-nav w-max justify-self-start"
       alwaysActive
-      fillFirstFold
-      fillBottomMargin={24}
     >
       <nav
         aria-label="Navegação principal"
-        className="flex h-full min-h-0 w-[168px] flex-col rounded-[20px] border border-white/[0.06] bg-gd-card p-2"
+        className="flex w-[168px] flex-col rounded-[20px] border border-white/[0.06] bg-gd-card p-2"
       >
-        <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+        <div className="flex flex-col gap-1">
           {vm.navItems.map((n, i) => (
             <button
               key={i}
