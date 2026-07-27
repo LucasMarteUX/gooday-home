@@ -29,7 +29,7 @@ export function GoodayHome() {
 
       <StoriesRow vm={vm} />
 
-      <div className="w-full pb-[120px] min-[800px]:grid min-[800px]:grid-cols-[minmax(214px,1fr)_minmax(260px,640px)_minmax(214px,1fr)] min-[800px]:gap-4 min-[800px]:pb-[120px]">
+      <div className="w-full pb-[120px] min-[800px]:grid min-[800px]:grid-cols-[minmax(214px,1fr)_minmax(260px,640px)_minmax(214px,1fr)] min-[800px]:gap-4 min-[800px]:px-6 min-[800px]:pb-[120px]">
         <div className="hidden min-[800px]:contents">
           <SidebarSuggestions vm={vm} />
         </div>
