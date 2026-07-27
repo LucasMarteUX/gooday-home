@@ -30,7 +30,7 @@ export function SidebarSuggestions({ vm }: Props) {
               <button
                 type="button"
                 onClick={s.follow}
-                className="h-[22px] flex-none whitespace-nowrap rounded-full px-[9px] text-[11px] font-semibold text-white"
+                className="inline-flex h-[22px] flex-none items-center justify-center whitespace-nowrap rounded-full px-[9px] text-[11px] font-semibold leading-none text-white"
                 style={{ background: s.btnBg, color: s.btnColor }}
               >
                 {s.btnLabel}

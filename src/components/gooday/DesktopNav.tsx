@@ -15,10 +15,10 @@ export function DesktopNav({ vm }: Props) {
           key={i}
           type="button"
           onClick={n.go}
-          className="flex h-[38px] items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-[13px] font-semibold leading-none"
+          className="inline-flex h-[38px] items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-[13px] font-semibold leading-none"
           style={{ background: n.bg, color: n.color }}
         >
-          <span className="flex h-4 w-4 flex-none items-center justify-center">{n.glyph}</span>
+          <span className="flex h-4 w-4 flex-none shrink-0 items-center justify-center">{n.glyph}</span>
           {n.label}
         </button>
       ))}
