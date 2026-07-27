@@ -1962,7 +1962,7 @@ export function useGoodayHome({
       rowGridStyle: isDesktop
         ? ({
             display: 'grid',
-            gridTemplateColumns: 'minmax(214px,1fr) minmax(260px,640px) minmax(214px,1fr)',
+            gridTemplateColumns: 'max-content minmax(300px,640px) minmax(200px,1fr)',
             gap: 16,
             maxWidth: 1920,
             margin: '0 auto',

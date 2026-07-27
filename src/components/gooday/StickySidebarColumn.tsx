@@ -19,13 +19,17 @@ type ColumnProps = {
 
 export function StickySidebarColumn({ children, className = '', alwaysActive = false }: ColumnProps) {
   const asideRef = useRef<HTMLElement>(null);
-  const [stuck, setStuck] = useState(false);
+  const [stuck, setStuck] = useState(alwaysActive);
 
   useEffect(() => {
     const el = asideRef.current;
     if (!el) return;
 
     const check = () => {
+      if (alwaysActive) {
+        setStuck(true);
+        return;
+      }
       const stickyTop = getStickyTop();
       setStuck(el.getBoundingClientRect().top <= stickyTop + 1);
     };
@@ -38,13 +42,15 @@ export function StickySidebarColumn({ children, className = '', alwaysActive = f
       window.removeEventListener('scroll', check);
       window.removeEventListener('resize', check);
     };
-  }, []);
+  }, [alwaysActive]);
+
+  const active = stuck || alwaysActive;
 
   return (
-    <StickySidebarContext.Provider value={stuck}>
+    <StickySidebarContext.Provider value={active}>
       <aside
         ref={asideRef}
-        className={`gooday-sidebar-sticky flex min-h-0 min-w-0 flex-col gap-3.5 ${stuck || alwaysActive ? 'gooday-sidebar-sticky--active' : ''} ${className}`}
+        className={`gooday-sidebar-sticky flex min-h-0 min-w-0 flex-col gap-3.5 ${active ? 'gooday-sidebar-sticky--active' : ''} ${className}`}
       >
         {children}
       </aside>
@@ -91,21 +97,49 @@ export function StickySidebarScroll({
       el.removeEventListener('scroll', updateFades);
       ro.disconnect();
     };
-  }, [canScroll, updateFades]);
+  }, [canScroll, updateFades, children]);
 
   useEffect(() => {
     if (!canScroll) {
       scrollRef.current?.scrollTo({ top: 0 });
       setFadeTop(false);
       setFadeBottom(false);
+    } else {
+      updateFades();
     }
+  }, [canScroll, updateFades]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !canScroll) return;
+
+    const onWheelNative = (e: globalThis.WheelEvent) => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const atTop = scrollTop <= 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+      const scrollingDown = e.deltaY > 0;
+      const scrollingUp = e.deltaY < 0;
+
+      // Enquanto houver conteúdo interno para rolar, trava o scroll da página
+      if ((scrollingDown && !atBottom) || (scrollingUp && !atTop)) {
+        e.stopPropagation();
+        return;
+      }
+
+      // No limite: não deixa o wheel “vazar” para a timeline
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    el.addEventListener('wheel', onWheelNative, { passive: false });
+    return () => el.removeEventListener('wheel', onWheelNative);
   }, [canScroll]);
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
       <div
         ref={scrollRef}
-        className={`no-scrollbar flex min-h-0 flex-col ${canScroll ? 'flex-1 overflow-y-auto' : ''} ${className}`}
+        className={`no-scrollbar flex min-h-0 flex-col overscroll-contain ${canScroll ? 'flex-1 overflow-y-auto' : ''} ${className}`}
       >
         {children}
       </div>

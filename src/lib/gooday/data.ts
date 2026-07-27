@@ -390,7 +390,7 @@ export const POSTS = [
     id: 'p20', u: 'renata', time: '3 d', group: 'Nutrição Consciente',
     text: 'Sopa de legumes com gengibre — jantar leve depois do treino.',
     tags: ['#sopa', '#jantar'],
-    img: IMG('1547592166-ef4c638a1e51', 900, 675), alt: 'Sopa de legumes',
+    img: IMG('1476224203421-9ac39bcb3327', 900, 675), alt: 'Sopa de legumes',
     likes: 118, liked: true, saved: false, comments: 19, reactions: { '🌱': 7 },
     commenters: ['nicole', 'camila', 'patricia'],
     thread: []
@@ -408,7 +408,7 @@ export const POSTS = [
     id: 'p22', u: 'camila', time: '4 d', group: 'Nutrição Consciente',
     text: 'Proteína pós-treino: iogurte natural, banana e pasta de amendoim.',
     tags: ['#posTreino', '#proteina'],
-    img: IMG('1482048197868-288470128b35', 900, 675), alt: 'Snack pós-treino',
+    img: IMG('1505576391880-b3f9d713dc4f', 900, 675), alt: 'Snack pós-treino',
     likes: 87, liked: false, saved: false, comments: 11, reactions: { '💪': 4 },
     commenters: ['nicole', 'julia', 'tiago'],
     thread: []
@@ -444,7 +444,7 @@ export const POSTS = [
     id: 'p26', u: 'lidiane', time: '3 d', group: 'Vida Natural',
     text: 'Skincare natural: óleo de coco + aloe vera. Simples e funciona.',
     tags: ['#skincare', '#natural'],
-    img: IMG('1556228570-8c89e9600615', 900, 675), alt: 'Produtos naturais',
+    img: IMG('1556228720-195a672e8a03', 900, 675), alt: 'Produtos naturais',
     likes: 98, liked: false, saved: true, comments: 14, reactions: { '🌱': 5 },
     commenters: ['aline', 'bruna', 'marina'],
     thread: []
@@ -453,7 +453,7 @@ export const POSTS = [
     id: 'p27', u: 'aline', time: '4 d', group: 'Vida Natural',
     text: 'Desapeguei de 3 produtos de limpeza cheios de química. Substituí por vinagre e bicarbonato.',
     tags: ['#casa', '#sustentavel'],
-    img: IMG('1584627810560-3357920f2580', 900, 675), alt: 'Limpeza natural',
+    img: IMG('1556228453-efd6c1ff04f6', 900, 675), alt: 'Limpeza natural',
     likes: 112, liked: true, saved: false, comments: 21, reactions: { '🌿': 8 },
     commenters: ['lidiane', 'marina', 'nicole'],
     thread: []
@@ -462,7 +462,7 @@ export const POSTS = [
     id: 'p28', u: 'bruna', time: '5 d', group: 'Vida Natural',
     text: 'Fiz meu próprio desodorante natural. Sem alumínio, cheiro suave o dia todo.',
     tags: ['#diy', '#natural'],
-    img: IMG('1608571420902-4e4462060a5f', 900, 675), alt: 'Desodorante natural',
+    img: IMG('1608571423902-eed4a5ad8108', 900, 675), alt: 'Desodorante natural',
     likes: 134, liked: false, saved: true, comments: 26, reactions: { '🌱': 10 },
     commenters: ['aline', 'lidiane', 'renata'],
     thread: []
@@ -480,7 +480,7 @@ export const POSTS = [
     id: 'p30', u: 'nicole', time: '1 sem', group: 'Vida Natural',
     text: 'Chá de camomila e mel antes de dormir. Rotina noturna que realmente acalma.',
     tags: ['#sono', '#rotina'],
-    img: IMG('1544787217-7f5c1c2c5c5c', 900, 675), alt: 'Chá de camomila',
+    img: IMG('1556910103-1c02745aae4d', 900, 675), alt: 'Chá de camomila',
     likes: 71, liked: false, saved: false, comments: 10, reactions: {},
     commenters: ['lidiane', 'marina', 'bruna'],
     thread: []
@@ -489,7 +489,7 @@ export const POSTS = [
     id: 'p31', u: 'renata', time: '1 sem', group: 'Vida Natural',
     text: 'Horta na varanda: manjericão, hortelã e alecrim crescendo bem!',
     tags: ['#horta', '#varanda'],
-    img: IMG('1416879595882-3373a0480b2b', 900, 675), alt: 'Horta em vasos',
+    img: IMG('1416879595882-3373a0480b5b', 900, 675), alt: 'Horta em vasos',
     likes: 156, liked: true, saved: false, comments: 22, reactions: { '🌿': 11 },
     commenters: ['aline', 'bruna', 'nicole'],
     thread: []

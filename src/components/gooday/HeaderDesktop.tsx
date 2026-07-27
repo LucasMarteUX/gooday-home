@@ -6,7 +6,7 @@ type Props = {
 
 export function HeaderDesktop({ vm }: Props) {
   return (
-    <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-white/[0.06] bg-[rgba(14,18,22,0.88)] px-7 py-3.5 backdrop-blur-2xl min-[800px]:flex">
+    <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-white/[0.06] bg-[rgba(14,18,22,0.88)] px-7 py-2.5 backdrop-blur-2xl min-[800px]:flex">
       <img
         src="/uploads/logotipo%20gooday.png"
         alt="Gooday"

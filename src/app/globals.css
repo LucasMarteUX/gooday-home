@@ -22,7 +22,7 @@
   --gd-header-desktop: rgba(14, 18, 22, 0.88);
   --gd-max-width: 1920px;
   --gd-sticky-top: 80px;
-  --gd-desktop-scale: 1.15;
+  --gd-desktop-scale: 1.08;
 }
 
 @theme inline {
@@ -220,5 +220,16 @@ a:hover {
 }
 
 .gooday-sidebar-sticky--active {
-  max-height: calc(100vh - var(--gd-sticky-top));
+  /* Altura travada na viewport para scroll interno independente da timeline */
+  height: calc(100dvh - var(--gd-sticky-top));
+  max-height: calc(100dvh - var(--gd-sticky-top));
+  overflow: hidden;
+}
+
+@media (min-width: 800px) {
+  /* Compensa o zoom do html para o painel caber na viewport visual */
+  .gooday-sidebar-sticky--active {
+    height: calc(100dvh / var(--gd-desktop-scale) - var(--gd-sticky-top));
+    max-height: calc(100dvh / var(--gd-desktop-scale) - var(--gd-sticky-top));
+  }
 }
