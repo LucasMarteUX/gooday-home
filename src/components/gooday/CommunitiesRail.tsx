@@ -86,7 +86,7 @@ export function CommunitiesCarousel({ vm }: Props) {
 
 export function CommunitiesRail({ vm }: Props) {
   return (
-    <aside className="sticky top-[92px] flex h-[calc(100vh-116px)] min-w-0 flex-col gap-3.5 pt-5">
+    <aside className="sticky top-[80px] z-10 flex max-h-[calc(100vh-80px)] min-w-0 flex-col gap-3.5 self-start pt-5">
       <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto">
         {vm.railCommunities.map((c, i) => (
           <CommunityCard key={i} c={c} />

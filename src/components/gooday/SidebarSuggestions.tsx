@@ -6,7 +6,7 @@ type Props = {
 
 export function SidebarSuggestions({ vm }: Props) {
   return (
-    <aside className="sticky top-[92px] flex h-[calc(100vh-116px)] min-w-0 flex-col gap-3.5 pt-5">
+    <aside className="sticky top-[80px] z-10 flex max-h-[calc(100vh-80px)] min-w-0 flex-col gap-3.5 self-start pt-5">
       <section className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-gd-card p-4">
         <div className="flex items-center justify-between gap-2 border-b border-gd-elevated pb-3">
           <h2 className="m-0 text-[13px] font-semibold">Sugestões para você</h2>
