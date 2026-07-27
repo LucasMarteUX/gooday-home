@@ -1894,6 +1894,8 @@ export function useGoodayHome({
     const storyBars = storiesList.map((_, i) => ({
       w: i < (storyIdx ?? -1) ? '100%' : i === storyIdx ? storyP + '%' : '0%',
     }));
+    const storyHasPrev = storyIdx !== null && storyIdx > 0;
+    const storyHasNext = storyIdx !== null && storyIdx < storiesList.length - 1;
 
     const titles: Record<string, string> = {
       createPicker: 'Criar',
@@ -1970,6 +1972,8 @@ export function useGoodayHome({
       navItems,
       story,
       storyBars,
+      storyHasPrev,
+      storyHasNext,
       quickReactions: ['❤️', '👏', '🔥'].map((e) => ({
         emoji: e,
         send: () => {

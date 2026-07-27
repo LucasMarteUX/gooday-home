@@ -4,6 +4,14 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
+function ArrowIcon({ dir }: { dir: 'left' | 'right' }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      {dir === 'left' ? <path d="M15 5l-7 7 7 7" /> : <path d="M9 5l7 7-7 7" />}
+    </svg>
+  );
+}
+
 export function StoryViewer({ vm }: Props) {
   if (!vm.story) return null;
 
@@ -12,12 +20,30 @@ export function StoryViewer({ vm }: Props) {
       role="dialog"
       aria-label="Story"
       aria-modal="true"
-      className="fixed inset-0 z-[80] flex animate-[gd-fade_180ms_ease] items-center justify-center bg-black/85 p-3 backdrop-blur-sm min-[800px]:p-6"
+      className="fixed inset-0 z-[80] flex animate-[gd-fade_180ms_ease] items-center justify-center bg-black/85 p-3 backdrop-blur-sm min-[800px]:gap-4 min-[800px]:p-6"
       onClick={vm.closeStory}
     >
-      {/* Frame 9:16 — como no Instagram (não full-bleed) */}
+      {/* Seta anterior — fora do frame (estilo Instagram desktop) */}
+      <button
+        type="button"
+        aria-label="Story anterior"
+        disabled={!vm.storyHasPrev}
+        onClick={(e) => {
+          e.stopPropagation();
+          vm.storyPrev();
+        }}
+        className={`hidden h-11 w-11 flex-none place-items-center rounded-full transition-colors min-[800px]:grid ${
+          vm.storyHasPrev
+            ? 'bg-white/15 text-white hover:bg-white/25'
+            : 'pointer-events-none bg-white/5 text-white/25'
+        }`}
+      >
+        <ArrowIcon dir="left" />
+      </button>
+
+      {/* Frame 9:16 */}
       <div
-        className="relative aspect-[9/16] w-[min(420px,calc(100vw-24px),calc((100dvh-24px)*9/16))] max-h-[calc(100dvh-24px)] overflow-hidden rounded-[18px] bg-[#0a0d10] shadow-[0_24px_80px_rgba(0,0,0,0.55)] min-[800px]:w-[min(420px,calc(100vw-48px),calc((100dvh-48px)*9/16))] min-[800px]:max-h-[calc(100dvh-48px)] min-[800px]:rounded-[24px]"
+        className="relative aspect-[9/16] w-[min(420px,calc(100vw-24px),calc((100dvh-24px)*9/16))] max-h-[calc(100dvh-24px)] overflow-hidden rounded-[18px] bg-[#0a0d10] shadow-[0_24px_80px_rgba(0,0,0,0.55)] min-[800px]:w-[min(420px,calc(100vw-120px),calc((100dvh-48px)*9/16))] min-[800px]:max-h-[calc(100dvh-48px)] min-[800px]:rounded-[24px]"
         onClick={vm.stop}
       >
         <img
@@ -27,7 +53,7 @@ export function StoryViewer({ vm }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/65 from-0% via-transparent via-[22%] to-black/75 to-100%" />
 
-        {/* Zonas de navegação */}
+        {/* Zonas de toque (mobile / dentro do card) */}
         <button
           type="button"
           aria-label="Story anterior"
@@ -40,6 +66,28 @@ export function StoryViewer({ vm }: Props) {
           className="absolute bottom-0 right-0 top-0 z-[1] w-[70%]"
           onClick={vm.storyNext}
         />
+
+        {/* Setas dentro do frame no mobile */}
+        {vm.storyHasPrev ? (
+          <button
+            type="button"
+            aria-label="Story anterior"
+            onClick={vm.storyPrev}
+            className="absolute left-2 top-1/2 z-[3] grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-black/40 text-white backdrop-blur-sm min-[800px]:hidden"
+          >
+            <ArrowIcon dir="left" />
+          </button>
+        ) : null}
+        {vm.storyHasNext ? (
+          <button
+            type="button"
+            aria-label="Próximo story"
+            onClick={vm.storyNext}
+            className="absolute right-2 top-1/2 z-[3] grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-black/40 text-white backdrop-blur-sm min-[800px]:hidden"
+          >
+            <ArrowIcon dir="right" />
+          </button>
+        ) : null}
 
         {/* Progress bars */}
         <div className="absolute left-0 right-0 top-0 z-[2] flex gap-[4px] px-3 pt-3">
@@ -96,6 +144,24 @@ export function StoryViewer({ vm }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Seta próximo — fora do frame */}
+      <button
+        type="button"
+        aria-label="Próximo story"
+        disabled={!vm.storyHasNext}
+        onClick={(e) => {
+          e.stopPropagation();
+          vm.storyNext();
+        }}
+        className={`hidden h-11 w-11 flex-none place-items-center rounded-full transition-colors min-[800px]:grid ${
+          vm.storyHasNext
+            ? 'bg-white/15 text-white hover:bg-white/25'
+            : 'pointer-events-none bg-white/5 text-white/25'
+        }`}
+      >
+        <ArrowIcon dir="right" />
+      </button>
     </div>
   );
 }
