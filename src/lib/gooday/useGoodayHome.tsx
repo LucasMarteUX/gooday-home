@@ -1292,6 +1292,8 @@ export function useGoodayHome({
     toggleLike,
     toggleSave,
     react,
+    closeSheet,
+    go,
   ]);
 
   function buildScreenVals(isDesktop: boolean) {
