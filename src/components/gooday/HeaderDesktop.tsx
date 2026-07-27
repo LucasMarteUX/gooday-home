@@ -1,0 +1,71 @@
+import Image from "next/image";
+import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
+
+type Props = {
+  vm: GoodayHomeViewModel;
+};
+
+export function HeaderDesktop({ vm }: Props) {
+  return (
+    <header className="sticky top-0 z-40 flex items-center gap-5 border-b border-white/[0.06] bg-[rgba(14,18,22,0.88)] px-7 py-3.5 backdrop-blur-2xl">
+      <Image
+        src="/uploads/logotipo%20gooday.png"
+        alt="Gooday"
+        width={120}
+        height={32}
+        className="h-8 w-auto"
+        priority
+      />
+      <div className="flex h-12 max-w-[560px] flex-1 items-center gap-2.5 rounded-full border border-gd-border bg-gd-surface py-0 pl-[18px] pr-1.5">
+        <input
+          readOnly
+          onFocus={vm.openSearch}
+          placeholder="O que deseja fazer de bom hoje?"
+          aria-label="Buscar pessoas e grupos"
+          className="h-11 flex-1 cursor-pointer border-none bg-transparent text-[15px] text-white outline-none"
+        />
+        <button
+          type="button"
+          onClick={vm.openSearch}
+          aria-label="Buscar"
+          className="grid h-9 w-9 place-items-center rounded-full bg-gd-brand"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.2-3.2" />
+          </svg>
+        </button>
+      </div>
+      <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
+        <span className="grid h-[22px] w-[22px] flex-none place-items-center text-gd-accent">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 12a7.5 7.5 0 01-10.9 6.7L4 20l1.4-4.2A7.5 7.5 0 1120 12z" />
+          </svg>
+        </span>
+        <p className="m-0 truncate text-sm text-gd-text-muted">{vm.contextMessage}</p>
+      </div>
+      <button
+        type="button"
+        onClick={vm.openNotifications}
+        aria-label="Notificações"
+        className="relative grid h-11 w-11 flex-none place-items-center rounded-xl text-gd-text-secondary"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 9a6 6 0 10-12 0c0 5-2 6-2 6h16s-2-1-2-6" />
+          <path d="M13.7 20a2 2 0 01-3.4 0" />
+        </svg>
+        {vm.hasUnread ? (
+          <span className="absolute right-2 top-2 h-[9px] w-[9px] rounded-full border-2 border-gd-bg bg-gd-danger" />
+        ) : null}
+      </button>
+      <button
+        type="button"
+        onClick={vm.openAvatarMenu}
+        aria-label="Menu do perfil"
+        className="h-11 w-11 flex-none overflow-hidden rounded-full border border-gd-border bg-gd-elevated"
+      >
+        <img src={vm.me.av} alt="Seu perfil" className="block h-full w-full object-cover" />
+      </button>
+    </header>
+  );
+}
