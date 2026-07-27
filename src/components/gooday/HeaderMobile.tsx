@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
 
 type Props = {
@@ -8,13 +7,10 @@ type Props = {
 export function HeaderMobile({ vm }: Props) {
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[rgba(21,26,31,0.88)] px-4 py-3 backdrop-blur-2xl">
-      <Image
+      <img
         src="/uploads/logotipo%20gooday.png"
         alt="Gooday"
-        width={100}
-        height={26}
-        className="h-[26px] w-auto"
-        priority
+        className="block h-[26px] w-auto"
       />
       <div className="flex items-center gap-1">
         <button

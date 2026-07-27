@@ -5,6 +5,8 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -18,8 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-gd-bg text-white">{children}</body>
+    <html lang="pt-BR" className={`${inter.variable} h-full`}>
+      <body className={`${inter.className} min-h-full bg-gd-bg font-sans text-white antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }

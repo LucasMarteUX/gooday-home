@@ -185,7 +185,7 @@ export function useGoodayHome({
   showSuggestions = true,
   storyDurationMs = 5000,
 }: GoodayHomeProps = {}) {
-  const [w, setW] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 420));
+  const [w, setW] = useState(1200);
   const [tab, setTab] = useState<TabId>('home');
   const [posts, setPosts] = useState<Post[]>(clonePosts);
   const [popped, setPopped] = useState<string | null>(null);
@@ -431,6 +431,7 @@ export function useGoodayHome({
 
   useEffect(() => {
     const onResize = () => setW(window.innerWidth);
+    onResize();
     window.addEventListener('resize', onResize);
     return () => {
       window.removeEventListener('resize', onResize);

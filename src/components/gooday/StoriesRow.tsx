@@ -6,7 +6,10 @@ type Props = {
 
 export function StoriesRow({ vm }: Props) {
   return (
-    <section aria-label="Stories" style={vm.storiesStyle} className="no-scrollbar">
+    <section
+      aria-label="Stories"
+      className="no-scrollbar flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-4 pb-1 pt-4 pl-6 min-[800px]:pl-4"
+    >
       {vm.stories.map((s, i) => (
         <button
           key={i}
