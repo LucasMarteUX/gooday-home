@@ -9,7 +9,7 @@ export function MobileNav({ vm }: Props) {
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[45] flex justify-center px-3 min-[800px]:hidden">
       <nav
         aria-label="Navegação principal"
-        className="pointer-events-auto mb-[calc(16px+env(safe-area-inset-bottom))] flex w-full max-w-[420px] items-end justify-around gap-0.5 rounded-full border border-white/[0.08] bg-[rgba(21,26,31,0.94)] px-1.5 py-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.32)] backdrop-blur-2xl"
+        className="pointer-events-auto mb-[calc(16px+env(safe-area-inset-bottom))] flex w-full max-w-[420px] items-end justify-around gap-0.5 rounded-full border border-[color:var(--gd-hairline-strong)] bg-[color:var(--gd-nav-float)] px-1.5 py-1.5 shadow-[var(--gd-shadow)] backdrop-blur-2xl"
       >
         {vm.tabs.map((t) => {
           const isCreate = t.id === "create";
@@ -24,7 +24,7 @@ export function MobileNav({ vm }: Props) {
                 className="relative -mt-6 flex min-w-[56px] flex-col items-center justify-end gap-1 pb-0.5"
               >
                 <span className="grid place-items-center">{t.icon}</span>
-                <span className="text-[9px] font-semibold leading-none text-white">{t.label}</span>
+                <span className="text-[9px] font-semibold leading-none text-gd-text">{t.label}</span>
               </button>
             );
           }

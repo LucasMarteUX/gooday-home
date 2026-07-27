@@ -1,24 +1,48 @@
+'use client';
+
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
+import { GoodayLogo, useTheme } from "@/lib/gooday/theme";
 
 type Props = {
   vm: GoodayHomeViewModel;
 };
 
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+  const isLight = theme === 'light';
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label={isLight ? 'Ativar modo escuro' : 'Ativar modo claro'}
+      title={isLight ? 'Modo escuro' : 'Modo claro'}
+      className="relative grid h-11 w-11 flex-none place-items-center rounded-xl text-gd-text-secondary transition-colors hover:bg-gd-hover"
+    >
+      {isLight ? (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+          <path d="M21 14.5A8.5 8.5 0 1110 3.2 7 7 0 0021 14.5z" />
+        </svg>
+      ) : (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2.5v2.2M12 19.3v2.2M4.7 4.7l1.6 1.6M17.7 17.7l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.7 19.3l1.6-1.6M17.7 6.3l1.6-1.6" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
 export function HeaderDesktop({ vm }: Props) {
   return (
-    <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-white/[0.06] bg-[rgba(14,18,22,0.88)] px-7 py-2 backdrop-blur-2xl min-[800px]:flex">
-      <img
-        src="/uploads/logotipo%20gooday.png"
-        alt="Gooday"
-        className="block h-7 w-auto"
-      />
-      <div className="flex h-9 max-w-[480px] flex-1 items-center gap-2 rounded-full border border-white/[0.08] bg-gd-surface/80 py-0 pl-3.5 pr-1">
+    <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-desktop)] px-7 py-2 backdrop-blur-2xl min-[800px]:flex">
+      <GoodayLogo className="h-7" />
+      <div className="flex h-9 max-w-[480px] flex-1 items-center gap-2 rounded-full border border-[color:var(--gd-hairline-strong)] bg-gd-surface/80 py-0 pl-3.5 pr-1">
         <input
           readOnly
           onFocus={vm.openSearch}
           placeholder="O que deseja fazer de bom hoje?"
           aria-label="Buscar pessoas e grupos"
-          className="h-full min-w-0 flex-1 cursor-pointer border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
+          className="h-full min-w-0 flex-1 cursor-pointer border-none bg-transparent text-[13px] text-gd-text outline-none placeholder:text-gd-text-subtle"
         />
         <button
           type="button"
@@ -40,8 +64,9 @@ export function HeaderDesktop({ vm }: Props) {
             <path d="M12 12c0-4.5 4-8 8-8 0 5-3 8-8 8z" />
           </svg>
         </span>
-        <p className="m-0 truncate text-sm font-normal text-white">{vm.contextMessage}</p>
+        <p className="m-0 truncate text-sm font-normal text-gd-text">{vm.contextMessage}</p>
       </div>
+      <ThemeToggle />
       <button
         type="button"
         onClick={vm.openNotifications}

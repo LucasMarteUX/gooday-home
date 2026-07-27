@@ -1,11 +1,14 @@
 @import "tailwindcss";
 
-:root {
+:root,
+[data-theme="dark"] {
   --gd-bg: #0e1216;
   --gd-card: #151a1f;
   --gd-card-alt: #181d23;
   --gd-surface: #1a1f24;
   --gd-elevated: #22272d;
+  --gd-hover: #2a3139;
+  --gd-hover-subtle: #1d2329;
   --gd-border: #2b3037;
   --gd-border-strong: #41474f;
   --gd-text: #ffffff;
@@ -18,11 +21,51 @@
   --gd-accent: #7849ec;
   --gd-success: #35c47a;
   --gd-danger: #f05a67;
-  --gd-header-mobile: rgba(21, 26, 31, 0.88);
+  --gd-header-mobile: rgba(21, 26, 31, 0.92);
   --gd-header-desktop: rgba(14, 18, 22, 0.88);
+  --gd-nav-float: rgba(21, 26, 31, 0.94);
+  --gd-overlay: rgba(14, 18, 22, 0.94);
+  --gd-screen: #0e1216;
+  --gd-toast: #2b3037;
+  --gd-toast-text: #f5f6f8;
+  --gd-hairline: rgba(255, 255, 255, 0.06);
+  --gd-hairline-strong: rgba(255, 255, 255, 0.08);
+  --gd-shadow: 0 16px 48px rgba(0, 0, 0, 0.32);
   --gd-max-width: 1920px;
   --gd-sticky-top: 80px;
   --gd-desktop-scale: 1.08;
+}
+
+[data-theme="light"] {
+  --gd-bg: #dfe4ea;
+  --gd-card: #ffffff;
+  --gd-card-alt: #f2f4f7;
+  --gd-surface: #f7f8fa;
+  --gd-elevated: #e6eaef;
+  --gd-hover: #ebeff3;
+  --gd-hover-subtle: #f3f5f7;
+  --gd-border: #c5ccd6;
+  --gd-border-strong: #a8b2c0;
+  --gd-text: #12161c;
+  --gd-text-secondary: #2a313c;
+  --gd-text-muted: #5c6675;
+  --gd-text-subtle: #7a8494;
+  --gd-brand: #4667f5;
+  --gd-brand-light: #3653d8;
+  --gd-brand-soft: #4667f5;
+  --gd-accent: #7849ec;
+  --gd-success: #1fa868;
+  --gd-danger: #e04552;
+  --gd-header-mobile: rgba(223, 228, 234, 0.94);
+  --gd-header-desktop: rgba(223, 228, 234, 0.92);
+  --gd-nav-float: rgba(255, 255, 255, 0.96);
+  --gd-overlay: rgba(255, 255, 255, 0.96);
+  --gd-screen: #ffffff;
+  --gd-toast: #2a313c;
+  --gd-toast-text: #f5f6f8;
+  --gd-hairline: rgba(18, 22, 28, 0.1);
+  --gd-hairline-strong: rgba(18, 22, 28, 0.14);
+  --gd-shadow: 0 16px 48px rgba(18, 22, 28, 0.14);
 }
 
 @theme inline {
@@ -31,8 +74,11 @@
   --color-gd-card-alt: var(--gd-card-alt);
   --color-gd-surface: var(--gd-surface);
   --color-gd-elevated: var(--gd-elevated);
+  --color-gd-hover: var(--gd-hover);
+  --color-gd-hover-subtle: var(--gd-hover-subtle);
   --color-gd-border: var(--gd-border);
   --color-gd-border-strong: var(--gd-border-strong);
+  --color-gd-text: var(--gd-text);
   --color-gd-text-secondary: var(--gd-text-secondary);
   --color-gd-text-muted: var(--gd-text-muted);
   --color-gd-text-subtle: var(--gd-text-subtle);
@@ -42,6 +88,7 @@
   --color-gd-accent: var(--gd-accent);
   --color-gd-success: var(--gd-success);
   --color-gd-danger: var(--gd-danger);
+  --color-gd-screen: var(--gd-screen);
   --font-sans: var(--font-inter);
 }
 
@@ -97,6 +144,58 @@
   100% {
     transform: scale(1);
   }
+}
+
+@keyframes gd-story-float {
+  0% {
+    transform: translate(-50%, 0) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    transform: translate(-50%, -18px) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--gd-float-x, 0px)), -220px) scale(1.35);
+    opacity: 0;
+  }
+}
+
+.gd-story-float {
+  animation: gd-story-float 1.45s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Logo branco no dark; azul da marca no light */
+.gd-logo {
+  filter: none;
+}
+
+[data-theme="light"] .gd-logo {
+  /* Branco → brand Gooday (#4667f5) */
+  filter: brightness(0) saturate(100%) invert(35%) sepia(78%) saturate(1800%) hue-rotate(214deg) brightness(0.98) contrast(1.05);
+}
+
+.gd-hover {
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.gd-hover:hover {
+  background-color: var(--gd-hover);
+}
+
+/* Inputs/campos em sheets e formulários — tema-aware */
+.gd-field {
+  color: var(--gd-text) !important;
+  background: var(--gd-elevated) !important;
+  border-color: var(--gd-border-strong) !important;
+  caret-color: var(--gd-brand);
+}
+
+.gd-field::placeholder {
+  color: var(--gd-text-subtle) !important;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {

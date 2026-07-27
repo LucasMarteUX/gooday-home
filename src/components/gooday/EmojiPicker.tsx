@@ -60,7 +60,7 @@ export function EmojiPicker({ onSelect, onClose, className = '', placement = 'up
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex h-10 flex-none items-center gap-2 border-b border-gd-border px-2.5">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-gd-text-subtle">
           <circle cx="11" cy="11" r="7" />
           <path d="M20 20l-3.2-3.2" />
         </svg>
@@ -69,7 +69,7 @@ export function EmojiPicker({ onSelect, onClose, className = '', placement = 'up
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Buscar emoji"
           aria-label="Buscar emoji"
-          className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
+          className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-gd-text outline-none placeholder:text-gd-text-subtle"
         />
       </div>
 
@@ -80,7 +80,7 @@ export function EmojiPicker({ onSelect, onClose, className = '', placement = 'up
               key={`${emoji}-${i}`}
               type="button"
               onClick={() => onSelect(emoji)}
-              className="grid h-9 w-full place-items-center rounded-lg text-[20px] leading-none transition-colors hover:bg-gd-elevated active:scale-95"
+              className="grid h-9 w-full place-items-center rounded-lg text-[20px] leading-none transition-colors hover:bg-gd-hover active:scale-95"
             >
               {emoji}
             </button>

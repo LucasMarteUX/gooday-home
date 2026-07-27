@@ -15,7 +15,7 @@ function svgProps(active: boolean, activeColor: string, size: number, className?
     height: size,
     viewBox: '0 0 24 24',
     fill: 'none' as const,
-    stroke: active ? activeColor : '#7B818C',
+    stroke: active ? activeColor : 'currentColor',
     strokeWidth: 1.8,
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
@@ -46,7 +46,7 @@ export function SearchIcon({ active = false, activeColor = '#4667F5', size = 26,
 }
 
 export function ChatIcon({ active = false, activeColor = '#4667F5', size = 26, className }: GoodayIconProps) {
-  const stroke = active ? activeColor : '#7B818C';
+  const stroke = active ? activeColor : 'currentColor';
   return (
     <svg
       width={size}
@@ -90,7 +90,7 @@ export function GroupsIcon({ active = false, activeColor = '#4667F5', size = 26,
   );
 }
 
-export function CreateIcon({ active = false, activeColor = '#C3C7CF', size = 16, className }: GoodayIconProps) {
+export function CreateIcon({ active = false, activeColor = 'currentColor', size = 16, className }: GoodayIconProps) {
   const stroke = active ? '#FFFFFF' : activeColor;
   return (
     <svg

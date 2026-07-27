@@ -1,5 +1,6 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
 import { ScrollFadeRow } from "./StickySidebarColumn";
+import { useTheme } from "@/lib/gooday/theme";
 
 type Props = {
   vm: GoodayHomeViewModel;
@@ -9,13 +10,13 @@ export function OverlayScreens({ vm }: Props) {
   if (!vm.view) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] animate-[gd-slide_240ms_cubic-bezier(0.2,0,0,1)] overflow-y-auto overscroll-contain bg-gd-bg">
-      <header className="sticky top-0 z-[5] flex items-center gap-3 border-b border-white/[0.06] bg-[rgba(14,18,22,0.94)] px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-2xl">
+    <div className="fixed inset-0 z-[60] animate-[gd-slide_240ms_cubic-bezier(0.2,0,0,1)] overflow-y-auto overscroll-contain bg-gd-screen">
+      <header className="sticky top-0 z-[5] flex items-center gap-3 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-overlay)] px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-2xl">
         <button
           type="button"
           onClick={vm.back}
           aria-label="Voltar"
-          className="grid h-11 w-11 place-items-center rounded-xl text-gd-text-secondary"
+          className="grid h-11 w-11 place-items-center rounded-xl text-gd-text-secondary transition-colors hover:bg-gd-hover"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 5l-7 7 7 7" />
@@ -57,7 +58,7 @@ function SearchScreen({ vm }: Props) {
   return (
     <>
       <div className="flex h-12 items-center gap-2.5 rounded-full border border-gd-border bg-gd-surface px-3.5">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="1.8" strokeLinecap="round">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
           <circle cx="11" cy="11" r="7" />
           <path d="M20 20l-3.2-3.2" />
         </svg>
@@ -66,14 +67,14 @@ function SearchScreen({ vm }: Props) {
           onChange={vm.onSearch}
           placeholder="Pessoas, grupos e interesses"
           aria-label="Buscar"
-          className="h-11 flex-1 border-none bg-transparent text-[15px] text-white outline-none"
+          className="h-11 flex-1 border-none bg-transparent text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
         />
         {vm.searchHasQuery ? (
           <button
             type="button"
             onClick={vm.clearSearch}
             aria-label="Limpar"
-            className="grid h-7 w-7 place-items-center rounded-full bg-gd-border text-[13px] text-[#C3C7CF]"
+            className="grid h-7 w-7 place-items-center rounded-full bg-gd-border text-[13px] text-gd-text-secondary"
           >
             ×
           </button>
@@ -95,7 +96,7 @@ function SearchScreen({ vm }: Props) {
             key={i}
             type="button"
             onClick={r.go}
-            className="h-[30px] rounded-full border border-gd-border bg-gd-card px-3 text-[13px] text-[#C3C7CF]"
+            className="h-[30px] rounded-full border border-gd-border bg-gd-card px-3 text-[13px] text-gd-text-secondary"
           >
             {r.label}
           </button>
@@ -161,7 +162,7 @@ function PersonScreen({ vm }: Props) {
       <p className="m-0 text-sm text-gd-text-subtle">
         {person.handle} · {person.loc}
       </p>
-      <p className="mt-2.5 text-sm leading-[1.55] text-[#C3C7CF]">{person.bio}</p>
+      <p className="mt-2.5 text-sm leading-[1.55] text-gd-text-secondary">{person.bio}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {person.interests.map((i, idx) => (
           <span
@@ -214,7 +215,7 @@ function PersonScreen({ vm }: Props) {
         </div>
       ) : null}
       {vm.personNoPosts ? (
-        <div className="rounded-2xl bg-gd-card-alt px-5 py-7 text-center">
+        <div className="rounded-2xl bg-gd-elevated px-5 py-7 text-center">
           <p className="m-0 mb-1.5 text-[15px] font-semibold">Nada publicado por aqui ainda</p>
           <p className="m-0 text-[13px] leading-normal text-gd-text-subtle">
             Quando {person.name} publicar, as fotos aparecem nesta aba.
@@ -236,7 +237,7 @@ function GroupScreen({ vm }: Props) {
       <p className="m-0 text-sm text-gd-text-subtle">
         {group.status} · {group.groups} · {group.members}
       </p>
-      <p className="mt-2.5 text-sm leading-[1.55] text-[#C3C7CF]">{group.desc}</p>
+      <p className="mt-2.5 text-sm leading-[1.55] text-gd-text-secondary">{group.desc}</p>
       <button type="button" onClick={group.openMembers} className="mt-3.5 flex items-center gap-2.5">
         <span className="flex">
           {group.avatars.map((a, i) => (
@@ -287,7 +288,7 @@ function PostScreen({ vm }: Props) {
   const post = vm.postView!;
   return (
     <>
-      <article className="rounded-[20px] bg-gd-card-alt p-4">
+      <article className="rounded-[20px] bg-gd-card p-4">
         <header className="flex items-center gap-3">
           <img src={post.av} alt="" className="h-[46px] w-[46px] rounded-full object-cover" />
           <span>
@@ -322,7 +323,7 @@ function PostScreen({ vm }: Props) {
             <img src={c.av} alt="" className="h-10 w-10 flex-none rounded-full object-cover" />
             <span>
               <span className="block text-sm font-semibold">{c.name}</span>
-              <span className="mt-[3px] block text-[15px] leading-normal text-[#C3C7CF]">{c.text}</span>
+              <span className="mt-[3px] block text-[15px] leading-normal text-gd-text-secondary">{c.text}</span>
               <span className="mt-0.5 block text-[13px] text-gd-text-subtle">{c.time} · Curtir · Responder</span>
             </span>
           </div>
@@ -331,7 +332,7 @@ function PostScreen({ vm }: Props) {
       <button
         type="button"
         onClick={post.openComments}
-        className="mt-3 h-12 w-full rounded-[14px] bg-gd-elevated text-sm font-semibold text-[#C3C7CF]"
+        className="mt-3 h-12 w-full rounded-[14px] bg-gd-elevated text-sm font-semibold text-gd-text-secondary"
       >
         Escrever comentário
       </button>
@@ -386,7 +387,7 @@ function ChatScreen({ vm }: Props) {
           </div>
         ))}
       </div>
-      <div className="fixed inset-x-0 bottom-0 border-t border-white/[0.06] bg-[rgba(21,26,31,0.95)] px-4 py-3 pb-[calc(12px+env(safe-area-inset-bottom))] backdrop-blur-2xl">
+      <div className="fixed inset-x-0 bottom-0 border-t border-[color:var(--gd-hairline)] bg-[color:var(--gd-overlay)] px-4 py-3 pb-[calc(12px+env(safe-area-inset-bottom))] backdrop-blur-2xl">
         <div className="mx-auto flex max-w-[640px] items-center gap-2.5">
           <input
             value={chat.draft}
@@ -394,7 +395,7 @@ function ChatScreen({ vm }: Props) {
             onKeyDown={chat.onKey}
             placeholder="Escreva uma mensagem…"
             aria-label="Mensagem"
-            className="h-12 flex-1 rounded-full border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 flex-1 rounded-full border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
           <button
             type="button"
@@ -427,7 +428,7 @@ function ProfileScreen({ vm }: Props) {
       <p className="m-0 text-sm text-gd-text-subtle">
         {vm.profile.handle} · {vm.profile.loc}
       </p>
-      <p className="mt-2.5 text-sm leading-[1.55] text-[#C3C7CF]">{vm.profile.bio}</p>
+      <p className="mt-2.5 text-sm leading-[1.55] text-gd-text-secondary">{vm.profile.bio}</p>
       <div className="mt-4 flex gap-5">
         <button type="button" onClick={vm.profile.openFollows} className="text-left">
           <span className="block text-base font-bold">{vm.profile.followers}</span>
@@ -495,7 +496,7 @@ function EditProfileScreen({ vm }: Props) {
     <>
       <div className="flex items-center gap-3.5">
         <img src={vm.me.av} alt="" className="h-[72px] w-[72px] rounded-full object-cover" />
-        <button className="h-10 rounded-xl border border-gd-border-strong bg-gd-elevated px-4 text-sm font-medium text-[#C3C7CF]">
+        <button className="h-10 rounded-xl border border-gd-border-strong bg-gd-elevated px-4 text-sm font-medium text-gd-text-secondary">
           Alterar foto
         </button>
       </div>
@@ -505,7 +506,7 @@ function EditProfileScreen({ vm }: Props) {
           <input
             value={vm.edit.name}
             onChange={vm.onEditName}
-            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <label className="block">
@@ -513,7 +514,7 @@ function EditProfileScreen({ vm }: Props) {
           <input
             value={vm.edit.user}
             onChange={vm.onEditUser}
-            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <label className="block">
@@ -521,7 +522,7 @@ function EditProfileScreen({ vm }: Props) {
           <textarea
             value={vm.edit.bio}
             onChange={vm.onEditBio}
-            className="min-h-28 w-full resize-y rounded-2xl border border-gd-border-strong bg-gd-elevated px-4 py-3.5 text-[15px] text-white outline-none"
+            className="min-h-28 w-full resize-y rounded-2xl border border-gd-border-strong bg-gd-elevated px-4 py-3.5 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <label className="block">
@@ -529,7 +530,7 @@ function EditProfileScreen({ vm }: Props) {
           <input
             value={vm.edit.loc}
             onChange={vm.onEditLoc}
-            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <button
@@ -596,7 +597,7 @@ function GroupsScreen({ vm }: Props) {
         Comunidades que você participa e acompanha.
       </p>
       <div className="mb-4 flex h-11 items-center gap-2.5 rounded-xl border border-gd-border bg-gd-surface px-3.5">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           <circle cx="11" cy="11" r="7" />
           <path d="M20 20l-3.2-3.2" />
         </svg>
@@ -605,7 +606,7 @@ function GroupsScreen({ vm }: Props) {
           onChange={vm.onGroupsSearch}
           placeholder="Buscar grupos e comunidades..."
           aria-label="Buscar grupos"
-          className="min-w-0 flex-1 border-none bg-transparent text-[15px] text-white outline-none placeholder:text-gd-text-subtle"
+          className="min-w-0 flex-1 border-none bg-transparent text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
         />
       </div>
       <ScrollFadeRow fadeColor="var(--gd-bg)" className="mb-4 pb-1">
@@ -632,7 +633,7 @@ function GroupsScreen({ vm }: Props) {
           <article
             key={i}
             onClick={g.open}
-            className="cursor-pointer rounded-[18px] bg-gd-card-alt p-2.5 transition-colors hover:bg-[#1D2329]"
+            className="cursor-pointer rounded-[18px] bg-gd-card p-2.5 transition-colors hover:bg-gd-hover-subtle"
           >
             <div className="relative h-[104px] rounded-xl bg-gd-elevated">
               <img src={g.img} alt={g.name} className="block h-full w-full rounded-xl object-cover" />
@@ -678,7 +679,7 @@ function SettingsRow({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors hover:bg-gd-elevated ${
+      className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors hover:bg-gd-hover ${
         danger ? 'text-gd-danger' : 'text-gd-text-secondary'
       }`}
     >
@@ -697,9 +698,10 @@ function SettingsRow({
 
 function SettingsScreen({ vm }: Props) {
   const settings = vm.settings!;
+  const { theme, setTheme } = useTheme();
   return (
     <>
-      <div className="mb-4 flex items-center gap-3.5 rounded-[20px] border border-white/[0.06] bg-gd-card p-4">
+      <div className="mb-4 flex items-center gap-3.5 rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-4">
         <img src={vm.me.av} alt="" className="h-14 w-14 rounded-full object-cover" />
         <div className="min-w-0">
           <p className="m-0 truncate text-base font-semibold">{vm.edit.name}</p>
@@ -707,13 +709,39 @@ function SettingsScreen({ vm }: Props) {
         </div>
       </div>
 
-      <section className="rounded-[20px] border border-white/[0.06] bg-gd-card p-1">
+      <section className="rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-1">
+        <p className="px-3 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-gd-text-subtle">
+          Aparência
+        </p>
+        <div className="flex gap-2 px-2 pb-2">
+          <button
+            type="button"
+            onClick={() => setTheme('light')}
+            className={`h-10 flex-1 rounded-xl text-[13px] font-semibold transition-colors ${
+              theme === 'light' ? 'bg-gd-brand text-white' : 'bg-gd-elevated text-gd-text-secondary'
+            }`}
+          >
+            Claro
+          </button>
+          <button
+            type="button"
+            onClick={() => setTheme('dark')}
+            className={`h-10 flex-1 rounded-xl text-[13px] font-semibold transition-colors ${
+              theme === 'dark' ? 'bg-gd-brand text-white' : 'bg-gd-elevated text-gd-text-secondary'
+            }`}
+          >
+            Escuro
+          </button>
+        </div>
+      </section>
+
+      <section className="mt-4 rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-1">
         <SettingsRow label="Alterar e-mail" hint={settings.email} onClick={settings.openChangeEmail} />
-        <div className="mx-3 h-px bg-white/[0.06]" />
+        <div className="mx-3 h-px bg-[color:var(--gd-hairline)]" />
         <SettingsRow label="Alterar senha" hint="••••••••" onClick={settings.openChangePassword} />
       </section>
 
-      <section className="mt-4 rounded-[20px] border border-white/[0.06] bg-gd-card p-1">
+      <section className="mt-4 rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-1">
         <SettingsRow label="Sair da conta" onClick={settings.logout} danger />
       </section>
     </>
@@ -734,7 +762,7 @@ function ChangeEmailScreen({ vm }: Props) {
           onChange={vm.onEmailDraft}
           autoComplete="email"
           placeholder="seu@email.com"
-          className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+          className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
         />
       </label>
       <button
@@ -762,7 +790,7 @@ function ChangePasswordScreen({ vm }: Props) {
             value={vm.passwordDraft.current}
             onChange={vm.onPasswordCurrent}
             autoComplete="current-password"
-            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <label className="block">
@@ -772,7 +800,7 @@ function ChangePasswordScreen({ vm }: Props) {
             value={vm.passwordDraft.next}
             onChange={vm.onPasswordNext}
             autoComplete="new-password"
-            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <label className="block">
@@ -782,7 +810,7 @@ function ChangePasswordScreen({ vm }: Props) {
             value={vm.passwordDraft.confirm}
             onChange={vm.onPasswordConfirm}
             autoComplete="new-password"
-            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
         </label>
         <button

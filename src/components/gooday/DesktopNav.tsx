@@ -23,7 +23,7 @@ export function DesktopNav({ vm }: Props) {
     >
       <nav
         aria-label="Navegação principal"
-        className="flex w-[168px] flex-col rounded-[20px] border border-white/[0.06] bg-gd-card p-2"
+        className="flex w-[168px] flex-col rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-2"
       >
         <div className="flex flex-col gap-1">
           {vm.navItems.map((n, i) => (
@@ -31,7 +31,9 @@ export function DesktopNav({ vm }: Props) {
               key={i}
               type="button"
               onClick={n.go}
-              className="flex h-11 w-full flex-none items-center gap-2.5 rounded-2xl px-3 text-left text-[13px] font-semibold transition-colors"
+              className={`flex h-11 w-full flex-none items-center gap-2.5 rounded-2xl px-3 text-left text-[13px] font-semibold transition-colors ${
+                n.bg === 'transparent' ? 'hover:bg-gd-hover' : ''
+              }`}
               style={{ background: n.bg, color: n.color }}
             >
               <span className="grid h-5 w-5 flex-none place-items-center">{n.glyph}</span>
@@ -40,11 +42,11 @@ export function DesktopNav({ vm }: Props) {
           ))}
         </div>
 
-        <div className="mt-2 flex flex-none flex-col gap-1 border-t border-white/[0.08] pt-2">
+        <div className="mt-2 flex flex-none flex-col gap-1 border-t border-[color:var(--gd-hairline-strong)] pt-2">
           <button
             type="button"
             onClick={vm.openSettings}
-            className="flex h-11 w-full items-center gap-2.5 rounded-2xl px-3 text-left text-[13px] font-semibold text-[#C3C7CF] transition-colors hover:bg-gd-elevated hover:text-white"
+            className="flex h-11 w-full items-center gap-2.5 rounded-2xl px-3 text-left text-[13px] font-semibold text-gd-text-muted transition-colors hover:bg-gd-hover hover:text-gd-text"
           >
             <span className="grid h-5 w-5 flex-none place-items-center text-current">
               <SettingsIcon />

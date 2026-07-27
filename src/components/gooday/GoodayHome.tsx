@@ -18,7 +18,7 @@ export function GoodayHome() {
   const { vm } = useGoodayHome();
 
   return (
-    <div className="min-h-dvh w-full bg-gd-bg text-white antialiased selection:bg-gd-brand/30">
+    <div className="min-h-dvh w-full bg-gd-bg text-gd-text antialiased selection:bg-gd-brand/30">
       <HeaderMobile vm={vm} />
       <HeaderDesktop vm={vm} />
 

@@ -11,7 +11,7 @@ function CommunityCard({ c, compact }: { c: Community; compact?: boolean }) {
   return (
     <article
       onClick={c.open}
-      className={`cursor-pointer rounded-[20px] bg-gd-card-alt transition-colors hover:bg-[#1D2329] ${
+      className={`cursor-pointer rounded-[20px] bg-gd-card transition-colors hover:bg-gd-hover-subtle ${
         compact ? "w-[216px] flex-none scroll-snap-align-start p-3.5" : "min-w-0 p-3.5"
       }`}
     >
@@ -112,7 +112,7 @@ function GroupsList({ vm }: Props) {
       <button
         type="button"
         onClick={vm.openAllGroups}
-        className="mt-1 h-10 flex-none rounded-xl border border-white/[0.08] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-elevated"
+        className="mt-1 h-10 flex-none rounded-xl border border-[color:var(--gd-hairline-strong)] bg-gd-card text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-hover-subtle"
       >
         Ver tudo
       </button>
@@ -155,7 +155,7 @@ export function RightRail({ vm }: Props) {
                 setFilterOpen(false);
               }}
               className={`relative pb-1 text-[15px] font-semibold transition-colors ${
-                t.active ? 'text-white' : 'text-gd-text-subtle hover:text-gd-text-muted'
+                t.active ? 'text-gd-text' : 'text-gd-text-subtle hover:text-gd-text'
               }`}
             >
               {t.label}
@@ -176,7 +176,7 @@ export function RightRail({ vm }: Props) {
             aria-label={isGroups ? 'Buscar grupos' : 'Buscar pessoas'}
             aria-pressed={searchOpen}
             className={`grid h-9 w-9 place-items-center rounded-xl transition-colors ${
-              searchOpen ? 'bg-gd-elevated text-gd-brand-light' : 'text-gd-text-muted hover:bg-gd-elevated hover:text-white'
+              searchOpen ? 'bg-gd-elevated text-gd-brand-light' : 'text-gd-text-muted hover:bg-gd-hover hover:text-gd-text'
             }`}
           >
             <SearchIcon active={searchOpen} />
@@ -193,7 +193,7 @@ export function RightRail({ vm }: Props) {
               className={`grid h-9 w-9 place-items-center rounded-xl transition-colors ${
                 filterOpen || vm.groupsFilters.some((f) => f.active && f.id !== 'all')
                   ? 'bg-gd-elevated text-gd-brand-light'
-                  : 'text-gd-text-muted hover:bg-gd-elevated hover:text-white'
+                  : 'text-gd-text-muted hover:bg-gd-hover hover:text-gd-text'
               }`}
             >
               <FilterIcon active={filterOpen} />
@@ -211,7 +211,7 @@ export function RightRail({ vm }: Props) {
             onChange={isGroups ? vm.onGroupsSearch : vm.onPeopleSearch}
             placeholder={isGroups ? 'Buscar grupos...' : 'Buscar pessoas...'}
             aria-label={isGroups ? 'Buscar grupos' : 'Buscar pessoas'}
-            className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
+            className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-gd-text outline-none placeholder:text-gd-text-subtle"
           />
           {(isGroups ? vm.groupsSearchQ : vm.peopleSearchQ) ? (
             <button

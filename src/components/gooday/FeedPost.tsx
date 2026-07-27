@@ -27,7 +27,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
             {post.handle}
           </button>
           <p className="mt-[3px] flex items-center gap-1.5 text-[13px] text-gd-text-subtle">
-            <svg width="18" height="10" viewBox="0 0 26 14" fill="none" stroke="#7B818C" strokeWidth="1.6">
+            <svg width="18" height="10" viewBox="0 0 26 14" fill="none" stroke="currentColor" strokeWidth="1.6">
               <circle cx="7" cy="7" r="5" />
               <circle cx="19" cy="7" r="5" />
             </svg>
@@ -81,7 +81,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
           {post.reactions.map((r, i) => (
             <span
               key={i}
-              className="inline-flex h-[30px] items-center gap-1.5 rounded-full border px-2.5 text-[13px] text-[#C3C7CF]"
+              className="inline-flex h-[30px] items-center gap-1.5 rounded-full border px-2.5 text-[13px] text-gd-text-secondary"
               style={{ background: r.bg, borderColor: r.border }}
             >
               {r.emoji} {r.count}

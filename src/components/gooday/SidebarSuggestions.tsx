@@ -29,7 +29,7 @@ export function PeopleSuggestions({ vm, compact }: Props) {
           vm.suggestions.map((s, i) => (
             <div
               key={i}
-              className="flex flex-none items-center gap-2.5 rounded-xl px-1 py-2 transition-colors hover:bg-gd-card"
+              className="flex flex-none items-center gap-2.5 rounded-xl px-1 py-2 transition-colors hover:bg-gd-hover-subtle"
             >
               <button type="button" onClick={s.open} className="flex-none">
                 <img src={s.av} alt="" className="h-9 w-9 cursor-pointer rounded-full object-cover" />
@@ -56,7 +56,7 @@ export function PeopleSuggestions({ vm, compact }: Props) {
           <button
             type="button"
             onClick={vm.openAllPeople}
-            className="mt-2 h-10 flex-none rounded-xl border border-white/[0.08] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-elevated"
+            className="mt-2 h-10 flex-none rounded-xl border border-[color:var(--gd-hairline-strong)] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-hover-subtle"
           >
             Ver tudo
           </button>

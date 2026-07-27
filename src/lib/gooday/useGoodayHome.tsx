@@ -140,7 +140,7 @@ const SHEET_STYLES = {
     width: '100%',
     textAlign: 'left' as const,
     fontSize: 15,
-    color: '#E1E4E8',
+    color: 'var(--gd-text-secondary)',
     borderRadius: 12,
   },
   av: {
@@ -150,7 +150,7 @@ const SHEET_STYLES = {
     objectFit: 'cover' as const,
     flex: 'none' as const,
   },
-  sub: { margin: '2px 0 0', fontSize: 13, color: '#7B818C' },
+  sub: { margin: '2px 0 0', fontSize: 13, color: 'var(--gd-text-subtle)' },
   primary: {
     height: 48,
     borderRadius: 14,
@@ -227,6 +227,9 @@ export function useGoodayHome({
   const [popped, setPopped] = useState<string | null>(null);
   const [storyIdx, setStoryIdx] = useState<number | null>(null);
   const [storyP, setStoryP] = useState(0);
+  const [storyReplyDraft, setStoryReplyDraft] = useState('');
+  const [storyEmojiOpen, setStoryEmojiOpen] = useState(false);
+  const [storyPaused, setStoryPaused] = useState(false);
   const [seen, setSeen] = useState<Record<number, boolean>>({});
   const [sheet, setSheet] = useState<SheetKind>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -362,6 +365,9 @@ export function useGoodayHome({
     if (storyTimerRef.current) clearInterval(storyTimerRef.current);
     setStoryIdx(null);
     setStoryP(0);
+    setStoryReplyDraft('');
+    setStoryEmojiOpen(false);
+    setStoryPaused(false);
   }, []);
 
   useEffect(() => {
@@ -369,6 +375,11 @@ export function useGoodayHome({
       if (e.key !== 'Escape') return;
       if (commentEmojiOpen) {
         setCommentEmojiOpen(false);
+        return;
+      }
+      if (storyEmojiOpen) {
+        setStoryEmojiOpen(false);
+        setStoryPaused(false);
         return;
       }
       if (storyIdx !== null) {
@@ -383,7 +394,7 @@ export function useGoodayHome({
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [commentEmojiOpen, storyIdx, sheet, view, back, closeSheet, closeStory]);
+  }, [commentEmojiOpen, storyEmojiOpen, storyIdx, sheet, view, back, closeSheet, closeStory]);
 
   const storyNext = useCallback(() => {
     setStoryIdx((i) => {
@@ -403,12 +414,17 @@ export function useGoodayHome({
     (i: number) => {
       setStoryIdx(i);
       setStoryP(0);
+      setStoryReplyDraft('');
+      setStoryEmojiOpen(false);
+      setStoryPaused(false);
       setSeen((s) => ({ ...s, [i]: true }));
       if (storyTimerRef.current) clearInterval(storyTimerRef.current);
       const step = 60;
       const dur = storyDurationMs;
       storyTimerRef.current = setInterval(() => {
         setStoryP((prev) => {
+          // Pausado enquanto digita / emoji aberto
+          if (storyPausedRef.current) return prev;
           const next = prev + (step / dur) * 100;
           if (next >= 100) {
             defer(() => storyNextRef.current());
@@ -420,6 +436,53 @@ export function useGoodayHome({
     },
     [storyDurationMs],
   );
+
+  const storyPausedRef = useRef(false);
+  storyPausedRef.current = storyPaused || storyEmojiOpen;
+
+  const pauseStory = useCallback(() => setStoryPaused(true), []);
+  const resumeStory = useCallback(() => {
+    if (!storyEmojiOpen) setStoryPaused(false);
+  }, [storyEmojiOpen]);
+
+  const reactToStory = useCallback(
+    (emoji: string) => {
+      flash(`Você reagiu com ${emoji}`);
+    },
+    [flash],
+  );
+
+  const sendStoryReply = useCallback(() => {
+    const t = storyReplyDraft.trim();
+    if (!t) return;
+    setStoryReplyDraft('');
+    setStoryEmojiOpen(false);
+    setStoryPaused(false);
+    flash('Resposta enviada');
+  }, [storyReplyDraft, flash]);
+
+  const clearStoryReply = useCallback(() => {
+    setStoryReplyDraft('');
+    setStoryEmojiOpen(false);
+  }, []);
+
+  const appendStoryEmoji = useCallback((emoji: string) => {
+    setStoryReplyDraft((prev) => prev + emoji);
+  }, []);
+
+  const toggleStoryEmoji = useCallback(() => {
+    setStoryEmojiOpen((v) => {
+      const next = !v;
+      if (next) setStoryPaused(true);
+      else setStoryPaused(false);
+      return next;
+    });
+  }, []);
+
+  const closeStoryEmoji = useCallback(() => {
+    setStoryEmojiOpen(false);
+    setStoryPaused(false);
+  }, []);
 
   openStoryRef.current = openStory;
   storyNextRef.current = storyNext;
@@ -583,7 +646,7 @@ export function useGoodayHome({
 
   const icon = useCallback(
     (name: GoodayIconName, active: boolean, activeColor?: string, size?: number): ReactNode => {
-      if (name === 'create') return <CreateIcon active={active} activeColor={activeColor ?? '#C3C7CF'} size={size ?? 16} />;
+      if (name === 'create') return <CreateIcon active={active} activeColor={activeColor ?? 'var(--gd-text-muted)'} size={size ?? 16} />;
       return renderGoodayIcon(name, { active, activeColor, size });
     },
     [],
@@ -661,7 +724,7 @@ export function useGoodayHome({
 
       const threadList =
         post.thread.length === 0 ? (
-          <p style={{ margin: '8px 0 16px', color: '#7B818C', fontSize: 15 }}>
+          <p style={{ margin: '8px 0 16px', color: 'var(--gd-text-subtle)', fontSize: 15 }}>
             Ainda não há comentários. Seja a primeira pessoa a responder.
           </p>
         ) : (
@@ -672,7 +735,7 @@ export function useGoodayHome({
                 <img src={u.av} alt="" style={S.av} />
                 <div>
                   <p style={{ margin: 0, fontSize: 14, fontWeight: 600 }}>{u.name}</p>
-                  <p style={{ margin: '3px 0 0', fontSize: 15, color: '#C3C7CF', lineHeight: 1.5 }}>{c.t}</p>
+                  <p style={{ margin: '3px 0 0', fontSize: 15, color: 'var(--gd-text-secondary)', lineHeight: 1.5 }}>{c.t}</p>
                   <p style={S.sub}>{c.time} · Curtir · Responder</p>
                 </div>
               </div>
@@ -689,8 +752,8 @@ export function useGoodayHome({
                 flexDirection: 'column',
                 gap: 2,
                 padding: '8px 4px',
-                background: '#1A1F24',
-                border: '1px solid #2B3037',
+                background: 'var(--gd-surface)',
+                border: '1px solid var(--gd-border)',
                 borderRadius: 12,
                 marginBottom: 8,
               }}
@@ -721,8 +784,8 @@ export function useGoodayHome({
                       alt=""
                       style={{ width: 26, height: 26, borderRadius: 999, objectFit: 'cover' }}
                     />
-                    <span style={{ fontSize: 14, color: '#E1E4E8' }}>{u.name}</span>
-                    <span style={{ fontSize: 13, color: '#7B818C' }}>{u.handle}</span>
+                    <span style={{ fontSize: 14, color: 'var(--gd-text-secondary)' }}>{u.name}</span>
+                    <span style={{ fontSize: 13, color: 'var(--gd-text-subtle)' }}>{u.handle}</span>
                   </button>
                 );
               })}
@@ -734,7 +797,7 @@ export function useGoodayHome({
               gap: 10,
               alignItems: 'center',
               paddingTop: 12,
-              borderTop: '1px solid #22272D',
+              borderTop: '1px solid var(--gd-elevated)',
             }}
           >
             <img src={U.me.av} alt="" style={{ ...S.av, width: 36, height: 36 }} />
@@ -756,14 +819,15 @@ export function useGoodayHome({
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') addComment(post.id);
                 }}
+                className="gd-field"
                 style={{
                   width: '100%',
                   height: 48,
                   borderRadius: 14,
-                  background: '#22272D',
-                  border: '1px solid #41474F',
+                  background: 'var(--gd-elevated)',
+                  border: '1px solid var(--gd-border-strong)',
                   padding: '0 44px 0 16px',
-                  color: '#fff',
+                  color: 'var(--gd-text)',
                   outline: 'none',
                   fontSize: 15,
                 }}
@@ -785,7 +849,7 @@ export function useGoodayHome({
                   width: 32,
                   height: 32,
                   borderRadius: 10,
-                  background: commentEmojiOpen ? '#2B3037' : 'transparent',
+                  background: commentEmojiOpen ? 'var(--gd-border)' : 'transparent',
                   fontSize: 18,
                   display: 'grid',
                   placeItems: 'center',
@@ -832,8 +896,8 @@ export function useGoodayHome({
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: 24,
-                    background: '#151A1F',
-                    color: '#C3C7CF',
+                    background: 'var(--gd-card)',
+                    color: 'var(--gd-text-secondary)',
                     fontSize: 18,
                     textAlign: 'center',
                     lineHeight: 1.5,
@@ -867,7 +931,7 @@ export function useGoodayHome({
                   style={{
                     margin: '10px 0 0',
                     fontSize: 14,
-                    color: '#C3C7CF',
+                    color: 'var(--gd-text-secondary)',
                     lineHeight: 1.5,
                     flex: 'none',
                   }}
@@ -881,7 +945,7 @@ export function useGoodayHome({
                   alignItems: 'center',
                   gap: 6,
                   padding: '12px 0',
-                  borderBottom: '1px solid #22272D',
+                  borderBottom: '1px solid var(--gd-elevated)',
                   flex: 'none',
                 }}
               >
@@ -895,14 +959,14 @@ export function useGoodayHome({
                     height: 36,
                     padding: '0 8px',
                     borderRadius: 10,
-                    color: post.liked ? '#F05A67' : '#9EA3AD',
+                    color: post.liked ? 'var(--gd-danger)' : 'var(--gd-text-muted)',
                     fontSize: 13,
                     fontWeight: 500,
                   }}
                 >
                   ♥ {post.likes}
                 </button>
-                <span style={{ fontSize: 13, color: '#9EA3AD' }}>{post.comments} comentários</span>
+                <span style={{ fontSize: 13, color: 'var(--gd-text-muted)' }}>{post.comments} comentários</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -914,7 +978,7 @@ export function useGoodayHome({
                     height: 36,
                     padding: '0 12px',
                     borderRadius: 10,
-                    color: '#9EA3AD',
+                    color: 'var(--gd-text-muted)',
                     fontSize: 13,
                     fontWeight: 500,
                   }}
@@ -928,7 +992,7 @@ export function useGoodayHome({
                     height: 36,
                     padding: '0 12px',
                     borderRadius: 10,
-                    color: post.saved ? '#6887FF' : '#9EA3AD',
+                    color: post.saved ? 'var(--gd-brand-light)' : 'var(--gd-text-muted)',
                     fontSize: 13,
                     fontWeight: 500,
                   }}
@@ -963,8 +1027,8 @@ export function useGoodayHome({
                 width: 60,
                 height: 60,
                 borderRadius: 18,
-                background: '#22272D',
-                border: '1px solid #2B3037',
+                background: 'var(--gd-elevated)',
+                border: '1px solid var(--gd-border)',
                 fontSize: 26,
               }}
             >
@@ -1003,14 +1067,14 @@ export function useGoodayHome({
                     alt=""
                     style={{ width: 56, height: 56, borderRadius: 999, objectFit: 'cover' }}
                   />
-                  <span style={{ fontSize: 12, color: '#9EA3AD', textAlign: 'center' }}>
+                  <span style={{ fontSize: 12, color: 'var(--gd-text-muted)', textAlign: 'center' }}>
                     {u.name.split(' ')[0]}
                   </span>
                 </button>
               );
             })}
           </div>
-          <div style={{ borderTop: '1px solid #22272D', paddingTop: 8 }}>
+          <div style={{ borderTop: '1px solid var(--gd-elevated)', paddingTop: 8 }}>
             {['Copiar link', 'Compartilhar em um grupo', 'Enviar por mensagem', 'Compartilhar fora do Gooday'].map(
               (l) => (
                 <button
@@ -1056,7 +1120,7 @@ export function useGoodayHome({
             style={{
               ...S.row,
               color: '#F05A67',
-              borderTop: '1px solid #22272D',
+              borderTop: '1px solid var(--gd-elevated)',
               marginTop: 6,
               paddingTop: 12,
             }}
@@ -1077,7 +1141,7 @@ export function useGoodayHome({
               setNotifs((s) => s.map((n) => ({ ...n, unread: false })));
               defer(() => flash('Todas marcadas como lidas'));
             }}
-            style={{ fontSize: 14, fontWeight: 600, color: '#6887FF', paddingBottom: 8 }}
+            style={{ fontSize: 14, fontWeight: 600, color: 'var(--gd-brand-light)', paddingBottom: 8 }}
           >
             Marcar todas como lidas
           </button>
@@ -1089,7 +1153,7 @@ export function useGoodayHome({
                   fontSize: 12,
                   fontWeight: 600,
                   letterSpacing: '.04em',
-                  color: '#7B818C',
+                  color: 'var(--gd-text-subtle)',
                   textTransform: 'uppercase',
                 }}
               >
@@ -1114,7 +1178,7 @@ export function useGoodayHome({
                     >
                       <img src={u.av} alt="" style={S.av} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ margin: 0, fontSize: 15, color: '#E1E4E8', lineHeight: 1.4 }}>
+                        <p style={{ margin: 0, fontSize: 15, color: 'var(--gd-text-secondary)', lineHeight: 1.4 }}>
                           <strong style={{ fontWeight: 600 }}>{u.name}</strong> {n.t}
                         </p>
                         <p style={S.sub}>{n.time}</p>
@@ -1166,7 +1230,7 @@ export function useGoodayHome({
               gap: 12,
               alignItems: 'center',
               paddingBottom: 14,
-              borderBottom: '1px solid #22272D',
+              borderBottom: '1px solid var(--gd-elevated)',
             }}
           >
             <img
@@ -1217,7 +1281,7 @@ export function useGoodayHome({
               style={{
                 ...S.row,
                 color: '#F05A67',
-                borderTop: '1px solid #22272D',
+                borderTop: '1px solid var(--gd-elevated)',
                 marginTop: 6,
                 paddingTop: 12,
               }}
@@ -1232,7 +1296,7 @@ export function useGoodayHome({
     if (kind === 'logout') {
       return (
         <div>
-          <p style={{ margin: '0 0 20px', fontSize: 15, color: '#9EA3AD', lineHeight: 1.55 }}>
+          <p style={{ margin: '0 0 20px', fontSize: 15, color: 'var(--gd-text-muted)', lineHeight: 1.55 }}>
             Você poderá retornar à experiência a qualquer momento.
           </p>
           <div style={{ display: 'flex', gap: 10 }}>
@@ -1243,8 +1307,8 @@ export function useGoodayHome({
                 flex: 1,
                 height: 48,
                 borderRadius: 14,
-                background: '#2B3037',
-                color: '#E1E4E8',
+                background: 'var(--gd-elevated)',
+                color: 'var(--gd-text-secondary)',
                 fontWeight: 600,
               }}
             >
@@ -1274,7 +1338,7 @@ export function useGoodayHome({
 
     if (kind === 'search') {
       return (
-        <p style={{ margin: '0 0 12px', fontSize: 15, color: '#9EA3AD', lineHeight: 1.55 }}>
+        <p style={{ margin: '0 0 12px', fontSize: 15, color: 'var(--gd-text-muted)', lineHeight: 1.55 }}>
           A busca com autocomplete de pessoas e grupos é a próxima tela do fluxo.
         </p>
       );
@@ -1446,7 +1510,7 @@ export function useGoodayHome({
             following: personMeta ? String(personMeta.following) : '312',
             posts: personPosts.length + '',
             following_state: following[personKey!] ? 'Seguindo' : 'Seguir',
-            followBg: following[personKey!] ? '#2B3037' : '#4667F5',
+            followBg: following[personKey!] ? 'var(--gd-elevated)' : '#4667F5',
             toggleFollow: () =>
               setFollowing((s) => ({ ...s, [personKey!]: !s[personKey!] })),
             message: () => openChat(personKey!),
@@ -1469,7 +1533,7 @@ export function useGoodayHome({
               : group.isPublic
                 ? 'Participar'
                 : 'Solicitar entrada',
-            joinBg: joined[group.name] ? '#2B3037' : '#4667F5',
+            joinBg: joined[group.name] ? 'var(--gd-elevated)' : '#4667F5',
             join: () => toggleJoin(group.name),
             openMembers: () => go('members', group.name),
           }
@@ -1487,7 +1551,7 @@ export function useGoodayHome({
             likes: post.likes + '',
             comments: post.comments + '',
             liked: post.liked,
-            likeColor: post.liked ? '#F05A67' : '#9EA3AD',
+            likeColor: post.liked ? 'var(--gd-danger)' : 'var(--gd-text-muted)',
             toggleLike: () => toggleLike(post.id),
             thread: post.thread.map((c, i) => ({
               key: i,
@@ -1526,8 +1590,8 @@ export function useGoodayHome({
               text: m.t,
               time: m.time,
               align: m.me ? ('flex-end' as const) : ('flex-start' as const),
-              bg: m.me ? '#3653D8' : '#22272D',
-              color: m.me ? '#fff' : '#E1E4E8',
+              bg: m.me ? '#3653D8' : 'var(--gd-elevated)',
+              color: m.me ? '#fff' : 'var(--gd-text-secondary)',
             })),
             draft: msgDraft,
             onDraft: (e: ChangeEvent<HTMLInputElement>) => setMsgDraft(e.target.value),
@@ -1574,7 +1638,7 @@ export function useGoodayHome({
       })(),
       profileTabs: ['Publicações', 'Salvos', 'Grupos', 'Sobre'].map((t) => ({
         label: t,
-        color: profileTab === t ? '#FFFFFF' : '#7B818C',
+        color: profileTab === t ? 'var(--gd-text)' : 'var(--gd-text-subtle)',
         border: profileTab === t ? '2px solid #4667F5' : '2px solid transparent',
         go: () => setProfileTab(t),
       })),
@@ -1597,7 +1661,7 @@ export function useGoodayHome({
         name: (U[k as keyof typeof U] as UserProfile).name,
         handle: (U[k as keyof typeof U] as UserProfile).handle,
         role,
-        roleColor: role === 'Membro' ? '#7B818C' : '#91A8FF',
+        roleColor: role === 'Membro' ? 'var(--gd-text-subtle)' : 'var(--gd-brand-soft)',
         open: () => go('person', k),
       })),
       follows: ['renata', 'tiago', 'nicole', 'bruno', 'julia', 'lidiane', 'camila', 'marina', 'pedro', 'aline'].map(
@@ -1606,7 +1670,7 @@ export function useGoodayHome({
           name: (U[k as keyof typeof U] as UserProfile).name,
           handle: (U[k as keyof typeof U] as UserProfile).handle,
           btnLabel: following[k] ? 'Seguindo' : 'Seguir',
-          btnBg: following[k] ? '#2B3037' : '#4667F5',
+          btnBg: following[k] ? 'var(--gd-elevated)' : '#4667F5',
           follow: () => setFollowing((s) => ({ ...s, [k]: !s[k] })),
           open: () => go('person', k),
         }),
@@ -1692,6 +1756,9 @@ export function useGoodayHome({
     const isDesktop = w >= 800;
     const rail = showSuggestions && isDesktop;
     const brand = '#4667F5';
+    const muted = 'var(--gd-text-muted)';
+    const elevated = 'var(--gd-elevated)';
+    const onBrand = '#FFFFFF';
 
     const stories = storiesList
       .map((s, i) => ({ s, i }))
@@ -1704,7 +1771,7 @@ export function useGoodayHome({
           av: user(s.u).av,
           unseen: !isSeen,
           ring: isSeen
-            ? '#41474F'
+            ? 'var(--gd-border-strong)'
             : 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)',
           filter: isSeen ? 'grayscale(1) brightness(.75)' : 'none',
           open: () => openStory(i),
@@ -1775,10 +1842,10 @@ export function useGoodayHome({
         })),
         likes: p.likes,
         comments: p.comments,
-        likeColor: p.liked ? '#F05A67' : '#9EA3AD',
+        likeColor: p.liked ? 'var(--gd-danger)' : 'var(--gd-text-muted)',
         likeFill: p.liked ? '#F05A67' : 'none',
         likeAnim: popped === p.id ? 'gd-pop 240ms cubic-bezier(0.34,1.56,0.64,1)' : 'none',
-        saveColor: p.saved ? '#6887FF' : '#9EA3AD',
+        saveColor: p.saved ? 'var(--gd-brand-light)' : 'var(--gd-text-muted)',
         saveFill: p.saved ? '#6887FF' : 'none',
         hasPreview: p.commenters.length > 0,
         commenters: p.commenters.map((k) => ({ src: user(k).av })),
@@ -1828,7 +1895,7 @@ export function useGoodayHome({
       return {
         id: t.id,
         label: t.label,
-        color: active ? brand : '#9EA3AD',
+        color: active ? brand : muted,
         active,
         go: () => {
           setTab(t.id);
@@ -1927,12 +1994,12 @@ export function useGoodayHome({
         id: n.id,
         label: n.label,
         bg: active ? brand : 'transparent',
-        color: active ? '#FFFFFF' : '#9EA3AD',
+        color: active ? onBrand : muted,
         glyph:
           n.icon === 'create' ? (
-            <CreateIcon active={active} activeColor="#C3C7CF" size={18} />
+            <CreateIcon active={active} activeColor="var(--gd-text-muted)" size={18} />
           ) : (
-            icon(n.icon, active, '#FFFFFF', 18)
+            icon(n.icon, active, onBrand, 18)
           ),
         go: () => {
           setTab(n.id);
@@ -2028,7 +2095,7 @@ export function useGoodayHome({
           name: u.name,
           open: () => go('person', k),
           btnLabel: f ? 'Seguindo' : 'Seguir',
-          btnBg: f ? '#2B3037' : brand,
+          btnBg: f ? elevated : brand,
           btnColor: '#fff',
           follow: () => setFollowing((x) => ({ ...x, [k]: !x[k] })),
         };
@@ -2048,13 +2115,21 @@ export function useGoodayHome({
       storyBars,
       storyHasPrev,
       storyHasNext,
-      quickReactions: ['❤️', '👏', '🔥'].map((e) => ({
+      quickReactions: ['❤️', '👏', '🔥', '😍'].map((e) => ({
         emoji: e,
-        send: () => {
-          closeStory();
-          flash('Você reagiu com ' + e);
-        },
+        send: () => reactToStory(e),
       })),
+      storyReplyDraft,
+      storyEmojiOpen,
+      onStoryReply: (e: ChangeEvent<HTMLInputElement>) => setStoryReplyDraft(e.target.value),
+      sendStoryReply,
+      clearStoryReply,
+      appendStoryEmoji,
+      toggleStoryEmoji,
+      closeStoryEmoji,
+      reactToStory,
+      pauseStory,
+      resumeStory,
       openSearch: () => go('search'),
       openAllGroups: () => go('groups'),
       openAllPeople: () => go('follows', 'me'),
@@ -2112,11 +2187,11 @@ export function useGoodayHome({
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
-              background: '#1A1F24',
-              border: '1px solid rgba(255,255,255,.08)',
+              background: 'var(--gd-surface)',
+              border: '1px solid var(--gd-hairline-strong)',
               borderRadius: 24,
               padding: 24,
-              boxShadow: '0 24px 64px rgba(0,0,0,.44)',
+              boxShadow: 'var(--gd-shadow)',
               animation: 'gd-in 240ms cubic-bezier(0.2,0,0,1)',
             } as CSSProperties)
           : ({
@@ -2124,11 +2199,11 @@ export function useGoodayHome({
               maxWidth: 500,
               maxHeight: '84vh',
               overflow: 'auto',
-              background: '#1A1F24',
-              border: '1px solid rgba(255,255,255,.08)',
+              background: 'var(--gd-surface)',
+              border: '1px solid var(--gd-hairline-strong)',
               borderRadius: 22,
               padding: '22px 22px 24px',
-              boxShadow: '0 24px 64px rgba(0,0,0,.44)',
+              boxShadow: 'var(--gd-shadow)',
               animation: 'gd-in 240ms cubic-bezier(0.2,0,0,1)',
             } as CSSProperties)
         : ({
@@ -2136,8 +2211,8 @@ export function useGoodayHome({
             maxWidth: 600,
             maxHeight: '90dvh',
             overflow: 'auto',
-            background: '#1A1F24',
-            borderTop: '1px solid rgba(255,255,255,.08)',
+            background: 'var(--gd-surface)',
+            borderTop: '1px solid var(--gd-hairline-strong)',
             borderRadius: '22px 22px 0 0',
             padding: '10px 16px calc(20px + env(safe-area-inset-bottom))',
             animation: 'gd-up 320ms cubic-bezier(0.2,0,0,1)',
@@ -2148,16 +2223,16 @@ export function useGoodayHome({
               name: 'Marcos Vinícius',
               sub: '@marcos_v · 148 seguidores',
               items: [
-                { label: 'Meu perfil', color: '#E1E4E8', go: () => go('profile') },
-                { label: 'Editar perfil', color: '#E1E4E8', go: () => go('editProfile') },
+                { label: 'Meu perfil', color: 'var(--gd-text-secondary)', go: () => go('profile') },
+                { label: 'Editar perfil', color: 'var(--gd-text-secondary)', go: () => go('editProfile') },
                 {
                   label: 'Configurações',
-                  color: '#E1E4E8',
+                  color: 'var(--gd-text-secondary)',
                   go: () => go('settings'),
                 },
                 {
                   label: 'Ajuda',
-                  color: '#E1E4E8',
+                  color: 'var(--gd-text-secondary)',
                   go: () => {
                     setSheet(null);
                     defer(() => flash('Ajuda — próxima tela'));
@@ -2185,6 +2260,9 @@ export function useGoodayHome({
       popped,
       storyIdx,
       storyP,
+      storyReplyDraft,
+      storyEmojiOpen,
+      storyPaused,
       seen,
       sheet,
       activeId,
@@ -2225,6 +2303,14 @@ export function useGoodayHome({
       closeStory,
       storyNext,
       storyPrev,
+      reactToStory,
+      sendStoryReply,
+      clearStoryReply,
+      appendStoryEmoji,
+      toggleStoryEmoji,
+      closeStoryEmoji,
+      pauseStory,
+      resumeStory,
       flash,
       icon,
       openChat,

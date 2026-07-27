@@ -12,9 +12,9 @@ export function AvatarMenu({ vm }: Props) {
       <div className="fixed inset-0 z-[75]" onClick={vm.closeSheet} />
       <div
         role="menu"
-        className="fixed right-7 top-[70px] z-[76] w-[264px] animate-[gd-fade_160ms_ease] rounded-[18px] border border-white/[0.08] bg-gd-surface p-3.5 shadow-[0_16px_48px_rgba(0,0,0,0.32)]"
+        className="fixed right-7 top-[70px] z-[76] w-[264px] animate-[gd-fade_160ms_ease] rounded-[18px] border border-[color:var(--gd-hairline-strong)] bg-gd-surface p-3.5 shadow-[var(--gd-shadow)]"
       >
-        <div className="flex items-center gap-3 border-b border-gd-elevated pb-3.5">
+        <div className="flex items-center gap-3 border-b border-[color:var(--gd-hairline)] pb-3.5">
           <img src={vm.me.av} alt="" className="h-12 w-12 rounded-full object-cover" />
           <div>
             <p className="m-0 text-[15px] font-semibold">{vm.avatarMenu.name}</p>
@@ -27,7 +27,7 @@ export function AvatarMenu({ vm }: Props) {
               key={i}
               type="button"
               onClick={item.go}
-              className="flex h-11 items-center rounded-xl px-2.5 text-left text-sm font-medium"
+              className="flex h-11 items-center rounded-xl px-2.5 text-left text-sm font-medium transition-colors hover:bg-gd-hover"
               style={{ color: item.color }}
             >
               {item.label}

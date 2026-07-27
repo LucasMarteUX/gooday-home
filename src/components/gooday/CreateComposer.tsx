@@ -74,7 +74,7 @@ export function CreatePicker({ onPost, onStory }: PickerProps) {
       <button
         type="button"
         onClick={onPost}
-        className="flex items-center gap-4 rounded-2xl border border-gd-border bg-gd-surface px-4 py-4 text-left transition-colors hover:bg-gd-elevated"
+        className="flex items-center gap-4 rounded-2xl border border-gd-border bg-gd-surface px-4 py-4 text-left transition-colors hover:bg-gd-hover"
       >
         <span className="grid h-12 w-12 place-items-center rounded-full bg-gd-brand/15 text-gd-brand-light">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -91,9 +91,9 @@ export function CreatePicker({ onPost, onStory }: PickerProps) {
       <button
         type="button"
         onClick={onStory}
-        className="flex items-center gap-4 rounded-2xl border border-gd-border bg-gd-surface px-4 py-4 text-left transition-colors hover:bg-gd-elevated"
+        className="flex items-center gap-4 rounded-2xl border border-gd-border bg-gd-surface px-4 py-4 text-left transition-colors hover:bg-gd-hover"
       >
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-gd-accent/15 text-[#B79AFF]">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-gd-accent/15 text-gd-accent">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <circle cx="12" cy="12" r="9" />
             <path d="M12 8v8M8 12h8" />
@@ -133,7 +133,7 @@ export function CreateComposer(props: CreateComposerProps) {
               value={props.draft}
               onChange={props.onDraft}
               placeholder="Escreva uma legenda..."
-              className="w-full border-none bg-transparent text-[15px] text-white outline-none placeholder:text-white/60"
+              className="w-full border-none bg-transparent text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
             />
           </div>
         </div>
@@ -161,7 +161,7 @@ export function CreateComposer(props: CreateComposerProps) {
               autoFocus
               rows={3}
               placeholder="Escreva uma legenda..."
-              className="min-h-[72px] flex-1 resize-none border-none bg-transparent text-[15px] leading-relaxed text-white outline-none placeholder:text-gd-text-subtle"
+              className="min-h-[72px] flex-1 resize-none border-none bg-transparent text-[15px] leading-relaxed text-gd-text outline-none placeholder:text-gd-text-subtle"
             />
           </div>
         </>
