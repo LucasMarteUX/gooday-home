@@ -376,6 +376,132 @@ export const POSTS = [
     likes: 245, liked: false, saved: false, comments: 38, reactions: { '💪': 20, '🔥': 8 },
     commenters: ['diego', 'camila', 'julia'],
     thread: []
+  },
+  {
+    id: 'p19', u: 'nicole', time: '3 d', group: 'Nutrição Consciente',
+    text: 'Lista de compras da semana: folhas, legumes, proteína magra e grãos integrais.',
+    tags: ['#lista', '#organizacao'],
+    img: IMG('1543362906-acfc16c67564', 900, 675), alt: 'Vegetais frescos',
+    likes: 94, liked: false, saved: false, comments: 15, reactions: { '🌱': 5 },
+    commenters: ['renata', 'marina', 'bruna'],
+    thread: []
+  },
+  {
+    id: 'p20', u: 'renata', time: '3 d', group: 'Nutrição Consciente',
+    text: 'Sopa de legumes com gengibre — jantar leve depois do treino.',
+    tags: ['#sopa', '#jantar'],
+    img: IMG('1547592166-ef4c638a1e51', 900, 675), alt: 'Sopa de legumes',
+    likes: 118, liked: true, saved: false, comments: 19, reactions: { '🌱': 7 },
+    commenters: ['nicole', 'camila', 'patricia'],
+    thread: []
+  },
+  {
+    id: 'p21', u: 'bruna', time: '4 d', group: 'Nutrição Consciente',
+    text: 'Substituí o açúcar refinado por tâmara nas receitas doces. Funcionou!',
+    tags: ['#doces', '#natural'],
+    img: IMG('1490474418585-ba9bad8fd0ea', 900, 675), alt: 'Tâmaras e frutas',
+    likes: 143, liked: false, saved: true, comments: 28, reactions: { '🌱': 9 },
+    commenters: ['renata', 'nicole', 'marina'],
+    thread: []
+  },
+  {
+    id: 'p22', u: 'camila', time: '4 d', group: 'Nutrição Consciente',
+    text: 'Proteína pós-treino: iogurte natural, banana e pasta de amendoim.',
+    tags: ['#posTreino', '#proteina'],
+    img: IMG('1482048197868-288470128b35', 900, 675), alt: 'Snack pós-treino',
+    likes: 87, liked: false, saved: false, comments: 11, reactions: { '💪': 4 },
+    commenters: ['nicole', 'julia', 'tiago'],
+    thread: []
+  },
+  {
+    id: 'p23', u: 'patricia', time: '5 d', group: 'Nutrição Consciente',
+    text: 'Desafio do grupo: 7 dias sem refrigerante. Quem entra comigo?',
+    tags: ['#desafio', '#habitos'],
+    img: '', alt: '',
+    likes: 62, liked: false, saved: false, comments: 34, reactions: { '💪': 8 },
+    commenters: ['renata', 'marina', 'aline'],
+    thread: [{ u: 'marina', t: 'Eu topo!', time: '4 d' }]
+  },
+  {
+    id: 'p24', u: 'marina', time: '5 d', group: 'Nutrição Consciente',
+    text: 'Wrap integral com hummus, tomate seco e rúcula. Almoço em 10 min.',
+    tags: ['#almoco', '#rapido'],
+    img: IMG('1512621776951-a57141f2eefd', 900, 675), alt: 'Wrap saudável',
+    likes: 105, liked: false, saved: true, comments: 17, reactions: { '🌱': 6 },
+    commenters: ['nicole', 'renata', 'bruna'],
+    thread: []
+  },
+  {
+    id: 'p25', u: 'daniel', time: '6 d', group: 'Nutrição Consciente',
+    text: 'Macro do dia: equilíbrio entre carboidrato, proteína e gordura boa.',
+    tags: ['#macros', '#equilibrio'],
+    img: IMG('1546069901-ba9599a7e63c', 900, 675), alt: 'Prato balanceado',
+    likes: 76, liked: false, saved: false, comments: 9, reactions: {},
+    commenters: ['nicole', 'camila', 'renata'],
+    thread: []
+  },
+  {
+    id: 'p26', u: 'lidiane', time: '3 d', group: 'Vida Natural',
+    text: 'Skincare natural: óleo de coco + aloe vera. Simples e funciona.',
+    tags: ['#skincare', '#natural'],
+    img: IMG('1556228570-8c89e9600615', 900, 675), alt: 'Produtos naturais',
+    likes: 98, liked: false, saved: true, comments: 14, reactions: { '🌱': 5 },
+    commenters: ['aline', 'bruna', 'marina'],
+    thread: []
+  },
+  {
+    id: 'p27', u: 'aline', time: '4 d', group: 'Vida Natural',
+    text: 'Desapeguei de 3 produtos de limpeza cheios de química. Substituí por vinagre e bicarbonato.',
+    tags: ['#casa', '#sustentavel'],
+    img: IMG('1584627810560-3357920f2580', 900, 675), alt: 'Limpeza natural',
+    likes: 112, liked: true, saved: false, comments: 21, reactions: { '🌿': 8 },
+    commenters: ['lidiane', 'marina', 'nicole'],
+    thread: []
+  },
+  {
+    id: 'p28', u: 'bruna', time: '5 d', group: 'Vida Natural',
+    text: 'Fiz meu próprio desodorante natural. Sem alumínio, cheiro suave o dia todo.',
+    tags: ['#diy', '#natural'],
+    img: IMG('1608571420902-4e4462060a5f', 900, 675), alt: 'Desodorante natural',
+    likes: 134, liked: false, saved: true, comments: 26, reactions: { '🌱': 10 },
+    commenters: ['aline', 'lidiane', 'renata'],
+    thread: []
+  },
+  {
+    id: 'p29', u: 'marina', time: '6 d', group: 'Vida Natural',
+    text: 'Caminhada descalça no parque. Reconectar com o chão faz diferença no humor.',
+    tags: ['#natureza', '#mindfulness'],
+    img: IMG('1506126613408-eca07ce68773', 900, 675), alt: 'Parque ao entardecer',
+    likes: 89, liked: false, saved: false, comments: 13, reactions: { '🧘': 4 },
+    commenters: ['lidiane', 'aline', 'julia'],
+    thread: []
+  },
+  {
+    id: 'p30', u: 'nicole', time: '1 sem', group: 'Vida Natural',
+    text: 'Chá de camomila e mel antes de dormir. Rotina noturna que realmente acalma.',
+    tags: ['#sono', '#rotina'],
+    img: IMG('1544787217-7f5c1c2c5c5c', 900, 675), alt: 'Chá de camomila',
+    likes: 71, liked: false, saved: false, comments: 10, reactions: {},
+    commenters: ['lidiane', 'marina', 'bruna'],
+    thread: []
+  },
+  {
+    id: 'p31', u: 'renata', time: '1 sem', group: 'Vida Natural',
+    text: 'Horta na varanda: manjericão, hortelã e alecrim crescendo bem!',
+    tags: ['#horta', '#varanda'],
+    img: IMG('1416879595882-3373a0480b2b', 900, 675), alt: 'Horta em vasos',
+    likes: 156, liked: true, saved: false, comments: 22, reactions: { '🌿': 11 },
+    commenters: ['aline', 'bruna', 'nicole'],
+    thread: []
+  },
+  {
+    id: 'p32', u: 'julia', time: '1 sem', group: 'Vida Natural',
+    text: 'Fim de semana offline. Menos tela, mais sol e conversa de verdade.',
+    tags: ['#digitaldetox', '#presenca'],
+    img: IMG('1470071459604-3b5ec3a7fe05', 900, 675), alt: 'Natureza e descanso',
+    likes: 198, liked: false, saved: true, comments: 31, reactions: { '✨': 12 },
+    commenters: ['lidiane', 'marina', 'tiago'],
+    thread: []
   }
 ];
 

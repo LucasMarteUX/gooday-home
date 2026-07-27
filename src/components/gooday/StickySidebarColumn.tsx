@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
 const StickySidebarContext = createContext(false);
 
@@ -67,24 +67,37 @@ export function StickySidebarScroll({
 }: ScrollProps) {
   const stuck = useContext(StickySidebarContext);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
+  const [fadeTop, setFadeTop] = useState(false);
+  const [fadeBottom, setFadeBottom] = useState(false);
   const canScroll = stuck || alwaysScrollable;
+
+  const updateFades = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setFadeTop(el.scrollTop > 2);
+    setFadeBottom(el.scrollTop + el.clientHeight < el.scrollHeight - 2);
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
-    const onScroll = () => setScrolled(el.scrollTop > 2);
-    onScroll();
-    el.addEventListener('scroll', onScroll, { passive: true });
+    updateFades();
+    el.addEventListener('scroll', updateFades, { passive: true });
+    const ro = new ResizeObserver(updateFades);
+    ro.observe(el);
 
-    return () => el.removeEventListener('scroll', onScroll);
-  }, [canScroll]);
+    return () => {
+      el.removeEventListener('scroll', updateFades);
+      ro.disconnect();
+    };
+  }, [canScroll, updateFades]);
 
   useEffect(() => {
     if (!canScroll) {
       scrollRef.current?.scrollTo({ top: 0 });
-      setScrolled(false);
+      setFadeTop(false);
+      setFadeBottom(false);
     }
   }, [canScroll]);
 
@@ -100,8 +113,74 @@ export function StickySidebarScroll({
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 transition-opacity duration-200"
         style={{
-          opacity: canScroll && scrolled ? 1 : 0,
+          opacity: canScroll && fadeTop ? 1 : 0,
           background: `linear-gradient(to bottom, ${fadeColor}, transparent)`,
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 transition-opacity duration-200"
+        style={{
+          opacity: canScroll && fadeBottom ? 1 : 0,
+          background: `linear-gradient(to top, ${fadeColor}, transparent)`,
+        }}
+      />
+    </div>
+  );
+}
+
+type ScrollFadeRowProps = {
+  children: ReactNode;
+  fadeColor?: string;
+  className?: string;
+};
+
+export function ScrollFadeRow({ children, fadeColor = 'var(--gd-bg)', className = '' }: ScrollFadeRowProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [fadeLeft, setFadeLeft] = useState(false);
+  const [fadeRight, setFadeRight] = useState(false);
+
+  const updateFades = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setFadeLeft(el.scrollLeft > 2);
+    setFadeRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    updateFades();
+    el.addEventListener('scroll', updateFades, { passive: true });
+    const ro = new ResizeObserver(updateFades);
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener('scroll', updateFades);
+      ro.disconnect();
+    };
+  }, [updateFades]);
+
+  return (
+    <div className="relative">
+      <div ref={scrollRef} className={`no-scrollbar overflow-x-auto ${className}`}>
+        {children}
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-6 transition-opacity duration-200"
+        style={{
+          opacity: fadeLeft ? 1 : 0,
+          background: `linear-gradient(to right, ${fadeColor}, transparent)`,
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-6 transition-opacity duration-200"
+        style={{
+          opacity: fadeRight ? 1 : 0,
+          background: `linear-gradient(to left, ${fadeColor}, transparent)`,
         }}
       />
     </div>

@@ -1,5 +1,5 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
-import { StickySidebarColumn, StickySidebarScroll } from "./StickySidebarColumn";
+import { StickySidebarColumn, StickySidebarScroll, ScrollFadeRow } from "./StickySidebarColumn";
 
 type Community = GoodayHomeViewModel["communities"][number];
 
@@ -86,20 +86,22 @@ function GroupsSearchFilters({ vm }: Props) {
           className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
         />
       </div>
-      <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-0.5">
-        {vm.groupsFilters.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            onClick={f.go}
-            className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
-              f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      <ScrollFadeRow fadeColor="var(--gd-bg)" className="pb-0.5">
+        <div className="flex gap-1.5 pr-1">
+          {vm.groupsFilters.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={f.go}
+              className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
+                f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </ScrollFadeRow>
     </div>
   );
 }

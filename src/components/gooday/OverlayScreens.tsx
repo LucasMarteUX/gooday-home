@@ -1,4 +1,5 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
+import { ScrollFadeRow } from "./StickySidebarColumn";
 
 type Props = {
   vm: GoodayHomeViewModel;
@@ -604,20 +605,22 @@ function GroupsScreen({ vm }: Props) {
           className="min-w-0 flex-1 border-none bg-transparent text-[15px] text-white outline-none placeholder:text-gd-text-subtle"
         />
       </div>
-      <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto pb-1">
-        {vm.groupsFilters.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            onClick={f.go}
-            className={`h-8 flex-none rounded-full px-3.5 text-[12px] font-semibold whitespace-nowrap ${
-              f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      <ScrollFadeRow fadeColor="var(--gd-bg)" className="mb-4 pb-1">
+        <div className="flex gap-2 pr-1">
+          {vm.groupsFilters.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={f.go}
+              className={`h-8 flex-none rounded-full px-3.5 text-[12px] font-semibold whitespace-nowrap ${
+                f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </ScrollFadeRow>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
         {vm.allGroups.length === 0 ? (
           <p className="col-span-full m-0 py-8 text-center text-sm text-gd-text-subtle">Nenhum grupo encontrado.</p>

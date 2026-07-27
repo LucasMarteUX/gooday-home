@@ -1313,7 +1313,6 @@ export function useGoodayHome({
     const groupPosts = groupName
       ? posts
           .filter((p) => p.group === groupName && p.img)
-          .slice(0, 6)
           .map((p) => {
             const u = user(p.u);
             return {
@@ -2066,6 +2065,9 @@ export function useGoodayHome({
       convKey,
       msgDraft,
       searchQ,
+      groupsSearchQ,
+      groupsFilter,
+      storiesList,
       joined,
       profileTab,
       edit,
