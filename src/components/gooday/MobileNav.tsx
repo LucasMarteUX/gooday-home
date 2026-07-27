@@ -8,7 +8,7 @@ export function MobileNav({ vm }: Props) {
   return (
     <nav
       aria-label="Navegação principal"
-      className="fixed inset-x-0 bottom-0 z-[45] flex h-[78px] items-center justify-around border-t border-white/[0.06] bg-[rgba(21,26,31,0.92)] pb-[env(safe-area-inset-bottom)] backdrop-blur-2xl min-[800px]:hidden"
+      className="fixed inset-x-0 bottom-0 z-[45] flex h-[calc(64px+env(safe-area-inset-bottom))] items-start justify-around border-t border-white/[0.06] bg-[rgba(14,18,22,0.94)] px-1 pt-1.5 pb-[env(safe-area-inset-bottom)] backdrop-blur-2xl min-[800px]:hidden"
     >
       {vm.tabs.map((t) => (
         <button
@@ -16,11 +16,13 @@ export function MobileNav({ vm }: Props) {
           type="button"
           onClick={t.go}
           aria-label={t.label}
+          aria-current={t.active ? 'page' : undefined}
           data-tab={t.id}
-          className="grid h-14 w-14 place-items-center rounded-2xl"
+          className="flex h-12 w-14 flex-col items-center justify-center gap-0.5 rounded-2xl"
           style={{ color: t.color }}
         >
           <span className="grid place-items-center">{t.icon}</span>
+          <span className="text-[10px] font-medium leading-none opacity-90">{t.label}</span>
         </button>
       ))}
     </nav>

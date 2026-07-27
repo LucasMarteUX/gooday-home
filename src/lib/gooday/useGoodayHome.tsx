@@ -21,7 +21,6 @@ import {
   CONVERSATIONS,
   MEMBER_ROLES,
   EMOJIS,
-  EMOJI_LIBRARY,
   EXTRA_KEYS,
   USER_META,
   GROUP_FILTERS,
@@ -36,6 +35,8 @@ import {
   type GoodayIconName,
 } from '@/components/gooday/icons';
 import { CreateComposer, CreatePicker } from '@/components/gooday/CreateComposer';
+import { EmojiPicker } from '@/components/gooday/EmojiPicker';
+import { useBodyScrollLock } from './uiGuards';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -284,10 +285,18 @@ export function useGoodayHome({
   viewRef.current = view;
   viewParamRef.current = viewParam;
 
+  const closeSheet = useCallback(() => {
+    setCommentEmojiOpen(false);
+    setSheet(null);
+  }, []);
+
+  useBodyScrollLock(!!sheet || storyIdx !== null || !!view);
+
   const go = useCallback((kind: ViewKind, param?: string | null) => {
     setStack((s) => [...s, { kind: viewRef.current, param: viewParamRef.current }]);
     setView(kind);
     setViewParam(param ?? null);
+    setCommentEmojiOpen(false);
     setSheet(null);
     window.scrollTo({ top: 0 });
   }, []);
@@ -342,6 +351,27 @@ export function useGoodayHome({
     setStoryIdx(null);
     setStoryP(0);
   }, []);
+
+  useEffect(() => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (commentEmojiOpen) {
+        setCommentEmojiOpen(false);
+        return;
+      }
+      if (storyIdx !== null) {
+        closeStory();
+        return;
+      }
+      if (sheet) {
+        closeSheet();
+        return;
+      }
+      if (view) back();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [commentEmojiOpen, storyIdx, sheet, view, back, closeSheet, closeStory]);
 
   const storyNext = useCallback(() => {
     setStoryIdx((i) => {
@@ -698,46 +728,13 @@ export function useGoodayHome({
             <img src={U.me.av} alt="" style={{ ...S.av, width: 36, height: 36 }} />
             <div style={{ position: 'relative', flex: 1 }}>
               {commentEmojiOpen ? (
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: 'calc(100% + 8px)',
-                    right: 0,
-                    width: 260,
-                    maxHeight: 220,
-                    overflowY: 'auto',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 4,
-                    padding: 10,
-                    background: '#1A1F24',
-                    border: '1px solid #2B3037',
-                    borderRadius: 14,
-                    boxShadow: '0 8px 24px rgba(0,0,0,.32)',
-                    zIndex: 5,
+                <EmojiPicker
+                  onSelect={(e) => {
+                    setComment((prev) => prev + e);
+                    setCommentEmojiOpen(false);
                   }}
-                >
-                  {EMOJI_LIBRARY.map((e, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => {
-                        setComment((prev) => prev + e);
-                        setCommentEmojiOpen(false);
-                      }}
-                      style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: 8,
-                        fontSize: 17,
-                        display: 'grid',
-                        placeItems: 'center',
-                      }}
-                    >
-                      {e}
-                    </button>
-                  ))}
-                </div>
+                  onClose={() => setCommentEmojiOpen(false)}
+                />
               ) : null}
               <input
                 value={comment}
@@ -761,8 +758,13 @@ export function useGoodayHome({
               />
               <button
                 type="button"
-                onClick={() => setCommentEmojiOpen((v) => !v)}
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCommentEmojiOpen((v) => !v);
+                }}
                 aria-label="Emoji"
+                aria-expanded={commentEmojiOpen}
                 style={{
                   position: 'absolute',
                   right: 6,
@@ -771,7 +773,7 @@ export function useGoodayHome({
                   width: 32,
                   height: 32,
                   borderRadius: 10,
-                  background: 'transparent',
+                  background: commentEmojiOpen ? '#2B3037' : 'transparent',
                   fontSize: 18,
                   display: 'grid',
                   placeItems: 'center',
@@ -1166,12 +1168,26 @@ export function useGoodayHome({
             </div>
           </div>
           <div style={{ paddingTop: 8 }}>
-            {['Meu perfil', 'Editar perfil', 'Configurações', 'Ajuda'].map((l) => (
+            <button
+              type="button"
+              onClick={() => go('profile')}
+              style={S.row}
+            >
+              Meu perfil
+            </button>
+            <button
+              type="button"
+              onClick={() => go('editProfile')}
+              style={S.row}
+            >
+              Editar perfil
+            </button>
+            {['Configurações', 'Ajuda'].map((l) => (
               <button
                 key={l}
                 type="button"
                 onClick={() => {
-                  setSheet(null);
+                  closeSheet();
                   defer(() => flash(l + ' — próxima tela'));
                 }}
                 style={S.row}
@@ -1604,16 +1620,20 @@ export function useGoodayHome({
     const rail = showSuggestions && isDesktop;
     const brand = '#4667F5';
 
-    const stories = storiesList.map((s, i) => ({
-      img: s.img,
-      alt: s.alt,
-      av: user(s.u).av,
-      ring: (s.seen || seen[i])
-        ? '#41474F'
-        : 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)',
-      filter: (s.seen || seen[i]) ? 'grayscale(1) brightness(.75)' : 'none',
-      open: () => openStory(i),
-    }));
+    const stories = storiesList.map((s, i) => {
+      const isSeen = !!(s.seen || seen[i]);
+      return {
+        img: s.img,
+        alt: s.alt,
+        av: user(s.u).av,
+        unseen: !isSeen,
+        ring: isSeen
+          ? '#41474F'
+          : 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)',
+        filter: isSeen ? 'grayscale(1) brightness(.75)' : 'none',
+        open: () => openStory(i),
+      };
+    });
 
     const myStory = {
       av: U.me.av,
@@ -1716,6 +1736,7 @@ export function useGoodayHome({
           id: t.id,
           label: t.label,
           color: '#fff',
+          active: false,
           go: () => openCreatePicker(),
           icon: <CreateTabIcon brand={brand} />,
         };
@@ -1724,14 +1745,20 @@ export function useGoodayHome({
       return {
         id: t.id,
         label: t.label,
-        color: active ? brand : '#7B818C',
-        icon: icon(t.icon, active),
+        color: active ? brand : '#9EA3AD',
+        active,
         go: () => {
           setTab(t.id);
           if (t.id === 'search') go('search');
-          if (t.id === 'chat') go('messages');
-          if (t.id === 'saved') go('profile');
+          else if (t.id === 'chat') go('messages');
+          else if (t.id === 'saved') go('profile');
+          else {
+            setView(null);
+            setViewParam(null);
+            setStack([]);
+          }
         },
+        icon: icon(t.icon, active, brand, 22),
       };
     });
 
@@ -1928,7 +1955,7 @@ export function useGoodayHome({
       closeStory,
       storyNext,
       storyPrev,
-      closeSheet: () => setSheet(null),
+      closeSheet,
       stop: (e: MouseEvent) => e.stopPropagation(),
       rowGridStyle: isDesktop
         ? ({
@@ -1996,12 +2023,12 @@ export function useGoodayHome({
         : ({
             width: '100%',
             maxWidth: 600,
-            maxHeight: '88vh',
+            maxHeight: '90dvh',
             overflow: 'auto',
             background: '#1A1F24',
             borderTop: '1px solid rgba(255,255,255,.08)',
-            borderRadius: '24px 24px 0 0',
-            padding: '12px 18px calc(24px + env(safe-area-inset-bottom))',
+            borderRadius: '22px 22px 0 0',
+            padding: '10px 16px calc(20px + env(safe-area-inset-bottom))',
             animation: 'gd-up 320ms cubic-bezier(0.2,0,0,1)',
           } as CSSProperties),
       avatarMenu:
@@ -2090,6 +2117,7 @@ export function useGoodayHome({
       openChat,
       toggleJoin,
       sendMsg,
+      closeSheet,
     ],
   );
 

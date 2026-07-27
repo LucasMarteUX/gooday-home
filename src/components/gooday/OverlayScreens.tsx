@@ -9,8 +9,8 @@ export function OverlayScreens({ vm }: Props) {
   if (!vm.view) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] animate-[gd-slide_240ms_cubic-bezier(0.2,0,0,1)] overflow-y-auto bg-gd-bg">
-      <header className="sticky top-0 z-[5] flex items-center gap-3 border-b border-white/[0.06] bg-[rgba(14,18,22,0.92)] px-4 py-3 backdrop-blur-2xl">
+    <div className="fixed inset-0 z-[60] animate-[gd-slide_240ms_cubic-bezier(0.2,0,0,1)] overflow-y-auto overscroll-contain bg-gd-bg">
+      <header className="sticky top-0 z-[5] flex items-center gap-3 border-b border-white/[0.06] bg-[rgba(14,18,22,0.94)] px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] backdrop-blur-2xl">
         <button
           type="button"
           onClick={vm.back}
@@ -33,7 +33,7 @@ export function OverlayScreens({ vm }: Props) {
         ) : null}
       </header>
 
-      <div className="mx-auto max-w-[640px] px-4 pb-[120px] pt-4">
+      <div className="mx-auto max-w-[640px] px-4 pb-[calc(32px+env(safe-area-inset-bottom))] pt-4">
         {vm.viewSearch ? <SearchScreen vm={vm} /> : null}
         {vm.viewPerson && vm.person ? <PersonScreen vm={vm} /> : null}
         {vm.viewGroup && vm.group ? <GroupScreen vm={vm} /> : null}

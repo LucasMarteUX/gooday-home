@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -10,8 +10,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Gooday Home",
-  description: "Gooday Home — mobile-first social experience",
+  title: "Gooday",
+  description: "Gooday — comunidade de bem-estar",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Gooday",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0e1216",
 };
 
 export default function RootLayout({

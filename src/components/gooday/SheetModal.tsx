@@ -13,10 +13,13 @@ export function SheetModal({ vm }: Props) {
       aria-modal="true"
       style={vm.sheetOverlayStyle}
       onClick={vm.closeSheet}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') vm.closeSheet();
+      }}
     >
       <div style={vm.sheetPanelStyle} onClick={vm.stop}>
         {vm.isMobile ? (
-          <div className="mx-auto mb-3.5 h-1 w-11 rounded-full bg-gd-border-strong" />
+          <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-gd-border-strong" />
         ) : null}
         <div className="mb-3.5 flex items-center justify-between gap-3">
           <h2 className="m-0 text-lg font-semibold tracking-[-0.01em]">{vm.sheet.title}</h2>

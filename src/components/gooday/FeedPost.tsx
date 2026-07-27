@@ -9,13 +9,13 @@ type Props = {
 
 export function FeedPost({ post, reactionsEnabled }: Props) {
   return (
-    <article className="rounded-[22px] bg-gd-card px-3.5 pb-2.5 pt-3.5">
+    <article className="border-b border-white/[0.06] bg-gd-bg px-4 pb-3 pt-3.5 min-[800px]:rounded-[22px] min-[800px]:border-b-0 min-[800px]:bg-gd-card min-[800px]:px-3.5 min-[800px]:pb-2.5">
       <header className="flex items-start gap-3">
         <button type="button" onClick={post.openAuthor} className="cursor-pointer">
           <img
             src={post.av}
             alt=""
-            className="h-[46px] w-[46px] rounded-full border-[1.5px] border-gd-brand p-[1.5px] object-cover"
+            className="h-11 w-11 rounded-full border-[1.5px] border-gd-brand p-[1.5px] object-cover min-[800px]:h-[46px] min-[800px]:w-[46px]"
           />
         </button>
         <div className="min-w-0 flex-1">
@@ -70,7 +70,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
         <button
           type="button"
           onClick={post.like2x}
-          className="mt-3.5 block w-full overflow-hidden rounded-2xl bg-gd-elevated"
+          className="-mx-4 mt-3 block w-[calc(100%+2rem)] overflow-hidden bg-gd-elevated min-[800px]:mx-0 min-[800px]:mt-3.5 min-[800px]:w-full min-[800px]:rounded-2xl"
         >
           <img src={post.img} alt={post.alt} className="block aspect-[4/3] w-full object-cover" />
         </button>
@@ -90,7 +90,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
         </div>
       ) : null}
 
-      <footer className="mt-3 flex items-center gap-1.5 pt-1.5">
+      <footer className="mt-2.5 flex items-center gap-0.5 pt-1 min-[800px]:mt-3 min-[800px]:gap-1.5 min-[800px]:pt-1.5">
         <button
           type="button"
           onClick={post.toggleLike}
@@ -165,7 +165,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
                 key={i}
                 src={a.src}
                 alt=""
-                className="-mr-2 h-[26px] w-[26px] rounded-full border-2 border-gd-card object-cover"
+                className="-mr-2 h-[26px] w-[26px] rounded-full border-2 border-gd-bg object-cover min-[800px]:border-gd-card"
               />
             ))}
           </span>
