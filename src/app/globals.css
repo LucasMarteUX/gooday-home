@@ -20,6 +20,7 @@
   --gd-danger: #f05a67;
   --gd-header-mobile: rgba(21, 26, 31, 0.88);
   --gd-header-desktop: rgba(14, 18, 22, 0.88);
+  --gd-max-width: 1920px;
 }
 
 @theme inline {
@@ -118,8 +119,13 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  width: 100%;
   background: var(--gd-bg);
   color: var(--gd-text);
+}
+
+body {
+  max-width: var(--gd-max-width);
 }
 
 body {

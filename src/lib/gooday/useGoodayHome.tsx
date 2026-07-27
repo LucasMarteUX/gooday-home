@@ -1775,7 +1775,7 @@ export function useGoodayHome({
             display: 'grid',
             gridTemplateColumns: 'minmax(214px,1fr) minmax(260px,640px) minmax(214px,1fr)',
             gap: 16,
-            maxWidth: 1400,
+            maxWidth: 1920,
             margin: '0 auto',
             padding: '0 24px 120px',
             justifyContent: 'center',

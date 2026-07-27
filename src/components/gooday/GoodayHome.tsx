@@ -19,7 +19,7 @@ export function GoodayHome() {
   const { vm } = useGoodayHome();
 
   return (
-    <div className="min-h-screen bg-gd-bg text-white antialiased">
+    <div className="min-h-screen w-full bg-gd-bg text-white antialiased">
       <div className="min-[800px]:hidden">
         <HeaderMobile vm={vm} />
       </div>
@@ -29,7 +29,7 @@ export function GoodayHome() {
 
       <StoriesRow vm={vm} />
 
-      <div className="pb-[120px] min-[800px]:mx-auto min-[800px]:grid min-[800px]:max-w-[1400px] min-[800px]:grid-cols-[minmax(214px,1fr)_minmax(260px,640px)_minmax(214px,1fr)] min-[800px]:items-start min-[800px]:gap-4 min-[800px]:px-6 min-[800px]:pb-[120px]">
+      <div className="w-full pb-[120px] min-[800px]:grid min-[800px]:grid-cols-[minmax(214px,1fr)_minmax(260px,640px)_minmax(214px,1fr)] min-[800px]:items-start min-[800px]:gap-4 min-[800px]:px-6 min-[800px]:pb-[120px]">
         <div className="hidden min-[800px]:block">
           <SidebarSuggestions vm={vm} />
         </div>
