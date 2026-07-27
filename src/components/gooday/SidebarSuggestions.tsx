@@ -1,4 +1,5 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
+import { StickySidebarColumn, StickySidebarScroll } from "./StickySidebarColumn";
 
 type Props = {
   vm: GoodayHomeViewModel;
@@ -6,7 +7,7 @@ type Props = {
 
 export function SidebarSuggestions({ vm }: Props) {
   return (
-    <aside className="gooday-sidebar-sticky flex min-w-0 flex-col gap-3.5">
+    <StickySidebarColumn>
       <section className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-gd-card p-4">
         <div className="flex items-center justify-between gap-2 border-b border-gd-elevated pb-3">
           <h2 className="m-0 text-[13px] font-semibold">Sugestões para você</h2>
@@ -14,7 +15,7 @@ export function SidebarSuggestions({ vm }: Props) {
             Ver tudo
           </button>
         </div>
-        <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto pt-2">
+        <StickySidebarScroll fadeColor="var(--gd-card)" className="gap-0.5 pt-2">
           {vm.suggestions.map((s, i) => (
             <div key={i} className="flex flex-none items-center gap-2 py-[5px]">
               <button type="button" onClick={s.open}>
@@ -37,8 +38,8 @@ export function SidebarSuggestions({ vm }: Props) {
               </button>
             </div>
           ))}
-        </div>
+        </StickySidebarScroll>
       </section>
-    </aside>
+    </StickySidebarColumn>
   );
 }

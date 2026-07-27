@@ -23,6 +23,11 @@ import {
   EMOJIS,
   EMOJI_LIBRARY,
   EXTRA_KEYS,
+  USER_META,
+  GROUP_FILTERS,
+  CREATE_MEDIA_SAMPLES,
+  type GroupFilterId,
+  type CommunityData,
 } from './data';
 import {
   renderGoodayIcon,
@@ -30,6 +35,7 @@ import {
   CreateIcon,
   type GoodayIconName,
 } from '@/components/gooday/icons';
+import { CreateComposer, CreatePicker } from '@/components/gooday/CreateComposer';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -58,6 +64,7 @@ type ViewKind =
   | null;
 
 type SheetKind =
+  | 'createPicker'
   | 'create'
   | 'story'
   | 'comments'
@@ -151,6 +158,31 @@ const SHEET_STYLES = {
   },
 };
 
+type StoryItem = { u: string; img: string; alt: string; time: string; seen: boolean };
+
+function cloneStories(): StoryItem[] {
+  return STORIES.map((s) => ({ ...s }));
+}
+
+function parseTags(text: string): string[] {
+  const matches = text.match(/#[\w\u00C0-\u024F]+/g);
+  return matches ? [...new Set(matches)] : [];
+}
+
+function resetCreateDraft() {
+  return {
+    draft: '',
+    media: '',
+    mediaAlt: '',
+    audience: 'Todos',
+    location: '',
+    group: '',
+    tagged: [] as string[],
+    showMediaPicker: false,
+    mode: 'post' as 'post' | 'story',
+  };
+}
+
 function clonePosts(): Post[] {
   return POSTS.map((p) => ({
     ...p,
@@ -207,8 +239,24 @@ export function useGoodayHome({
   const [convKey, setConvKey] = useState<string | null>(null);
   const [msgDraft, setMsgDraft] = useState('');
   const [searchQ, setSearchQ] = useState('');
-  const [joined, setJoined] = useState<Record<string, boolean>>({});
+  const [joined, setJoined] = useState<Record<string, boolean>>({
+    'Corrida 5K': true,
+    'Nutrição Consciente': true,
+    'Treino Funcional': true,
+  });
   const [profileTab, setProfileTab] = useState('Publicações');
+  const [storiesList, setStoriesList] = useState<StoryItem[]>(cloneStories);
+  const [createDraft, setCreateDraft] = useState('');
+  const [createMedia, setCreateMedia] = useState('');
+  const [createMediaAlt, setCreateMediaAlt] = useState('');
+  const [createAudience, setCreateAudience] = useState('Todos');
+  const [createLocation, setCreateLocation] = useState('');
+  const [createGroup, setCreateGroup] = useState('');
+  const [createTagged, setCreateTagged] = useState<string[]>([]);
+  const [createShowMediaPicker, setCreateShowMediaPicker] = useState(false);
+  const [createMode, setCreateMode] = useState<'post' | 'story'>('post');
+  const [groupsSearchQ, setGroupsSearchQ] = useState('');
+  const [groupsFilter, setGroupsFilter] = useState<GroupFilterId>('all');
   const [edit, setEdit] = useState<EditProfile>({
     name: 'Marcos Vinícius',
     user: '@marcos_v',
@@ -298,7 +346,7 @@ export function useGoodayHome({
   const storyNext = useCallback(() => {
     setStoryIdx((i) => {
       if (i === null) return null;
-      if (i + 1 >= STORIES.length) {
+      if (i + 1 >= storiesList.length) {
         defer(closeStory);
         return i;
       }
@@ -400,20 +448,20 @@ export function useGoodayHome({
   }, [comment]);
 
   const publish = useCallback(() => {
-    const t = draft.trim();
-    if (!t) {
-      flash('Escreva algo antes de publicar');
+    const t = createDraft.trim();
+    if (!t && !createMedia) {
+      flash('Adicione uma foto ou legenda antes de publicar');
       return;
     }
     const post: Post = {
       id: 'n' + Date.now(),
       u: 'me',
       time: 'agora',
-      group: '',
+      group: createGroup,
       text: t,
-      tags: [],
-      img: '',
-      alt: '',
+      tags: parseTags(t),
+      img: createMedia,
+      alt: createMediaAlt || 'Publicação',
       likes: 0,
       liked: false,
       saved: false,
@@ -423,11 +471,61 @@ export function useGoodayHome({
       thread: [],
     };
     setSheet(null);
-    setDraft('');
+    setCreateDraft('');
+    setCreateMedia('');
+    setCreateMediaAlt('');
+    setCreateGroup('');
+    setCreateTagged([]);
+    setCreateShowMediaPicker(false);
     setPosts((s) => [post, ...s]);
-    defer(() => flash('Publicação criada'));
+    defer(() => flash('Publicação compartilhada'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [draft, flash]);
+  }, [createDraft, createMedia, createMediaAlt, createGroup, flash]);
+
+  const publishStory = useCallback(() => {
+    if (!createMedia && !createDraft.trim()) {
+      flash('Adicione uma foto ou legenda ao story');
+      return;
+    }
+    const sample = CREATE_MEDIA_SAMPLES.find((m) => m.img === createMedia);
+    const story: StoryItem = {
+      u: 'me',
+      img: createMedia || CREATE_MEDIA_SAMPLES[0].img,
+      alt: createMediaAlt || sample?.alt || createDraft.trim() || 'Seu story',
+      time: 'agora',
+      seen: false,
+    };
+    setStoriesList((s) => [story, ...s]);
+    setSheet(null);
+    setCreateDraft('');
+    setCreateMedia('');
+    setCreateMediaAlt('');
+    setCreateShowMediaPicker(false);
+    defer(() => flash('Story publicado'));
+  }, [createDraft, createMedia, createMediaAlt, flash]);
+
+  const openCreatePicker = useCallback(() => {
+    setCreateMode('post');
+    setCreateDraft('');
+    setCreateMedia('');
+    setCreateMediaAlt('');
+    setCreateShowMediaPicker(false);
+    setSheet('createPicker');
+  }, []);
+
+  const openCreatePost = useCallback(() => {
+    setCreateMode('post');
+    setSheet('create');
+  }, []);
+
+  const openCreateStorySheet = useCallback(() => {
+    setCreateMode('story');
+    setCreateDraft('');
+    setCreateMedia('');
+    setCreateMediaAlt('');
+    setCreateShowMediaPicker(false);
+    setSheet('story');
+  }, []);
 
   useEffect(() => {
     const onResize = () => setW(window.innerWidth);
@@ -455,61 +553,51 @@ export function useGoodayHome({
     const S = SHEET_STYLES;
     const post = posts.find((p) => p.id === activeId);
 
+    if (kind === 'createPicker') {
+      return <CreatePicker onPost={openCreatePost} onStory={openCreateStorySheet} />;
+    }
+
     if (kind === 'create' || kind === 'story') {
-      const isStory = kind === 'story';
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <img src={U.me.av} alt="" style={{ ...S.av, width: 44, height: 44 }} />
-            <textarea
-              value={draft}
-              autoFocus
-              onChange={(e) => setDraft(e.target.value)}
-              placeholder={
-                isStory ? 'Uma legenda para o seu story…' : 'Compartilhe algo bom que aconteceu hoje.'
-              }
-              style={{
-                flex: 1,
-                minHeight: 112,
-                resize: 'vertical',
-                background: '#22272D',
-                border: '1px solid #41474F',
-                borderRadius: 16,
-                padding: 16,
-                color: '#fff',
-                fontSize: 16,
-                outline: 'none',
-              }}
-            />
-          </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {['Adicionar foto', 'Marcar pessoas', 'Escolher grupo', 'Público'].map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => flash(l + ' — em breve')}
-                style={{
-                  height: 36,
-                  padding: '0 14px',
-                  borderRadius: 999,
-                  border: '1px solid #2B3037',
-                  background: '#1A1F24',
-                  color: '#C3C7CF',
-                  fontSize: 13,
-                  fontWeight: 500,
-                }}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-            <span style={{ fontSize: 13, color: '#7B818C' }}>{draft.length}/280</span>
-            <button type="button" onClick={publish} style={{ ...S.primary, width: 150 }}>
-              {isStory ? 'Publicar story' : 'Publicar'}
-            </button>
-          </div>
-        </div>
+        <CreateComposer
+          mode={createMode}
+          draft={createDraft}
+          onDraft={(e) => setCreateDraft(e.target.value)}
+          media={createMedia}
+          mediaAlt={createMediaAlt}
+          audience={createAudience}
+          location={createLocation}
+          group={createGroup}
+          taggedLabel={createTagged.length ? `${createTagged.length} pessoa(s)` : 'Adicionar'}
+          showMediaPicker={createShowMediaPicker}
+          mediaSamples={CREATE_MEDIA_SAMPLES}
+          meAv={U.me.av}
+          pickMedia={() => setCreateShowMediaPicker((v) => !v)}
+          selectMedia={(i) => {
+            const sample = CREATE_MEDIA_SAMPLES[i];
+            setCreateMedia(sample.img);
+            setCreateMediaAlt(sample.alt);
+            setCreateShowMediaPicker(false);
+          }}
+          tagPeople={() => {
+            setCreateTagged(['renata', 'tiago']);
+            flash('Pessoas marcadas');
+          }}
+          addLocation={() => {
+            setCreateLocation('São Paulo, SP');
+            flash('Local adicionado');
+          }}
+          setAudience={() => {
+            setCreateAudience((a) => (a === 'Todos' ? 'Seguidores' : a === 'Seguidores' ? 'Amigos próximos' : 'Todos'));
+          }}
+          pickGroup={() => {
+            const idx = COMMUNITIES.findIndex((c) => c.name === createGroup);
+            const next = COMMUNITIES[(idx + 1) % COMMUNITIES.length];
+            setCreateGroup(next.name === createGroup ? '' : next.name);
+          }}
+          publishPost={publish}
+          publishStory={publishStory}
+        />
       );
     }
 
@@ -1165,13 +1253,24 @@ export function useGoodayHome({
     sheet,
     posts,
     activeId,
-    draft,
+    createDraft,
+    createMedia,
+    createMediaAlt,
+    createAudience,
+    createLocation,
+    createGroup,
+    createTagged,
+    createShowMediaPicker,
+    createMode,
     comment,
     commentEmojiOpen,
     w,
     notifs,
     flash,
     publish,
+    publishStory,
+    openCreatePost,
+    openCreateStorySheet,
     user,
     addComment,
     toggleLike,
@@ -1205,27 +1304,30 @@ export function useGoodayHome({
     const conv = view === 'chat' ? convs.find((c) => c.u === convKey) : null;
     const chatUser = conv ? user(conv.u) : null;
 
+    const personMeta = personKey ? USER_META[personKey] : null;
     const personPosts = person
       ? posts
-          .filter((p) => user(p.u).handle === person.handle && p.img)
-          .map((p) => ({ img: p.img, alt: p.alt, likes: p.likes + ' curtidas' }))
+          .filter((p) => p.u === personKey && p.img)
+          .map((p) => ({ img: p.img, alt: p.alt, likes: p.likes + ' curtidas', open: () => go('post', p.id) }))
       : [];
-    const groupPosts = posts
-      .filter((p) => p.img)
-      .slice(0, 3)
-      .map((p) => {
-        const u = user(p.u);
-        return {
-          av: u.av,
-          handle: u.handle,
-          time: p.time,
-          text: p.text,
-          img: p.img,
-          alt: p.alt,
-          likes: p.likes + '',
-          comments: p.comments + '',
-        };
-      });
+    const groupPosts = groupName
+      ? posts
+          .filter((p) => p.group === groupName && p.img)
+          .slice(0, 6)
+          .map((p) => {
+            const u = user(p.u);
+            return {
+              av: u.av,
+              handle: u.handle,
+              time: p.time,
+              text: p.text,
+              img: p.img,
+              alt: p.alt,
+              likes: p.likes + '',
+              comments: p.comments + '',
+            };
+          })
+      : [];
 
     return {
       view,
@@ -1298,11 +1400,11 @@ export function useGoodayHome({
             av: person.av,
             name: person.name,
             handle: person.handle,
-            cover: COMMUNITIES[1].img,
-            bio: 'Treino cedo, cozinho de verdade e acredito em constância acima de intensidade.',
-            loc: 'São Paulo, SP',
-            followers: '1.248',
-            following: '312',
+            cover: personMeta?.cover || COMMUNITIES[1].img,
+            bio: personMeta?.bio || 'Membro da comunidade Gooday.',
+            loc: personMeta?.loc || 'Brasil',
+            followers: personMeta ? String(personMeta.followers) : '1.248',
+            following: personMeta ? String(personMeta.following) : '312',
             posts: personPosts.length + '',
             following_state: following[personKey!] ? 'Seguindo' : 'Seguir',
             followBg: following[personKey!] ? '#2B3037' : '#4667F5',
@@ -1310,7 +1412,7 @@ export function useGoodayHome({
               setFollowing((s) => ({ ...s, [personKey!]: !s[personKey!] })),
             message: () => openChat(personKey!),
             openFollows: () => go('follows', personKey!),
-            interests: ['Corrida', 'Nutrição', 'Yoga'].map((i) => ({ label: i })),
+            interests: (personMeta?.interests || ['Corrida', 'Nutrição', 'Yoga']).map((i) => ({ label: i })),
           }
         : null,
       personPosts,
@@ -1321,11 +1423,11 @@ export function useGoodayHome({
             groups: group.groups,
             members: group.members,
             avatars: group.avs.map((k) => ({ src: user(k).av })),
-            desc: 'Um espaço para trocar rotina, treinos e conquistas sem cobrança. Respeite o ritmo de cada pessoa.',
-            status: group.name.length % 2 ? 'Público' : 'Privado',
+            desc: group.description,
+            status: group.isPublic ? 'Público' : 'Privado',
             joinLabel: joined[group.name]
-              ? 'Solicitação enviada'
-              : group.name.length % 2
+              ? 'Participando'
+              : group.isPublic
                 ? 'Participar'
                 : 'Solicitar entrada',
             joinBg: joined[group.name] ? '#2B3037' : '#4667F5',
@@ -1399,24 +1501,45 @@ export function useGoodayHome({
         : null,
       profile: {
         av: U.me.av,
-        cover: COMMUNITIES[0].img,
+        cover: USER_META.me?.cover || COMMUNITIES[0].img,
         name: edit.name,
         handle: edit.user,
         bio: edit.bio,
         loc: edit.loc,
-        followers: '148',
-        following: '203',
-        posts: '26',
+        followers: String(USER_META.me?.followers ?? 148),
+        following: String(USER_META.me?.following ?? 203),
+        posts: String(posts.filter((p) => p.u === 'me').length),
         editProfile: () => go('editProfile'),
         openFollows: () => go('follows', 'me'),
         openGroups: () => go('groups'),
       },
+      profileGrid: (() => {
+        if (profileTab === 'Salvos') {
+          return posts
+            .filter((p) => p.saved && p.img)
+            .map((p) => ({ img: p.img, alt: p.alt, open: () => go('post', p.id) }));
+        }
+        if (profileTab === 'Grupos') {
+          return COMMUNITIES.filter((c) => joined[c.name]).map((c) => ({
+            img: c.img,
+            alt: c.name,
+            open: () => go('group', c.name),
+          }));
+        }
+        if (profileTab === 'Sobre') {
+          return [];
+        }
+        return posts
+          .filter((p) => p.u === 'me' && p.img)
+          .map((p) => ({ img: p.img, alt: p.alt, open: () => go('post', p.id) }));
+      })(),
       profileTabs: ['Publicações', 'Salvos', 'Grupos', 'Sobre'].map((t) => ({
         label: t,
         color: profileTab === t ? '#FFFFFF' : '#7B818C',
         border: profileTab === t ? '2px solid #4667F5' : '2px solid transparent',
         go: () => setProfileTab(t),
       })),
+      profileTab,
       edit,
       onEditName: (e: ChangeEvent<HTMLInputElement>) =>
         setEdit((s) => ({ ...s, name: e.target.value })),
@@ -1449,20 +1572,29 @@ export function useGoodayHome({
           open: () => go('person', k),
         }),
       ),
-      myGroups: COMMUNITIES.slice(0, 6).map((c) => ({
+      myGroups: COMMUNITIES.filter((c) => joined[c.name]).map((c) => ({
         img: c.img,
         name: c.name,
         meta: c.groups + ' · ' + c.members,
         open: () => go('group', c.name),
       })),
-      allGroups: COMMUNITIES.map((c, i) => ({
+      allGroups: COMMUNITIES.filter((c) => {
+        const q = groupsSearchQ.trim().toLowerCase();
+        if (q && !c.name.toLowerCase().includes(q) && !c.description.toLowerCase().includes(q)) return false;
+        if (groupsFilter === 'joined' && !joined[c.name]) return false;
+        if (groupsFilter === 'suggested' && joined[c.name]) return false;
+        if (groupsFilter !== 'all' && groupsFilter !== 'joined' && groupsFilter !== 'suggested' && c.category !== groupsFilter) {
+          return false;
+        }
+        return true;
+      }).map((c) => ({
         img: c.img,
         name: c.name,
         meta: c.members,
         avatars: c.avs.map((k) => ({ src: user(k).av })),
-        badge: i % 3 === 0 ? 'Participando' : i % 3 === 1 ? 'Membro' : 'Sugerido',
-        badgeBg: i % 3 === 2 ? 'rgba(120,73,236,.14)' : 'rgba(70,103,245,.14)',
-        badgeColor: i % 3 === 2 ? '#B79AFF' : '#91A8FF',
+        badge: joined[c.name] ? 'Participando' : c.isPublic ? 'Público' : 'Privado',
+        badgeBg: joined[c.name] ? 'rgba(70,103,245,.14)' : c.isPublic ? 'rgba(53,196,122,.14)' : 'rgba(120,73,236,.14)',
+        badgeColor: joined[c.name] ? '#91A8FF' : c.isPublic ? '#35C47A' : '#B79AFF',
         open: () => go('group', c.name),
       })),
     };
@@ -1473,7 +1605,7 @@ export function useGoodayHome({
     const rail = showSuggestions && isDesktop;
     const brand = '#4667F5';
 
-    const stories = STORIES.map((s, i) => ({
+    const stories = storiesList.map((s, i) => ({
       img: s.img,
       alt: s.alt,
       av: user(s.u).av,
@@ -1483,6 +1615,25 @@ export function useGoodayHome({
       filter: (s.seen || seen[i]) ? 'grayscale(1) brightness(.75)' : 'none',
       open: () => openStory(i),
     }));
+
+    const myStory = {
+      av: U.me.av,
+      hasStory: storiesList.some((s) => s.u === 'me'),
+      open: openCreateStorySheet,
+    };
+
+    const filterCommunity = (c: CommunityData) => {
+      const q = groupsSearchQ.trim().toLowerCase();
+      if (q && !c.name.toLowerCase().includes(q) && !c.description.toLowerCase().includes(q)) return false;
+      if (groupsFilter === 'joined' && !joined[c.name]) return false;
+      if (groupsFilter === 'suggested' && joined[c.name]) return false;
+      if (groupsFilter !== 'all' && groupsFilter !== 'joined' && groupsFilter !== 'suggested' && c.category !== groupsFilter) {
+        return false;
+      }
+      return true;
+    };
+
+    const filteredCommunities = COMMUNITIES.filter(filterCommunity);
 
     const mkCommunity = (c: (typeof COMMUNITIES)[number]) => ({
       name: c.name,
@@ -1566,7 +1717,7 @@ export function useGoodayHome({
           id: t.id,
           label: t.label,
           color: '#fff',
-          go: () => setSheet('create'),
+          go: () => openCreatePicker(),
           icon: <CreateTabIcon brand={brand} />,
         };
       }
@@ -1675,7 +1826,7 @@ export function useGoodayHome({
           ),
         go: () => {
           setTab(n.id);
-          if (n.id === 'create') setSheet('create');
+          if (n.id === 'create') openCreatePicker();
           else if (n.id === 'search') go('search');
           else if (n.id === 'chat') go('messages');
           else if (n.id === 'groups') go('groups');
@@ -1684,7 +1835,7 @@ export function useGoodayHome({
       };
     });
 
-    const s = storyIdx === null ? null : STORIES[storyIdx];
+    const s = storyIdx === null ? null : storiesList[storyIdx];
     const story = s
       ? {
           img: s.img,
@@ -1694,11 +1845,12 @@ export function useGoodayHome({
           time: s.time,
         }
       : null;
-    const storyBars = STORIES.map((_, i) => ({
+    const storyBars = storiesList.map((_, i) => ({
       w: i < (storyIdx ?? -1) ? '100%' : i === storyIdx ? storyP + '%' : '0%',
     }));
 
     const titles: Record<string, string> = {
+      createPicker: 'Criar',
       create: 'Nova publicação',
       story: 'Novo story',
       comments: 'Comentários',
@@ -1731,8 +1883,17 @@ export function useGoodayHome({
         scrollSnapType: 'x mandatory',
       } as CSSProperties,
       stories,
-      communities: COMMUNITIES.map(mkCommunity),
-      railCommunities: COMMUNITIES.map(mkCommunity),
+      communities: filteredCommunities.map(mkCommunity),
+      railCommunities: filteredCommunities.map(mkCommunity),
+      groupsSearchQ,
+      onGroupsSearch: (e: ChangeEvent<HTMLInputElement>) => setGroupsSearchQ(e.target.value),
+      groupsFilters: GROUP_FILTERS.map((f) => ({
+        id: f.id,
+        label: f.label,
+        active: groupsFilter === f.id,
+        go: () => setGroupsFilter(f.id),
+      })),
+      myStory,
       suggestions: SUGGESTION_POOL.map((k) => {
         const u = U[k as keyof typeof U] as UserProfile;
         const f = !!following[k];
@@ -1761,8 +1922,8 @@ export function useGoodayHome({
       openSearch: () => go('search'),
       openAllGroups: () => go('groups'),
       openAllPeople: () => go('follows', 'me'),
-      openCreate: () => setSheet('create'),
-      openCreateStory: () => setSheet('story'),
+      openCreate: openCreatePicker,
+      openCreateStory: openCreateStorySheet,
       openNotifications: () => setSheet('notifications'),
       openAvatarMenu: () => setSheet('avatar'),
       closeStory,

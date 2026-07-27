@@ -468,9 +468,19 @@ function ProfileScreen({ vm }: Props) {
         ))}
       </div>
       <div className="mt-3.5 grid grid-cols-3 gap-1.5">
-        {vm.myGroups.map((g, i) => (
-          <img key={i} src={g.img} alt={g.name} className="block aspect-square w-full rounded-[10px] object-cover" />
-        ))}
+        {vm.profileGrid.length === 0 ? (
+          <p className="col-span-full m-0 py-8 text-center text-sm text-gd-text-subtle">
+            {vm.profileTab === 'Sobre'
+              ? `${vm.profile.bio} · ${vm.profile.loc}`
+              : 'Nenhum item para mostrar aqui.'}
+          </p>
+        ) : (
+          vm.profileGrid.map((g, i) => (
+            <button key={i} type="button" onClick={g.open} className="aspect-square overflow-hidden rounded-[10px]">
+              <img src={g.img} alt={g.alt} className="block h-full w-full object-cover" />
+            </button>
+          ))
+        )}
       </div>
     </>
   );
@@ -578,11 +588,41 @@ function FollowsScreen({ vm }: Props) {
 function GroupsScreen({ vm }: Props) {
   return (
     <>
-      <p className="m-0 mb-4 text-sm leading-normal text-gd-text-subtle">
+      <p className="m-0 mb-3 text-sm leading-normal text-gd-text-subtle">
         Comunidades que você participa e acompanha.
       </p>
+      <div className="mb-4 flex h-11 items-center gap-2.5 rounded-xl border border-gd-border bg-gd-surface px-3.5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20l-3.2-3.2" />
+        </svg>
+        <input
+          value={vm.groupsSearchQ}
+          onChange={vm.onGroupsSearch}
+          placeholder="Buscar grupos e comunidades..."
+          aria-label="Buscar grupos"
+          className="min-w-0 flex-1 border-none bg-transparent text-[15px] text-white outline-none placeholder:text-gd-text-subtle"
+        />
+      </div>
+      <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto pb-1">
+        {vm.groupsFilters.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            onClick={f.go}
+            className={`h-8 flex-none rounded-full px-3.5 text-[12px] font-semibold whitespace-nowrap ${
+              f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
-        {vm.allGroups.map((g, i) => (
+        {vm.allGroups.length === 0 ? (
+          <p className="col-span-full m-0 py-8 text-center text-sm text-gd-text-subtle">Nenhum grupo encontrado.</p>
+        ) : (
+          vm.allGroups.map((g, i) => (
           <article
             key={i}
             onClick={g.open}
@@ -610,7 +650,8 @@ function GroupsScreen({ vm }: Props) {
               {g.badge}
             </span>
           </article>
-        ))}
+          ))
+        )}
       </div>
     </>
   );

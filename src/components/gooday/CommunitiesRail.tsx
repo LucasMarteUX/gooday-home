@@ -1,4 +1,5 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
+import { StickySidebarColumn, StickySidebarScroll } from "./StickySidebarColumn";
 
 type Community = GoodayHomeViewModel["communities"][number];
 
@@ -69,6 +70,40 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
+function GroupsSearchFilters({ vm }: Props) {
+  return (
+    <div className="flex flex-none flex-col gap-2.5">
+      <div className="flex h-10 items-center gap-2 rounded-xl border border-gd-border bg-gd-surface px-3">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B818C" strokeWidth="2" strokeLinecap="round">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20l-3.2-3.2" />
+        </svg>
+        <input
+          value={vm.groupsSearchQ}
+          onChange={vm.onGroupsSearch}
+          placeholder="Buscar grupos..."
+          aria-label="Buscar grupos"
+          className="min-w-0 flex-1 border-none bg-transparent text-[13px] text-white outline-none placeholder:text-gd-text-subtle"
+        />
+      </div>
+      <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-0.5">
+        {vm.groupsFilters.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            onClick={f.go}
+            className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
+              f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function CommunitiesCarousel({ vm }: Props) {
   if (!vm.showCommunities) return null;
 
@@ -86,11 +121,14 @@ export function CommunitiesCarousel({ vm }: Props) {
 
 export function CommunitiesRail({ vm }: Props) {
   return (
-    <aside className="gooday-sidebar-sticky flex min-w-0 flex-col gap-3.5">
-      <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto">
-        {vm.railCommunities.map((c, i) => (
-          <CommunityCard key={i} c={c} />
-        ))}
+    <StickySidebarColumn alwaysActive>
+      <GroupsSearchFilters vm={vm} />
+      <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3.5" alwaysScrollable>
+        {vm.railCommunities.length === 0 ? (
+          <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
+        ) : (
+          vm.railCommunities.map((c, i) => <CommunityCard key={i} c={c} />)
+        )}
         <button
           type="button"
           onClick={vm.openAllGroups}
@@ -98,7 +136,7 @@ export function CommunitiesRail({ vm }: Props) {
         >
           Ver tudo
         </button>
-      </div>
-    </aside>
+      </StickySidebarScroll>
+    </StickySidebarColumn>
   );
 }

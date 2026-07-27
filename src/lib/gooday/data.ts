@@ -136,19 +136,77 @@ export const STORIES = [
   { u: 'marcelo',  img: IMG('1508739773434-c26b3d09e071', 480, 640), alt: 'Trilha nas montanhas', time: 'há 18 h', seen: true }
 ];
 
-export const COMMUNITIES = [
-  { name: 'Corrida para Iniciantes', img: IMG('1461896836934-ffe607ba8211', 640, 360), groups: '18 grupos', members: '512 membros', avs: ['tiago', 'julia', 'camila'] },
-  { name: 'Ciclismo Urbano',        img: IMG('1541625602330-2277a4c46182', 640, 360), groups: '43 grupos', members: '975 membros', avs: ['bruno', 'rafael', 'tiago'] },
-  { name: 'Nutrição Consciente',    img: IMG('1512621776951-a57141f2eefd', 640, 360), groups: '15 grupos', members: '396 membros', avs: ['renata', 'nicole', 'marina'] },
-  { name: 'Vida Natural',           img: IMG('1490645935967-10de6ba17061', 640, 360), groups: '11 grupos', members: '304 membros', avs: ['lidiane', 'aline', 'bruna'] },
-  { name: 'Treino Funcional',       img: IMG('1518611012118-696072aa579a', 640, 360), groups: '14 grupos', members: '428 membros', avs: ['diego', 'julia', 'lucas'] },
-  { name: 'Alimentação Saudável',   img: IMG('1546069901-ba9599a7e63c', 640, 360),    groups: '9 grupos',  members: '267 membros', avs: ['nicole', 'camila', 'renata'] },
-  { name: 'Sucos Naturais',         img: IMG('1622597467836-f3285f2131b8', 640, 360), groups: '7 grupos',  members: '198 membros', avs: ['bruna', 'gabriela', 'pedro'] },
-  { name: 'Hábitos que Transformam', img: IMG('1476480862126-209bfaa8edc8', 640, 360), groups: '12 grupos', members: '341 membros', avs: ['aline', 'marina', 'diego'] },
-  { name: 'Corrida 5K',             img: IMG('1571008887538-b36bb32f4571', 640, 360), groups: '23 grupos', members: '750 membros', avs: ['tiago', 'julia', 'camila'] },
-  { name: 'Pedal de Fim de Semana', img: IMG('1502224562085-639556652f33', 640, 360), groups: '6 grupos',  members: '152 membros', avs: ['bruno', 'lucas', 'gabriela'] },
-  { name: 'Yoga',                   img: IMG('1544367567-0f2fcb009e0b', 640, 360),    groups: '9 grupos',  members: '284 membros', avs: ['lidiane', 'julia', 'bruna'] }
+export type UserMeta = {
+  bio: string;
+  loc: string;
+  followers: number;
+  following: number;
+  interests: string[];
+  cover?: string;
+};
+
+export const USER_META: Record<string, UserMeta> = {
+  me: { bio: 'Corrida, comida de verdade e constância. Compartilho rotina sem filtro.', loc: 'São Paulo, SP', followers: 148, following: 203, interests: ['Corrida', 'Nutrição', 'Hábitos'], cover: IMG('1461896836934-ffe607ba8211', 900, 300) },
+  bruna: { bio: 'Receitas naturais e sucos coloridos. Menos industrializado, mais sabor.', loc: 'Curitiba, PR', followers: 2840, following: 412, interests: ['Nutrição', 'Sucos', 'Vida natural'], cover: IMG('1622597467836-f3285f2131b8', 900, 300) },
+  tiago: { bio: '5h30 todo dia. Corredor amador que leva a sério.', loc: 'São Paulo, SP', followers: 1920, following: 288, interests: ['Corrida', 'Treino', 'Rotina'], cover: IMG('1552674605-db6ffd4facb5', 900, 300) },
+  nicole: { bio: 'Nutricionista em formação. Meal prep e ciência na cozinha.', loc: 'Belo Horizonte, MG', followers: 1560, following: 301, interests: ['Nutrição', 'Meal prep', 'Saúde'], cover: IMG('1546069901-ba9599a7e63c', 900, 300) },
+  bruno: { bio: 'Pedal todo fim de semana. SP → litoral quando dá.', loc: 'Santos, SP', followers: 980, following: 195, interests: ['Ciclismo', 'Corrida', 'Outdoor'], cover: IMG('1541625602330-2277a4c46182', 900, 300) },
+  lidiane: { bio: 'Yoga, respiração e movimento consciente.', loc: 'Florianópolis, SC', followers: 1240, following: 267, interests: ['Yoga', 'Mindfulness', 'Hábitos'], cover: IMG('1544367567-0f2fcb009e0b', 900, 300) },
+  julia: { bio: 'Funcional + corrida. Treino em grupo motiva mais.', loc: 'Campinas, SP', followers: 870, following: 224, interests: ['Treino funcional', 'Corrida', 'Grupos'], cover: IMG('1518611012118-696072aa579a', 900, 300) },
+  renata: { bio: 'Alimentação consciente sem radicalismo.', loc: 'Porto Alegre, RS', followers: 2100, following: 389, interests: ['Nutrição', 'Receitas', 'Família'], cover: IMG('1512621776951-a57141f2eefd', 900, 300) },
+  lucas: { bio: 'Dev que corre. Código de manhã, asfalto à tarde.', loc: 'São Paulo, SP', followers: 640, following: 178, interests: ['Corrida', 'Tech', 'Ciclismo'], cover: IMG('1541625602330-2277a4c46182', 900, 300) },
+  camila: { bio: 'Cross e corrida. PRs pequenos todo mês.', loc: 'Rio de Janeiro, RJ', followers: 1120, following: 256, interests: ['Treino', 'Corrida', 'Força'], cover: IMG('1571019613454-1cb2f99b2d8b', 900, 300) },
+};
+
+export type CommunityCategory = 'corrida' | 'ciclismo' | 'nutricao' | 'yoga' | 'habitos' | 'treino';
+
+export type CommunityData = {
+  name: string;
+  img: string;
+  groups: string;
+  members: string;
+  avs: string[];
+  category: CommunityCategory;
+  isPublic: boolean;
+  description: string;
+  memberCount: number;
+};
+
+export const CREATE_MEDIA_SAMPLES = [
+  { img: IMG('1622597467836-f3285f2131b8', 900, 900), alt: 'Suco verde' },
+  { img: IMG('1552674605-db6ffd4facb5', 900, 900), alt: 'Corrida ao amanhecer' },
+  { img: IMG('1546069901-ba9599a7e63c', 900, 900), alt: 'Bowl saudável' },
+  { img: IMG('1541625602330-2277a4c46182', 900, 900), alt: 'Pedal na estrada' },
+  { img: IMG('1544367567-0f2fcb009e0b', 900, 900), alt: 'Yoga matinal' },
+  { img: IMG('1518611012118-696072aa579a', 900, 900), alt: 'Treino funcional' },
 ];
+
+export const COMMUNITIES: CommunityData[] = [
+  { name: 'Corrida para Iniciantes', img: IMG('1461896836934-ffe607ba8211', 640, 360), groups: '18 grupos', members: '512 membros', avs: ['tiago', 'julia', 'camila'], category: 'corrida', isPublic: true, description: 'Comece a correr no seu ritmo, com apoio e metas realistas.', memberCount: 512 },
+  { name: 'Ciclismo Urbano', img: IMG('1541625602330-2277a4c46182', 640, 360), groups: '43 grupos', members: '975 membros', avs: ['bruno', 'rafael', 'tiago'], category: 'ciclismo', isPublic: true, description: 'Pedal na cidade, rotas seguras e encontros semanais.', memberCount: 975 },
+  { name: 'Nutrição Consciente', img: IMG('1512621776951-a57141f2eefd', 640, 360), groups: '15 grupos', members: '396 membros', avs: ['renata', 'nicole', 'marina'], category: 'nutricao', isPublic: true, description: 'Trocar receitas, hábitos e ciência alimentar sem extremismo.', memberCount: 396 },
+  { name: 'Vida Natural', img: IMG('1490645935967-10de6ba17061', 640, 360), groups: '11 grupos', members: '304 membros', avs: ['lidiane', 'aline', 'bruna'], category: 'habitos', isPublic: true, description: 'Menos processado, mais presença no dia a dia.', memberCount: 304 },
+  { name: 'Treino Funcional', img: IMG('1518611012118-696072aa579a', 640, 360), groups: '14 grupos', members: '428 membros', avs: ['diego', 'julia', 'lucas'], category: 'treino', isPublic: true, description: 'WODs, progressão e treinos em grupo.', memberCount: 428 },
+  { name: 'Alimentação Saudável', img: IMG('1546069901-ba9599a7e63c', 640, 360), groups: '9 grupos', members: '267 membros', avs: ['nicole', 'camila', 'renata'], category: 'nutricao', isPublic: false, description: 'Meal prep, listas de compras e desafios mensais.', memberCount: 267 },
+  { name: 'Sucos Naturais', img: IMG('1622597467836-f3285f2131b8', 640, 360), groups: '7 grupos', members: '198 membros', avs: ['bruna', 'gabriela', 'pedro'], category: 'nutricao', isPublic: true, description: 'Combinações, receitas e detox sem modismo.', memberCount: 198 },
+  { name: 'Hábitos que Transformam', img: IMG('1476480862126-209bfaa8edc8', 640, 360), groups: '12 grupos', members: '341 membros', avs: ['aline', 'marina', 'diego'], category: 'habitos', isPublic: true, description: 'Pequenas rotinas que viram identidade.', memberCount: 341 },
+  { name: 'Corrida 5K', img: IMG('1571008887538-b36bb32f4571', 640, 360), groups: '23 grupos', members: '750 membros', avs: ['tiago', 'julia', 'camila'], category: 'corrida', isPublic: true, description: 'Do sofá aos 5 km com calendário de treinos.', memberCount: 750 },
+  { name: 'Pedal de Fim de Semana', img: IMG('1502224562085-639556652f33', 640, 360), groups: '6 grupos', members: '152 membros', avs: ['bruno', 'lucas', 'gabriela'], category: 'ciclismo', isPublic: false, description: 'Rotas curtas e café depois do pedal.', memberCount: 152 },
+  { name: 'Yoga', img: IMG('1544367567-0f2fcb009e0b', 640, 360), groups: '9 grupos', members: '284 membros', avs: ['lidiane', 'julia', 'bruna'], category: 'yoga', isPublic: true, description: 'Práticas guiadas, respiração e alongamento.', memberCount: 284 },
+];
+
+export const GROUP_FILTERS = [
+  { id: 'all', label: 'Todos' },
+  { id: 'joined', label: 'Participando' },
+  { id: 'suggested', label: 'Sugeridos' },
+  { id: 'corrida', label: 'Corrida' },
+  { id: 'ciclismo', label: 'Ciclismo' },
+  { id: 'nutricao', label: 'Nutrição' },
+  { id: 'yoga', label: 'Yoga' },
+  { id: 'treino', label: 'Treino' },
+] as const;
+
+export type GroupFilterId = (typeof GROUP_FILTERS)[number]['id'];
 
 export const POSTS = [
   {
@@ -201,6 +259,123 @@ export const POSTS = [
     likes: 58, liked: false, saved: false, comments: 9, reactions: { '💪': 3 },
     commenters: ['nicole', 'marina', 'bruna'],
     thread: [{ u: 'nicole', t: 'Tô no dia 14 😊', time: '2 h' }]
+  },
+  {
+    id: 'p6', u: 'julia', time: '5 h', group: 'Treino Funcional',
+    text: 'Treino de pernas concluído. Amanhã é descanso ativo 🦵',
+    tags: ['#treino', '#funcional'],
+    img: IMG('1518611012118-696072aa579a', 900, 675), alt: 'Treino funcional',
+    likes: 89, liked: false, saved: true, comments: 14, reactions: { '💪': 8 },
+    commenters: ['camila', 'diego', 'tiago'],
+    thread: [{ u: 'camila', t: 'Arrasou!', time: '4 h' }]
+  },
+  {
+    id: 'p7', u: 'renata', time: '6 h', group: 'Nutrição Consciente',
+    text: 'Salada de grãos com tahine — almoço em 15 minutos.',
+    tags: ['#nutricao', '#rapido'],
+    img: IMG('1512621776951-a57141f2eefd', 900, 675), alt: 'Salada colorida',
+    likes: 176, liked: true, saved: false, comments: 22, reactions: { '🌱': 11 },
+    commenters: ['nicole', 'bruna', 'marina'],
+    thread: []
+  },
+  {
+    id: 'p8', u: 'camila', time: '7 h', group: 'Corrida 5K',
+    text: 'Primeiro 5K sem parar. Chorei no final, mas valeu cada passo.',
+    tags: ['#corrida', '#5k', '#conquista'],
+    img: IMG('1571008887538-b36bb32f4571', 900, 675), alt: 'Medalha de corrida',
+    likes: 412, liked: false, saved: true, comments: 56, reactions: { '🔥': 24, '👏': 15 },
+    commenters: ['tiago', 'julia', 'bruno'],
+    thread: [{ u: 'tiago', t: 'Orgulho! Próximo passo: 10K', time: '6 h' }]
+  },
+  {
+    id: 'p9', u: 'lucas', time: '8 h', group: 'Ciclismo Urbano',
+    text: '45 km pelo calçadão. Vento a favor ajudou demais hoje.',
+    tags: ['#ciclismo', '#pedal'],
+    img: IMG('1502224562085-639556652f33', 900, 675), alt: 'Pedal na orla',
+    likes: 134, liked: false, saved: false, comments: 18, reactions: { '🚴': 6 },
+    commenters: ['bruno', 'gabriela', 'rafael'],
+    thread: []
+  },
+  {
+    id: 'p10', u: 'marina', time: '9 h', group: 'Vida Natural',
+    text: 'Troquei o refrigerante por água com limão e hortelã. Semana 3.',
+    tags: ['#habitos', '#natural'],
+    img: IMG('1490645935967-10de6ba17061', 900, 675), alt: 'Água aromatizada',
+    likes: 67, liked: false, saved: false, comments: 11, reactions: {},
+    commenters: ['lidiane', 'aline', 'bruna'],
+    thread: []
+  },
+  {
+    id: 'p11', u: 'me', time: '10 h', group: '',
+    text: 'Voltei a correr depois de 2 semanas parado. Devagar, mas voltei.',
+    tags: ['#corrida', '#volta'],
+    img: IMG('1483721310020-03333e577078', 900, 675), alt: 'Tênis na calçada',
+    likes: 45, liked: false, saved: false, comments: 8, reactions: { '💪': 5 },
+    commenters: ['tiago', 'renata', 'julia'],
+    thread: [{ u: 'tiago', t: 'Bem-vindo de volta!', time: '9 h' }]
+  },
+  {
+    id: 'p12', u: 'diego', time: '11 h', group: 'Treino Funcional',
+    text: 'WOD do dia: 20 burpees + 400m corrida x 4. Quem topa?',
+    tags: ['#wod', '#funcional'],
+    img: IMG('1517836357463-d25dfeac3438', 900, 675), alt: 'Treino intenso',
+    likes: 98, liked: false, saved: false, comments: 19, reactions: { '🔥': 7 },
+    commenters: ['julia', 'camila', 'igor'],
+    thread: []
+  },
+  {
+    id: 'p13', u: 'gabriela', time: '12 h', group: 'Pedal de Fim de Semana',
+    text: 'Pelotão feminino fechando 35 km. Energia lá em cima!',
+    tags: ['#ciclismo', '#mulheres'],
+    img: IMG('1534258936925-c58bed479fcb', 900, 675), alt: 'Grupo de ciclistas',
+    likes: 203, liked: true, saved: false, comments: 27, reactions: { '👏': 12 },
+    commenters: ['bruno', 'lucas', 'rafael'],
+    thread: []
+  },
+  {
+    id: 'p14', u: 'aline', time: '14 h', group: 'Yoga',
+    text: '15 minutos de respiração antes do trabalho mudam o dia inteiro.',
+    tags: ['#yoga', '#mindfulness'],
+    img: IMG('1544367567-0f2fcb009e0b', 900, 675), alt: 'Yoga ao amanhecer',
+    likes: 112, liked: false, saved: true, comments: 16, reactions: { '🧘': 9 },
+    commenters: ['lidiane', 'julia', 'marina'],
+    thread: []
+  },
+  {
+    id: 'p15', u: 'me', time: '1 d', group: 'Nutrição Consciente',
+    text: 'Overnight oats com frutas vermelhas. Café da manhã resolvido.',
+    tags: ['#mealprep', '#cafe'],
+    img: IMG('1494597564530-871f2b93ac55', 900, 675), alt: 'Overnight oats',
+    likes: 72, liked: false, saved: true, comments: 12, reactions: { '🌱': 4 },
+    commenters: ['nicole', 'renata', 'bruna'],
+    thread: []
+  },
+  {
+    id: 'p16', u: 'rafael', time: '1 d', group: 'Corrida para Iniciantes',
+    text: 'Semana 4 do plano: 3 km contínuos! O grupo me puxou pra cá.',
+    tags: ['#iniciante', '#progresso'],
+    img: IMG('1461896836934-ffe607ba8211', 900, 675), alt: 'Pista de corrida',
+    likes: 156, liked: false, saved: false, comments: 31, reactions: { '👏': 14 },
+    commenters: ['tiago', 'julia', 'camila'],
+    thread: []
+  },
+  {
+    id: 'p17', u: 'pedro', time: '2 d', group: 'Sucos Naturais',
+    text: 'Detox verde: couve, maçã, gengibre e limão. Receita nos comentários.',
+    tags: ['#suco', '#detox'],
+    img: IMG('1622597467836-f3285f2131b8', 900, 675), alt: 'Suco detox',
+    likes: 88, liked: false, saved: false, comments: 24, reactions: { '🌱': 6 },
+    commenters: ['bruna', 'nicole', 'marina'],
+    thread: [{ u: 'bruna', t: 'Qual proporção você usa?', time: '1 d' }]
+  },
+  {
+    id: 'p18', u: 'fernanda', time: '2 d', group: 'Treino Funcional',
+    text: 'PR no agachamento: 60 kg. Constância > intensidade.',
+    tags: ['#forca', '#pr'],
+    img: IMG('1571902943202-507ec2618e8f', 900, 675), alt: 'Agachamento com barra',
+    likes: 245, liked: false, saved: false, comments: 38, reactions: { '💪': 20, '🔥': 8 },
+    commenters: ['diego', 'camila', 'julia'],
+    thread: []
   }
 ];
 

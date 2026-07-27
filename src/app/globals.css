@@ -198,8 +198,11 @@ a:hover {
   position: sticky;
   top: var(--gd-sticky-top);
   z-index: 10;
-  max-height: calc(100vh - var(--gd-sticky-top));
   align-self: start;
   padding-top: 1rem;
   margin-top: 0;
+}
+
+.gooday-sidebar-sticky--active {
+  max-height: calc(100vh - var(--gd-sticky-top));
 }
