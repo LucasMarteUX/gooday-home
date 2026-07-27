@@ -8,7 +8,7 @@ export function DesktopNav({ vm }: Props) {
   return (
     <nav
       aria-label="Navegação principal"
-      className="fixed bottom-6 left-1/2 z-[45] flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/[0.08] bg-[rgba(21,26,31,0.92)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.32)] backdrop-blur-2xl"
+      className="fixed bottom-6 left-1/2 z-[45] hidden -translate-x-1/2 items-center gap-1 rounded-full border border-white/[0.08] bg-[rgba(21,26,31,0.92)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.32)] backdrop-blur-2xl min-[800px]:flex"
     >
       {vm.navItems.map((n, i) => (
         <button

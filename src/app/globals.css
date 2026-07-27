@@ -21,6 +21,8 @@
   --gd-header-mobile: rgba(21, 26, 31, 0.88);
   --gd-header-desktop: rgba(14, 18, 22, 0.88);
   --gd-max-width: 1920px;
+  --gd-sticky-top: 80px;
+  --gd-desktop-scale: 1.25;
 }
 
 @theme inline {
@@ -184,4 +186,20 @@ a:hover {
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+@media (min-width: 800px) {
+  html {
+    zoom: var(--gd-desktop-scale);
+  }
+}
+
+.gooday-sidebar-sticky {
+  position: sticky;
+  top: var(--gd-sticky-top);
+  z-index: 10;
+  max-height: calc(100vh - var(--gd-sticky-top));
+  align-self: start;
+  padding-top: 1rem;
+  margin-top: 0;
 }

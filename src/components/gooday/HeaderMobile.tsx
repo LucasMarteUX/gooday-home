@@ -6,7 +6,7 @@ type Props = {
 
 export function HeaderMobile({ vm }: Props) {
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[rgba(21,26,31,0.88)] px-4 py-3 backdrop-blur-2xl">
+    <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[rgba(21,26,31,0.88)] px-4 py-3 backdrop-blur-2xl min-[800px]:hidden">
       <img
         src="/uploads/logotipo%20gooday.png"
         alt="Gooday"

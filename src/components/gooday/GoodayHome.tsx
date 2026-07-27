@@ -20,12 +20,8 @@ export function GoodayHome() {
 
   return (
     <div className="min-h-screen w-full bg-gd-bg text-white antialiased">
-      <div className="min-[800px]:hidden">
-        <HeaderMobile vm={vm} />
-      </div>
-      <div className="hidden min-[800px]:block">
-        <HeaderDesktop vm={vm} />
-      </div>
+      <HeaderMobile vm={vm} />
+      <HeaderDesktop vm={vm} />
 
       <StoriesRow vm={vm} />
 
@@ -50,12 +46,8 @@ export function GoodayHome() {
         ) : null}
       </div>
 
-      <div className="min-[800px]:hidden">
-        <MobileNav vm={vm} />
-      </div>
-      <div className="hidden min-[800px]:block">
-        <DesktopNav vm={vm} />
-      </div>
+      <MobileNav vm={vm} />
+      <DesktopNav vm={vm} />
 
       <OverlayScreens vm={vm} />
       <StoryViewer vm={vm} />
