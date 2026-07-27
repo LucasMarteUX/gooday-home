@@ -185,11 +185,21 @@
   background-color: var(--gd-hover);
 }
 
-/* Cursor circular nativo — sempre alinhado ao clique (sem DOM / sem lag) */
+/* Cursor circular nativo — hotspot no centro, sem DOM / sem lag */
 html.gd-soft-cursor,
 html.gd-soft-cursor body,
 html.gd-soft-cursor body * {
-  cursor: var(--gd-cursor) !important;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='11' fill='rgba(255,255,255,0.2)' stroke='rgba(255,255,255,0.7)' stroke-width='1.5'/%3E%3C/svg%3E")
+      13 13,
+    auto !important;
+}
+
+html[data-theme='light'].gd-soft-cursor,
+html[data-theme='light'].gd-soft-cursor body,
+html[data-theme='light'].gd-soft-cursor body * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='11' fill='rgba(70,103,245,0.14)' stroke='rgba(70,103,245,0.55)' stroke-width='1.5'/%3E%3C/svg%3E")
+      13 13,
+    auto !important;
 }
 
 html.gd-soft-cursor a,
@@ -198,23 +208,22 @@ html.gd-soft-cursor [role='button'],
 html.gd-soft-cursor label,
 html.gd-soft-cursor summary,
 html.gd-soft-cursor select,
-html.gd-soft-cursor [data-cursor='interactive'],
-html.gd-soft-cursor a:hover,
-html.gd-soft-cursor button:hover,
-html.gd-soft-cursor [role='button']:hover,
-html.gd-soft-cursor label:hover,
-html.gd-soft-cursor summary:hover,
-html.gd-soft-cursor [data-cursor='interactive']:hover {
-  cursor: var(--gd-cursor-hover) !important;
+html.gd-soft-cursor [data-cursor='interactive'] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='17.5' fill='rgba(255,255,255,0.16)' stroke='rgba(255,255,255,0.75)' stroke-width='1.5'/%3E%3C/svg%3E")
+      20 20,
+    pointer !important;
 }
 
-html.gd-soft-cursor a:active,
-html.gd-soft-cursor button:active,
-html.gd-soft-cursor [role='button']:active,
-html.gd-soft-cursor label:active,
-html.gd-soft-cursor summary:active,
-html.gd-soft-cursor [data-cursor='interactive']:active {
-  cursor: var(--gd-cursor-active) !important;
+html[data-theme='light'].gd-soft-cursor a,
+html[data-theme='light'].gd-soft-cursor button,
+html[data-theme='light'].gd-soft-cursor [role='button'],
+html[data-theme='light'].gd-soft-cursor label,
+html[data-theme='light'].gd-soft-cursor summary,
+html[data-theme='light'].gd-soft-cursor select,
+html[data-theme='light'].gd-soft-cursor [data-cursor='interactive'] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='17.5' fill='rgba(70,103,245,0.12)' stroke='rgba(70,103,245,0.6)' stroke-width='1.5'/%3E%3C/svg%3E")
+      20 20,
+    pointer !important;
 }
 
 html.gd-soft-cursor input,
