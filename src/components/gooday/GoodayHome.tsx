@@ -32,7 +32,7 @@ export function GoodayHome() {
       */}
       <div
         className={[
-          'w-full pb-[calc(72px+env(safe-area-inset-bottom))]',
+          'w-full pb-[calc(100px+env(safe-area-inset-bottom))]',
           'min-[800px]:grid min-[800px]:items-start min-[800px]:gap-8 min-[800px]:px-5 min-[800px]:pb-10',
           'min-[800px]:grid-cols-[max-content_minmax(280px,560px)_minmax(240px,1fr)]',
           'min-[1200px]:gap-10',

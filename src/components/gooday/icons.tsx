@@ -46,10 +46,25 @@ export function SearchIcon({ active = false, activeColor = '#4667F5', size = 26,
 }
 
 export function ChatIcon({ active = false, activeColor = '#4667F5', size = 26, className }: GoodayIconProps) {
-  const p = svgProps(active, activeColor, size, className);
+  const stroke = active ? activeColor : '#7B818C';
   return (
-    <svg {...p}>
-      <path d="M20 12a7.5 7.5 0 01-10.9 6.7L4 20l1.4-4.2A7.5 7.5 0 1120 12z" />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={stroke}
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path
+        d="M7 4h10a3 3 0 013 3v7a3 3 0 01-3 3h-5l-4 3v-3H7a3 3 0 01-3-3V7a3 3 0 013-3z"
+        fill={active ? 'rgba(70,103,245,.18)' : 'none'}
+      />
+      <path d="M9 9.5h6" />
+      <path d="M9 12.5h4" />
     </svg>
   );
 }
@@ -94,12 +109,12 @@ export function CreateIcon({ active = false, activeColor = '#C3C7CF', size = 16,
   );
 }
 
-export function CreateTabIcon({ brand = '#4667F5' }: { brand?: string }) {
+export function CreateTabIcon({ brand = '#4667F5', size = 52 }: { brand?: string; size?: number }) {
   return (
     <span
       style={{
-        width: 52,
-        height: 52,
+        width: size,
+        height: size,
         borderRadius: 999,
         background: brand,
         display: 'grid',
@@ -108,8 +123,8 @@ export function CreateTabIcon({ brand = '#4667F5' }: { brand?: string }) {
       }}
     >
       <svg
-        width={26}
-        height={26}
+        width={Math.round(size * 0.5)}
+        height={Math.round(size * 0.5)}
         viewBox="0 0 24 24"
         fill="none"
         stroke="#fff"

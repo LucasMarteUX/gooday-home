@@ -12,7 +12,7 @@ function CommunityCard({ c, compact }: { c: Community; compact?: boolean }) {
     <article
       onClick={c.open}
       className={`cursor-pointer rounded-[20px] bg-gd-card-alt transition-colors hover:bg-[#1D2329] ${
-        compact ? "w-[216px] flex-none scroll-snap-align-start p-2.5" : "min-w-0 p-2.5"
+        compact ? "w-[216px] flex-none scroll-snap-align-start p-3.5" : "min-w-0 p-3.5"
       }`}
     >
       <div className={`relative rounded-[14px] bg-gd-elevated ${compact ? "h-[120px]" : "aspect-[16/10]"}`}>

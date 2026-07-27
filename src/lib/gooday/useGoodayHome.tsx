@@ -1821,7 +1821,7 @@ export function useGoodayHome({
           color: '#fff',
           active: false,
           go: () => openCreatePicker(),
-          icon: <CreateTabIcon brand={brand} />,
+          icon: <CreateTabIcon brand={brand} size={48} />,
         };
       }
       const active = tab === t.id;

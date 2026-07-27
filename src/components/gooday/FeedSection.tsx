@@ -9,7 +9,7 @@ export function FeedSection({ vm }: Props) {
   return (
     <section
       aria-label="Feed"
-      className="flex flex-col gap-0 min-[800px]:gap-3.5 min-[800px]:px-4"
+      className="flex flex-col gap-3.5 px-4"
     >
       {vm.feed.map((post, i) => (
         <FeedPost key={i} post={post} reactionsEnabled={vm.reactionsEnabled} />
