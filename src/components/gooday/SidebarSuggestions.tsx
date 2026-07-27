@@ -22,7 +22,7 @@ export function PeopleSuggestions({ vm, compact }: Props) {
           </button>
         </div>
       ) : null}
-      <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-0.5" alwaysScrollable>
+      <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-0.5" bottomInset={56} alwaysScrollable>
         {vm.suggestions.length === 0 ? (
           <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhuma pessoa encontrada.</p>
         ) : (

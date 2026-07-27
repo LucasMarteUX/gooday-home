@@ -62,10 +62,12 @@ export function StickySidebarColumn({
     const updateHeight = () => {
       const stickyTop = getStickyTop();
       const rect = el.getBoundingClientRect();
+      const styles = getComputedStyle(el);
+      const paddingTop = Number.parseFloat(styles.paddingTop) || 0;
       // Posição atual na 1ª dobra (quando sticky, respeita o sticky-top)
       const top = Math.max(rect.top, stickyTop);
       const vh = window.visualViewport?.height ?? window.innerHeight;
-      const height = Math.max(280, vh - top - fillBottomMargin);
+      const height = Math.max(280, vh - top - fillBottomMargin - paddingTop);
       el.style.height = `${height}px`;
       el.style.maxHeight = `${height}px`;
     };
@@ -101,6 +103,8 @@ type ScrollProps = {
   fadeColor?: string;
   className?: string;
   alwaysScrollable?: boolean;
+  /** Espaço extra abaixo do conteúdo scrollável (px). */
+  bottomInset?: number;
 };
 
 export function StickySidebarScroll({
@@ -108,6 +112,7 @@ export function StickySidebarScroll({
   fadeColor = 'var(--gd-bg)',
   className = '',
   alwaysScrollable = false,
+  bottomInset = 0,
 }: ScrollProps) {
   const stuck = useContext(StickySidebarContext);
   const outerRef = useRef<HTMLDivElement>(null);
@@ -184,6 +189,7 @@ export function StickySidebarScroll({
       <div
         ref={scrollRef}
         className={`no-scrollbar flex min-h-0 flex-col overscroll-y-contain ${canScroll ? 'flex-1 overflow-y-auto' : ''} ${className}`}
+        style={bottomInset > 0 ? { paddingBottom: bottomInset } : undefined}
       >
         {children}
       </div>

@@ -99,7 +99,7 @@ function FilterIcon({ active }: { active?: boolean }) {
 
 function GroupsList({ vm }: Props) {
   return (
-    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3 pb-6" alwaysScrollable>
+    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" bottomInset={56} alwaysScrollable>
       {vm.railCommunities.length === 0 ? (
         <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
       ) : (
@@ -142,7 +142,7 @@ export function RightRail({ vm }: Props) {
   const isGroups = vm.railTab === 'groups';
 
   return (
-    <StickySidebarColumn alwaysActive fillFirstFold fillBottomMargin={24} className="gooday-sidebar-rail min-w-0">
+    <StickySidebarColumn alwaysActive fillFirstFold fillBottomMargin={48} className="gooday-sidebar-rail min-w-0">
       <div className="flex flex-none items-center gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           {vm.railTabs.map((t) => (
