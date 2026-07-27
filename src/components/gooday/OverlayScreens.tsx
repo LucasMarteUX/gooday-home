@@ -45,6 +45,9 @@ export function OverlayScreens({ vm }: Props) {
         {vm.viewMembers ? <MembersScreen vm={vm} /> : null}
         {vm.viewFollows ? <FollowsScreen vm={vm} /> : null}
         {vm.viewGroups ? <GroupsScreen vm={vm} /> : null}
+        {vm.viewSettings ? <SettingsScreen vm={vm} /> : null}
+        {vm.viewChangeEmail ? <ChangeEmailScreen vm={vm} /> : null}
+        {vm.viewChangePassword ? <ChangePasswordScreen vm={vm} /> : null}
       </div>
     </div>
   );
@@ -655,6 +658,140 @@ function GroupsScreen({ vm }: Props) {
           </article>
           ))
         )}
+      </div>
+    </>
+  );
+}
+
+function SettingsRow({
+  label,
+  hint,
+  onClick,
+  danger,
+}: {
+  label: string;
+  hint?: string;
+  onClick: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors hover:bg-gd-elevated ${
+        danger ? 'text-gd-danger' : 'text-gd-text-secondary'
+      }`}
+    >
+      <span className="min-w-0 flex-1">
+        <span className="block text-[15px] font-medium">{label}</span>
+        {hint ? <span className="mt-0.5 block truncate text-[13px] text-gd-text-subtle">{hint}</span> : null}
+      </span>
+      {!danger ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-none text-gd-text-subtle">
+          <path d="M9 6l6 6-6 6" />
+        </svg>
+      ) : null}
+    </button>
+  );
+}
+
+function SettingsScreen({ vm }: Props) {
+  const settings = vm.settings!;
+  return (
+    <>
+      <div className="mb-4 flex items-center gap-3.5 rounded-[20px] border border-white/[0.06] bg-gd-card p-4">
+        <img src={vm.me.av} alt="" className="h-14 w-14 rounded-full object-cover" />
+        <div className="min-w-0">
+          <p className="m-0 truncate text-base font-semibold">{vm.edit.name}</p>
+          <p className="m-0 truncate text-sm text-gd-text-subtle">{vm.edit.user}</p>
+        </div>
+      </div>
+
+      <section className="rounded-[20px] border border-white/[0.06] bg-gd-card p-1">
+        <SettingsRow label="Alterar e-mail" hint={settings.email} onClick={settings.openChangeEmail} />
+        <div className="mx-3 h-px bg-white/[0.06]" />
+        <SettingsRow label="Alterar senha" hint="••••••••" onClick={settings.openChangePassword} />
+      </section>
+
+      <section className="mt-4 rounded-[20px] border border-white/[0.06] bg-gd-card p-1">
+        <SettingsRow label="Sair da conta" onClick={settings.logout} danger />
+      </section>
+    </>
+  );
+}
+
+function ChangeEmailScreen({ vm }: Props) {
+  return (
+    <>
+      <p className="m-0 mb-5 text-sm leading-normal text-gd-text-subtle">
+        Seu e-mail é usado para login, recuperação de senha e notificações importantes.
+      </p>
+      <label className="block">
+        <span className="mb-1.5 block text-[13px] text-gd-text-muted">Novo e-mail</span>
+        <input
+          type="email"
+          value={vm.emailDraft}
+          onChange={vm.onEmailDraft}
+          autoComplete="email"
+          placeholder="seu@email.com"
+          className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+        />
+      </label>
+      <button
+        type="button"
+        onClick={vm.saveEmail}
+        className="mt-6 h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-white"
+      >
+        Salvar e-mail
+      </button>
+    </>
+  );
+}
+
+function ChangePasswordScreen({ vm }: Props) {
+  return (
+    <>
+      <p className="m-0 mb-5 text-sm leading-normal text-gd-text-subtle">
+        Use pelo menos 8 caracteres. Evite senhas que você já usa em outros serviços.
+      </p>
+      <div className="flex flex-col gap-4">
+        <label className="block">
+          <span className="mb-1.5 block text-[13px] text-gd-text-muted">Senha atual</span>
+          <input
+            type="password"
+            value={vm.passwordDraft.current}
+            onChange={vm.onPasswordCurrent}
+            autoComplete="current-password"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-[13px] text-gd-text-muted">Nova senha</span>
+          <input
+            type="password"
+            value={vm.passwordDraft.next}
+            onChange={vm.onPasswordNext}
+            autoComplete="new-password"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-[13px] text-gd-text-muted">Confirmar nova senha</span>
+          <input
+            type="password"
+            value={vm.passwordDraft.confirm}
+            onChange={vm.onPasswordConfirm}
+            autoComplete="new-password"
+            className="h-12 w-full rounded-[14px] border border-gd-border-strong bg-gd-elevated px-4 text-[15px] text-white outline-none"
+          />
+        </label>
+        <button
+          type="button"
+          onClick={vm.savePassword}
+          className="mt-2 h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-white"
+        >
+          Salvar senha
+        </button>
       </div>
     </>
   );

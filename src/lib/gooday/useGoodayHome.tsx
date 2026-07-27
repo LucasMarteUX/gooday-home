@@ -62,6 +62,9 @@ type ViewKind =
   | 'members'
   | 'follows'
   | 'groups'
+  | 'settings'
+  | 'changeEmail'
+  | 'changePassword'
   | null;
 
 type SheetKind =
@@ -265,6 +268,13 @@ export function useGoodayHome({
     user: '@marcos_v',
     bio: 'Corrida, comida de verdade e rotina leve. Um dia bom por vez.',
     loc: 'São Paulo, SP',
+  });
+  const [accountEmail, setAccountEmail] = useState('marcos.v@email.com');
+  const [emailDraft, setEmailDraft] = useState('');
+  const [passwordDraft, setPasswordDraft] = useState({
+    current: '',
+    next: '',
+    confirm: '',
   });
 
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1184,19 +1194,23 @@ export function useGoodayHome({
             >
               Editar perfil
             </button>
-            {['Configurações', 'Ajuda'].map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => {
-                  closeSheet();
-                  defer(() => flash(l + ' — próxima tela'));
-                }}
-                style={S.row}
-              >
-                {l}
-              </button>
-            ))}
+            <button
+              type="button"
+              onClick={() => go('settings')}
+              style={S.row}
+            >
+              Configurações
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                closeSheet();
+                defer(() => flash('Ajuda — próxima tela'));
+              }}
+              style={S.row}
+            >
+              Ajuda
+            </button>
             <button
               type="button"
               onClick={() => setSheet('logout')}
@@ -1311,6 +1325,9 @@ export function useGoodayHome({
       members: 'Membros',
       follows: 'Seguidores',
       groups: 'Meus grupos',
+      settings: 'Configurações',
+      changeEmail: 'Alterar e-mail',
+      changePassword: 'Alterar senha',
     };
     const q = searchQ.trim().toLowerCase();
     const personKey = view === 'person' ? (viewParam || 'bruna') : null;
@@ -1362,6 +1379,9 @@ export function useGoodayHome({
       viewMembers: view === 'members',
       viewFollows: view === 'follows',
       viewGroups: view === 'groups',
+      viewSettings: view === 'settings',
+      viewChangeEmail: view === 'changeEmail',
+      viewChangePassword: view === 'changePassword',
       back,
       searchQ,
       onSearch: (e: ChangeEvent<HTMLInputElement>) => setSearchQ(e.target.value),
@@ -1597,6 +1617,55 @@ export function useGoodayHome({
         meta: c.groups + ' · ' + c.members,
         open: () => go('group', c.name),
       })),
+      settings: {
+        email: accountEmail,
+        openChangeEmail: () => {
+          setEmailDraft(accountEmail);
+          go('changeEmail');
+        },
+        openChangePassword: () => {
+          setPasswordDraft({ current: '', next: '', confirm: '' });
+          go('changePassword');
+        },
+        logout: () => setSheet('logout'),
+      },
+      emailDraft,
+      onEmailDraft: (e: ChangeEvent<HTMLInputElement>) => setEmailDraft(e.target.value),
+      saveEmail: () => {
+        const next = emailDraft.trim();
+        if (!next || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next)) {
+          flash('Informe um e-mail válido');
+          return;
+        }
+        setAccountEmail(next);
+        back();
+        flash('E-mail atualizado');
+      },
+      passwordDraft,
+      onPasswordCurrent: (e: ChangeEvent<HTMLInputElement>) =>
+        setPasswordDraft((s) => ({ ...s, current: e.target.value })),
+      onPasswordNext: (e: ChangeEvent<HTMLInputElement>) =>
+        setPasswordDraft((s) => ({ ...s, next: e.target.value })),
+      onPasswordConfirm: (e: ChangeEvent<HTMLInputElement>) =>
+        setPasswordDraft((s) => ({ ...s, confirm: e.target.value })),
+      savePassword: () => {
+        const { current, next, confirm } = passwordDraft;
+        if (!current.trim()) {
+          flash('Informe a senha atual');
+          return;
+        }
+        if (next.length < 8) {
+          flash('A nova senha deve ter pelo menos 8 caracteres');
+          return;
+        }
+        if (next !== confirm) {
+          flash('As senhas não coincidem');
+          return;
+        }
+        setPasswordDraft({ current: '', next: '', confirm: '' });
+        back();
+        flash('Senha alterada com sucesso');
+      },
       allGroups: COMMUNITIES.filter((c) => {
         const q = groupsSearchQ.trim().toLowerCase();
         if (q && !c.name.toLowerCase().includes(q) && !c.description.toLowerCase().includes(q)) return false;
@@ -1870,12 +1939,7 @@ export function useGoodayHome({
           if (n.id === 'create') openCreatePicker();
           else if (n.id === 'search') go('search');
           else if (n.id === 'chat') go('messages');
-          else if (n.id === 'groups') {
-            setRailTab('groups');
-            setView(null);
-            setViewParam(null);
-            setStack([]);
-          }
+          else if (n.id === 'groups') go('groups');
           else if (n.id === 'saved') go('profile');
           else {
             setView(null);
@@ -1998,10 +2062,7 @@ export function useGoodayHome({
       openCreateStory: openCreateStorySheet,
       openNotifications: () => setSheet('notifications'),
       openAvatarMenu: () => setSheet('avatar'),
-      openSettings: () => {
-        setSheet(null);
-        defer(() => flash('Configurações — próxima tela'));
-      },
+      openSettings: () => go('settings'),
       closeStory,
       storyNext,
       storyPrev,
@@ -2092,10 +2153,7 @@ export function useGoodayHome({
                 {
                   label: 'Configurações',
                   color: '#E1E4E8',
-                  go: () => {
-                    setSheet(null);
-                    defer(() => flash('Configurações — próxima tela'));
-                  },
+                  go: () => go('settings'),
                 },
                 {
                   label: 'Ajuda',
@@ -2150,6 +2208,9 @@ export function useGoodayHome({
       joined,
       profileTab,
       edit,
+      accountEmail,
+      emailDraft,
+      passwordDraft,
       contextMessage,
       showCommunities,
       reactionsEnabled,
