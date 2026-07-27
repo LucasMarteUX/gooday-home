@@ -99,7 +99,7 @@ function FilterIcon({ active }: { active?: boolean }) {
 
 function GroupsList({ vm }: Props) {
   return (
-    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3 pb-2" alwaysScrollable>
+    <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3 pb-6" alwaysScrollable>
       {vm.railCommunities.length === 0 ? (
         <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
       ) : (
