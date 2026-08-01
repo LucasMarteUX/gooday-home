@@ -2,6 +2,8 @@
 
 import type { ReactNode } from 'react';
 
+export { GoodayLogo } from '@/components/gooday/GoodayLogo';
+
 /** Tema único: light mode Gooday. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return children;
@@ -16,16 +18,4 @@ export function useTheme() {
     toggleTheme: () => undefined,
     setTheme: (_theme: 'light' | 'dark') => undefined,
   };
-}
-
-/** Logo Gooday (anexo) — preto no light. */
-export function GoodayLogo({ className = '' }: { className?: string }) {
-  return (
-    <img
-      src="/uploads/gooday-logo.png"
-      alt="Gooday"
-      className={`gd-logo ${className}`}
-      draggable={false}
-    />
-  );
 }

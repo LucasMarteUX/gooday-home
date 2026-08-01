@@ -10,7 +10,7 @@ type Props = {
 export function HeaderMobile({ vm }: Props) {
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between gap-3 bg-[color:var(--gd-header-mobile)] px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] min-[800px]:hidden">
-      <GoodayLogo className="h-8 w-auto min-[400px]:h-9" />
+      <GoodayLogo className="h-[18px] w-auto" />
       <div className="flex items-center gap-0.5">
         <button
           type="button"

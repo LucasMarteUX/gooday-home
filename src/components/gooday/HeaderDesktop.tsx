@@ -10,7 +10,7 @@ type Props = {
 export function HeaderDesktop({ vm }: Props) {
   return (
     <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-desktop)] px-7 py-2.5 backdrop-blur-2xl min-[800px]:flex">
-      <GoodayLogo className="h-9 w-auto" />
+      <GoodayLogo className="h-5 w-auto" />
       <div className="flex h-10 max-w-[480px] flex-1 items-center gap-2 rounded-full border border-[color:var(--gd-hairline-strong)] bg-white py-0 pl-3.5 pr-1">
         <input
           readOnly

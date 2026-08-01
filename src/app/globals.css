@@ -137,14 +137,13 @@
   will-change: transform, opacity;
 }
 
-/* Logo wordmark preto (light-only) */
+/* Logo vetorial — sem filter/mask (mantém nitidez) */
 .gd-logo {
   display: block;
   flex: none;
   width: auto;
-  height: auto;
-  object-fit: contain;
-  object-position: left center;
+  color: #12161c;
+  overflow: visible;
 }
 
 .gd-hover {
