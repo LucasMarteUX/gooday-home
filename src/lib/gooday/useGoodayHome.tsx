@@ -24,7 +24,6 @@ import {
   EXTRA_KEYS,
   USER_META,
   GROUP_FILTERS,
-  CREATE_MEDIA_SAMPLES,
   type GroupFilterId,
   type CommunityData,
 } from './data';
@@ -35,7 +34,9 @@ import {
   type GoodayIconName,
 } from '@/components/gooday/icons';
 import { CreateComposer, CreatePicker } from '@/components/gooday/CreateComposer';
+import type { MediaCaptureResult } from '@/components/gooday/media/MediaCaptureOverlay';
 import { EmojiPicker } from '@/components/gooday/EmojiPicker';
+import { removeUploadedMedia, revokePreviewUrl, uploadErrorMessage, uploadMedia } from './media';
 import { useBodyScrollLock } from './uiGuards';
 
 // ---------------------------------------------------------------------------
@@ -256,12 +257,14 @@ export function useGoodayHome({
   const [createDraft, setCreateDraft] = useState('');
   const [createMedia, setCreateMedia] = useState('');
   const [createMediaAlt, setCreateMediaAlt] = useState('');
+  const [createMediaFile, setCreateMediaFile] = useState<File | null>(null);
   const [createAudience, setCreateAudience] = useState('Todos');
   const [createLocation, setCreateLocation] = useState('');
   const [createGroup, setCreateGroup] = useState('');
   const [createTagged, setCreateTagged] = useState<string[]>([]);
-  const [createShowMediaPicker, setCreateShowMediaPicker] = useState(false);
   const [createMode, setCreateMode] = useState<'post' | 'story'>('post');
+  const [mediaCaptureOpen, setMediaCaptureOpen] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [groupsSearchQ, setGroupsSearchQ] = useState('');
   const [groupsFilter, setGroupsFilter] = useState<GroupFilterId>('all');
   const [peopleSearchQ, setPeopleSearchQ] = useState('');
@@ -303,9 +306,10 @@ export function useGoodayHome({
   const closeSheet = useCallback(() => {
     setCommentEmojiOpen(false);
     setSheet(null);
+    setMediaCaptureOpen(false);
   }, []);
 
-  useBodyScrollLock(!!sheet || storyIdx !== null || !!view);
+  useBodyScrollLock(!!sheet || storyIdx !== null || !!view || mediaCaptureOpen);
 
   const go = useCallback((kind: ViewKind, param?: string | null) => {
     setStack((s) => [...s, { kind: viewRef.current, param: viewParamRef.current }]);
@@ -552,71 +556,176 @@ export function useGoodayHome({
     );
   }, [comment]);
 
-  const publish = useCallback(() => {
+  const clearCreateMedia = useCallback(() => {
+    revokePreviewUrl(createMedia);
+    setCreateMedia('');
+    setCreateMediaAlt('');
+    setCreateMediaFile(null);
+  }, [createMedia]);
+
+  const resetCreateForm = useCallback((options?: { revokeMedia?: boolean }) => {
+    // Após publicar, o feed/story continua usando o blob — não revogar.
+    if (options?.revokeMedia !== false) {
+      revokePreviewUrl(createMedia);
+    }
+    setCreateDraft('');
+    setCreateMedia('');
+    setCreateMediaAlt('');
+    setCreateMediaFile(null);
+    setCreateGroup('');
+    setCreateTagged([]);
+    setCreateLocation('');
+    setCreateAudience('Todos');
+  }, [createMedia]);
+
+  const applyCapturedMedia = useCallback(
+    (result: MediaCaptureResult) => {
+      revokePreviewUrl(createMedia);
+      setCreateMedia(result.previewUrl);
+      setCreateMediaFile(result.file);
+      setCreateMediaAlt(createMode === 'story' ? 'Story' : 'Publicação');
+      setMediaCaptureOpen(false);
+      if (createMode === 'story') setSheet('story');
+    },
+    [createMedia, createMode],
+  );
+
+  const openMediaCapture = useCallback(() => {
+    setMediaCaptureOpen(true);
+  }, []);
+
+  const closeMediaCapture = useCallback(() => {
+    setMediaCaptureOpen(false);
+    if (createMode === 'story' && !createMedia) {
+      setSheet(null);
+    }
+  }, [createMode, createMedia]);
+
+  const publish = useCallback(async () => {
     const t = createDraft.trim();
     if (!t && !createMedia) {
       flash('Adicione uma foto ou legenda antes de publicar');
       return;
     }
-    const post: Post = {
-      id: 'n' + Date.now(),
-      u: 'me',
-      time: 'agora',
-      group: createGroup,
-      text: t,
-      tags: parseTags(t),
-      img: createMedia,
-      alt: createMediaAlt || 'Publicação',
-      likes: 0,
-      liked: false,
-      saved: false,
-      comments: 0,
-      reactions: {},
-      commenters: [],
-      thread: [],
-    };
-    setSheet(null);
-    setCreateDraft('');
-    setCreateMedia('');
-    setCreateMediaAlt('');
-    setCreateGroup('');
-    setCreateTagged([]);
-    setCreateShowMediaPicker(false);
-    setPosts((s) => [post, ...s]);
-    defer(() => flash('Publicação compartilhada'));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [createDraft, createMedia, createMediaAlt, createGroup, flash]);
+    if (isPublishing) return;
 
-  const publishStory = useCallback(() => {
-    if (!createMedia && !createDraft.trim()) {
-      flash('Adicione uma foto ou legenda ao story');
+    setIsPublishing(true);
+    let uploadedPath: string | null = null;
+    let uploadedBucket: string | null = null;
+
+    try {
+      let imageUrl = createMedia;
+      if (createMediaFile) {
+        const entityId = crypto.randomUUID();
+        const uploaded = await uploadMedia({
+          file: createMediaFile,
+          kind: 'post',
+          entityId,
+        });
+        uploadedPath = uploaded.path;
+        uploadedBucket = uploaded.bucket;
+        if (uploaded.bucket !== 'local' && uploaded.publicUrl) {
+          imageUrl = uploaded.publicUrl;
+        }
+      }
+
+      const post: Post = {
+        id: 'n' + Date.now(),
+        u: 'me',
+        time: 'agora',
+        group: createGroup,
+        text: t,
+        tags: parseTags(t),
+        img: imageUrl,
+        alt: createMediaAlt || 'Publicação',
+        likes: 0,
+        liked: false,
+        saved: false,
+        comments: 0,
+        reactions: {},
+        commenters: [],
+        thread: [],
+      };
+
+      setSheet(null);
+      resetCreateForm({ revokeMedia: false });
+      setPosts((s) => [post, ...s]);
+      defer(() => flash('Publicação compartilhada'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      if (uploadedBucket && uploadedPath) {
+        void removeUploadedMedia(uploadedBucket, uploadedPath);
+      }
+      flash(uploadErrorMessage(error));
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [
+    createDraft,
+    createMedia,
+    createMediaAlt,
+    createMediaFile,
+    createGroup,
+    flash,
+    isPublishing,
+    resetCreateForm,
+  ]);
+
+  const publishStory = useCallback(async () => {
+    if (!createMedia) {
+      flash('Adicione uma foto ao story');
       return;
     }
-    const sample = CREATE_MEDIA_SAMPLES.find((m) => m.img === createMedia);
-    const story: StoryItem = {
-      u: 'me',
-      img: createMedia || CREATE_MEDIA_SAMPLES[0].img,
-      alt: createMediaAlt || sample?.alt || createDraft.trim() || 'Seu story',
-      time: 'agora',
-      seen: false,
-    };
-    setStoriesList((s) => [story, ...s]);
-    setSheet(null);
-    setCreateDraft('');
-    setCreateMedia('');
-    setCreateMediaAlt('');
-    setCreateShowMediaPicker(false);
-    defer(() => flash('Story publicado'));
-  }, [createDraft, createMedia, createMediaAlt, flash]);
+    if (isPublishing) return;
+
+    setIsPublishing(true);
+    let uploadedPath: string | null = null;
+    let uploadedBucket: string | null = null;
+
+    try {
+      let imageUrl = createMedia;
+      if (createMediaFile) {
+        const entityId = crypto.randomUUID();
+        const uploaded = await uploadMedia({
+          file: createMediaFile,
+          kind: 'story',
+          entityId,
+        });
+        uploadedPath = uploaded.path;
+        uploadedBucket = uploaded.bucket;
+        if (uploaded.bucket !== 'local' && uploaded.publicUrl) {
+          imageUrl = uploaded.publicUrl;
+        }
+      }
+
+      const story: StoryItem = {
+        u: 'me',
+        img: imageUrl,
+        alt: createMediaAlt || createDraft.trim() || 'Seu story',
+        time: 'agora',
+        seen: false,
+      };
+
+      setStoriesList((s) => [story, ...s]);
+      setSheet(null);
+      resetCreateForm({ revokeMedia: false });
+      defer(() => flash('Story publicado'));
+    } catch (error) {
+      if (uploadedBucket && uploadedPath) {
+        void removeUploadedMedia(uploadedBucket, uploadedPath);
+      }
+      flash(uploadErrorMessage(error));
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [createDraft, createMedia, createMediaAlt, createMediaFile, flash, isPublishing, resetCreateForm]);
 
   const openCreatePicker = useCallback(() => {
     setCreateMode('post');
-    setCreateDraft('');
-    setCreateMedia('');
-    setCreateMediaAlt('');
-    setCreateShowMediaPicker(false);
+    resetCreateForm();
+    setMediaCaptureOpen(false);
     setSheet('createPicker');
-  }, []);
+  }, [resetCreateForm]);
 
   const openCreatePost = useCallback(() => {
     setCreateMode('post');
@@ -625,12 +734,10 @@ export function useGoodayHome({
 
   const openCreateStorySheet = useCallback(() => {
     setCreateMode('story');
-    setCreateDraft('');
-    setCreateMedia('');
-    setCreateMediaAlt('');
-    setCreateShowMediaPicker(false);
-    setSheet('story');
-  }, []);
+    resetCreateForm();
+    setSheet(null);
+    setMediaCaptureOpen(true);
+  }, [resetCreateForm]);
 
   useEffect(() => {
     const onResize = () => setW(window.innerWidth);
@@ -669,21 +776,14 @@ export function useGoodayHome({
           draft={createDraft}
           onDraft={(e) => setCreateDraft(e.target.value)}
           media={createMedia}
-          mediaAlt={createMediaAlt}
           audience={createAudience}
           location={createLocation}
           group={createGroup}
           taggedLabel={createTagged.length ? `${createTagged.length} pessoa(s)` : 'Adicionar'}
-          showMediaPicker={createShowMediaPicker}
-          mediaSamples={CREATE_MEDIA_SAMPLES}
           meAv={U.me.av}
-          pickMedia={() => setCreateShowMediaPicker((v) => !v)}
-          selectMedia={(i) => {
-            const sample = CREATE_MEDIA_SAMPLES[i];
-            setCreateMedia(sample.img);
-            setCreateMediaAlt(sample.alt);
-            setCreateShowMediaPicker(false);
-          }}
+          isPublishing={isPublishing}
+          pickMedia={openMediaCapture}
+          clearMedia={clearCreateMedia}
           tagPeople={() => {
             setCreateTagged(['renata', 'tiago']);
             flash('Pessoas marcadas');
@@ -700,8 +800,8 @@ export function useGoodayHome({
             const next = COMMUNITIES[(idx + 1) % COMMUNITIES.length];
             setCreateGroup(next.name === createGroup ? '' : next.name);
           }}
-          publishPost={publish}
-          publishStory={publishStory}
+          publishPost={() => void publish()}
+          publishStory={() => void publishStory()}
         />
       );
     }
@@ -1351,13 +1451,12 @@ export function useGoodayHome({
     activeId,
     createDraft,
     createMedia,
-    createMediaAlt,
     createAudience,
     createLocation,
     createGroup,
     createTagged,
-    createShowMediaPicker,
     createMode,
+    isPublishing,
     comment,
     commentEmojiOpen,
     w,
@@ -1367,6 +1466,8 @@ export function useGoodayHome({
     publishStory,
     openCreatePost,
     openCreateStorySheet,
+    openMediaCapture,
+    clearCreateMedia,
     user,
     addComment,
     toggleLike,
@@ -2142,6 +2243,13 @@ export function useGoodayHome({
       storyNext,
       storyPrev,
       closeSheet,
+      mediaCapture: {
+        open: mediaCaptureOpen,
+        mode: createMode,
+        onClose: closeMediaCapture,
+        onConfirm: applyCapturedMedia,
+        onError: (message: string) => flash(message),
+      },
       stop: (e: MouseEvent) => e.stopPropagation(),
       rowGridStyle: isDesktop
         ? ({
@@ -2317,6 +2425,10 @@ export function useGoodayHome({
       toggleJoin,
       sendMsg,
       closeSheet,
+      mediaCaptureOpen,
+      createMode,
+      closeMediaCapture,
+      applyCapturedMedia,
     ],
   );
 

@@ -13,6 +13,7 @@ import { StoryViewer } from './StoryViewer';
 import { SheetModal } from './SheetModal';
 import { AvatarMenu } from './AvatarMenu';
 import { Toast } from './Toast';
+import { MediaCaptureOverlay } from './media/MediaCaptureOverlay';
 
 export function GoodayHome() {
   const { vm } = useGoodayHome();
@@ -65,6 +66,13 @@ export function GoodayHome() {
       <StoryViewer vm={vm} />
       <AvatarMenu vm={vm} />
       <SheetModal vm={vm} />
+      <MediaCaptureOverlay
+        open={vm.mediaCapture.open}
+        mode={vm.mediaCapture.mode}
+        onClose={vm.mediaCapture.onClose}
+        onConfirm={vm.mediaCapture.onConfirm}
+        onError={vm.mediaCapture.onError}
+      />
       <Toast vm={vm} />
     </div>
   );

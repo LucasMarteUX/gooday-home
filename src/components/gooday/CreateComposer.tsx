@@ -7,16 +7,14 @@ export type CreateComposerProps = {
   draft: string;
   onDraft: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
   media: string;
-  mediaAlt: string;
   audience: string;
   location: string;
   group: string;
   taggedLabel: string;
-  showMediaPicker: boolean;
-  mediaSamples: { img: string; alt: string }[];
   meAv: string;
+  isPublishing?: boolean;
   pickMedia: () => void;
-  selectMedia: (index: number) => void;
+  clearMedia: () => void;
   tagPeople: () => void;
   addLocation: () => void;
   setAudience: () => void;
@@ -110,14 +108,26 @@ export function CreatePicker({ onPost, onStory }: PickerProps) {
 
 export function CreateComposer(props: CreateComposerProps) {
   const isStory = props.mode === 'story';
-  const canPublish = props.draft.trim().length > 0 || !!props.media;
+  const canPublish = !props.isPublishing && (props.draft.trim().length > 0 || !!props.media);
 
   return (
     <div className="flex flex-col gap-4">
       {isStory ? (
         <div className="relative mx-auto aspect-[9/16] w-full max-w-[280px] overflow-hidden rounded-2xl bg-gd-elevated">
           {props.media ? (
-            <img src={props.media} alt="" className="h-full w-full object-cover" />
+            <>
+              <button type="button" onClick={props.pickMedia} className="h-full w-full" aria-label="Trocar foto do story">
+                <img src={props.media} alt="" className="h-full w-full object-cover" />
+              </button>
+              <button
+                type="button"
+                onClick={props.clearMedia}
+                aria-label="Remover foto"
+                className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-black/55 text-white backdrop-blur"
+              >
+                ✕
+              </button>
+            </>
           ) : (
             <button
               type="button"
@@ -125,34 +135,47 @@ export function CreateComposer(props: CreateComposerProps) {
               className="flex h-full w-full flex-col items-center justify-center gap-2 text-gd-text-muted"
             >
               <IconGrid />
-              <span className="text-sm font-medium">Toque para adicionar</span>
+              <span className="text-sm font-medium">Tirar foto ou galeria</span>
             </button>
           )}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-12">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-12">
             <input
               value={props.draft}
               onChange={props.onDraft}
               placeholder="Escreva uma legenda..."
-              className="w-full border-none bg-transparent text-[15px] text-gd-text outline-none placeholder:text-gd-text-subtle"
+              className="pointer-events-auto w-full border-none bg-transparent text-[15px] text-white outline-none placeholder:text-white/55"
             />
           </div>
         </div>
       ) : (
         <>
-          <button
-            type="button"
-            onClick={props.pickMedia}
-            className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gd-elevated"
-          >
+          <div className="relative">
+            <button
+              type="button"
+              onClick={props.pickMedia}
+              className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gd-elevated"
+              aria-label={props.media ? 'Trocar foto' : 'Adicionar foto'}
+            >
+              {props.media ? (
+                <img src={props.media} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <span className="flex h-full flex-col items-center justify-center gap-2 text-gd-text-muted">
+                  <IconGrid />
+                  <span className="text-sm font-medium">Tirar foto ou galeria</span>
+                </span>
+              )}
+            </button>
             {props.media ? (
-              <img src={props.media} alt="" className="h-full w-full object-cover" />
-            ) : (
-              <span className="flex h-full flex-col items-center justify-center gap-2 text-gd-text-muted">
-                <IconGrid />
-                <span className="text-sm font-medium">Selecionar da galeria</span>
-              </span>
-            )}
-          </button>
+              <button
+                type="button"
+                onClick={props.clearMedia}
+                aria-label="Remover foto"
+                className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-black/55 text-white backdrop-blur"
+              >
+                ✕
+              </button>
+            ) : null}
+          </div>
           <div className="flex gap-3">
             <img src={props.meAv} alt="" className="h-10 w-10 flex-none rounded-full object-cover" />
             <textarea
@@ -176,25 +199,15 @@ export function CreateComposer(props: CreateComposerProps) {
         </div>
       ) : null}
 
-      {props.showMediaPicker ? (
-        <div className="grid grid-cols-3 gap-1.5">
-          {props.mediaSamples.map((m, i) => (
-            <button key={i} type="button" onClick={() => props.selectMedia(i)} className="aspect-square overflow-hidden rounded-lg">
-              <img src={m.img} alt={m.alt} className="h-full w-full object-cover" />
-            </button>
-          ))}
-        </div>
-      ) : null}
-
       <div className="flex items-center justify-between gap-3 border-t border-gd-elevated pt-3">
         <span className="text-[13px] text-gd-text-subtle">{props.draft.length}/2.200</span>
         <button
           type="button"
           onClick={isStory ? props.publishStory : props.publishPost}
           disabled={!canPublish}
-          className="h-11 rounded-xl bg-gd-brand px-6 text-[14px] font-semibold text-white disabled:opacity-40"
+          className="h-11 min-w-[140px] rounded-xl bg-gd-brand px-6 text-[14px] font-semibold text-white disabled:opacity-40"
         >
-          {isStory ? 'Compartilhar no story' : 'Compartilhar'}
+          {props.isPublishing ? 'Publicando…' : isStory ? 'Compartilhar no story' : 'Compartilhar'}
         </button>
       </div>
     </div>
