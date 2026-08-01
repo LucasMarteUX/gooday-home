@@ -61,8 +61,8 @@ export function HeartIcon({ size = 26, className }: GoodayIconProps) {
 export function PinIcon({ size = 26, className }: GoodayIconProps) {
   return (
     <svg {...svgProps(size, className)}>
-      <path d="M12 21v-6" />
-      <path d="M9.2 3.8l5.6 0a1.2 1.2 0 011.1.7l1.3 2.7-3.2 3.2.8 5.1-3.6-2.2-3.6 2.2.8-5.1-3.2-3.2 1.3-2.7a1.2 1.2 0 011.1-.7z" />
+      <path d="M12 17v5" />
+      <path d="M15 4H9a1 1 0 00-1 1v1.2c0 .7.3 1.3.8 1.7l1.4 1.2c.4.3.6.8.6 1.3V12a2 2 0 01-1.2 1.8l-2.4 1A1.5 1.5 0 006 16.2V17h12v-.8a1.5 1.5 0 00-.8-1.4l-2.4-1A2 2 0 0114 12v-1.6c0-.5.2-1 .6-1.3l1.4-1.2c.5-.4.8-1 .8-1.7V5a1 1 0 00-1-1z" />
     </svg>
   );
 }

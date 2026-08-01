@@ -22,8 +22,8 @@
   --gd-accent: #e7fe8e;
   --gd-success: #1fa868;
   --gd-danger: #e04552;
-  --gd-header-mobile: #e7fe8e;
-  --gd-header-desktop: rgba(236, 237, 245, 0.94);
+  --gd-header-mobile: #ffffff;
+  --gd-header-desktop: rgba(255, 255, 255, 0.94);
   --gd-nav-float: #ffffff;
   --gd-overlay: rgba(255, 255, 255, 0.97);
   --gd-screen: #ffffff;
@@ -137,13 +137,22 @@
   will-change: transform, opacity;
 }
 
-/* Logo vetorial — sem filter/mask (mantém nitidez) */
+/* Logo PNG — força altura do navbar (não usa 189×80 nativo) */
 .gd-logo {
   display: block;
   flex: none;
-  width: auto;
-  color: #12161c;
-  overflow: visible;
+  width: auto !important;
+  height: 22px !important;
+  max-height: 22px !important;
+  object-fit: contain;
+  object-position: left center;
+}
+
+@media (min-width: 800px) {
+  .gd-logo {
+    height: 24px !important;
+    max-height: 24px !important;
+  }
 }
 
 .gd-hover {
