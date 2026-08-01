@@ -167,14 +167,19 @@
   will-change: transform, opacity;
 }
 
-/* Logo branco no dark; azul da marca no light */
+/* Logo via mask — branco no dark, brand (#4667F5) no light */
 .gd-logo {
-  filter: none;
+  display: block;
+  flex: none;
+  aspect-ratio: 113 / 48;
+  width: auto;
+  background-color: #ffffff;
+  -webkit-mask: url('/uploads/logotipo-gooday.png') left center / contain no-repeat;
+  mask: url('/uploads/logotipo-gooday.png') left center / contain no-repeat;
 }
 
-[data-theme="light"] .gd-logo {
-  /* Branco → brand Gooday (#4667f5) */
-  filter: brightness(0) saturate(100%) invert(35%) sepia(78%) saturate(1800%) hue-rotate(214deg) brightness(0.98) contrast(1.05);
+[data-theme='light'] .gd-logo {
+  background-color: #4667f5;
 }
 
 .gd-hover {

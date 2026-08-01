@@ -13,7 +13,7 @@ export function HeaderMobile({ vm }: Props) {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-mobile)] px-4 pb-2.5 pt-[max(10px,env(safe-area-inset-top))] backdrop-blur-2xl min-[800px]:hidden">
-      <GoodayLogo className="h-[26px]" />
+      <GoodayLogo className="h-9 min-[400px]:h-10" />
       <div className="flex items-center gap-0.5">
         <button
           type="button"

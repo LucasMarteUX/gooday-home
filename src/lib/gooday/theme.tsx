@@ -85,13 +85,7 @@ export function useTheme() {
   return ctx;
 }
 
-/** Logo Gooday — cor da marca no light mode, branco no dark. */
+/** Logo Gooday — branco no dark, brand (#4667F5) no light (via CSS mask). */
 export function GoodayLogo({ className = '' }: { className?: string }) {
-  return (
-    <img
-      src="/uploads/logotipo%20gooday.png"
-      alt="Gooday"
-      className={`gd-logo block w-auto ${className}`}
-    />
-  );
+  return <span role="img" aria-label="Gooday" className={`gd-logo ${className}`} />;
 }

@@ -35,7 +35,7 @@ function ThemeToggle() {
 export function HeaderDesktop({ vm }: Props) {
   return (
     <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-desktop)] px-7 py-2 backdrop-blur-2xl min-[800px]:flex">
-      <GoodayLogo className="h-7" />
+      <GoodayLogo className="h-8" />
       <div className="flex h-9 max-w-[480px] flex-1 items-center gap-2 rounded-full border border-[color:var(--gd-hairline-strong)] bg-gd-surface/80 py-0 pl-3.5 pr-1">
         <input
           readOnly
