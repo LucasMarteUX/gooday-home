@@ -54,7 +54,9 @@ export async function uploadMedia(options: UploadOptions): Promise<UploadResult>
     const entityId = options.entityId || crypto.randomUUID();
     const ext = extensionForMime(file.type || 'image/jpeg');
     const fileName = `${crypto.randomUUID()}.${ext}`;
-    const path = `${kind === 'post' ? 'posts' : 'stories'}/${userId}/${entityId}/${fileName}`;
+    // RLS dos buckets exige 1º segmento = auth.uid()
+    // path: {userId}/{entityId}/{fileName}
+    const path = `${userId}/${entityId}/${fileName}`;
     const bucket = BUCKETS[kind];
 
     const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, {
