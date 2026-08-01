@@ -137,21 +137,21 @@
   will-change: transform, opacity;
 }
 
-/* Logo PNG — força altura do navbar (não usa 189×80 nativo) */
+/* Logo PNG — altura do navbar (não usa 189×80 nativo) */
 .gd-logo {
   display: block;
   flex: none;
   width: auto !important;
-  height: 22px !important;
-  max-height: 22px !important;
+  height: 28px !important;
+  max-height: 28px !important;
   object-fit: contain;
   object-position: left center;
 }
 
 @media (min-width: 800px) {
   .gd-logo {
-    height: 24px !important;
-    max-height: 24px !important;
+    height: 32px !important;
+    max-height: 32px !important;
   }
 }
 
