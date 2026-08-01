@@ -1,91 +1,31 @@
 'use client';
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import type { ReactNode } from 'react';
 
-export type ThemeMode = 'dark' | 'light';
-
-type ThemeContextValue = {
-  theme: ThemeMode;
-  isLight: boolean;
-  isDark: boolean;
-  toggleTheme: () => void;
-  setTheme: (theme: ThemeMode) => void;
-};
-
-const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-const STORAGE_KEY = 'gooday-theme';
-
-function applyTheme(theme: ThemeMode) {
-  const root = document.documentElement;
-  root.dataset.theme = theme;
-  root.style.colorScheme = theme;
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) {
-    meta.setAttribute('content', theme === 'light' ? '#dfe4ea' : '#0e1216');
-  }
-}
-
-function readStoredTheme(): ThemeMode {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'light' || stored === 'dark') return stored;
-  } catch {
-    /* ignore */
-  }
-  return 'dark';
-}
-
+/** Tema único: light mode Gooday. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>('dark');
-
-  useEffect(() => {
-    const initial = readStoredTheme();
-    setThemeState(initial);
-    applyTheme(initial);
-  }, []);
-
-  const setTheme = useCallback((next: ThemeMode) => {
-    setThemeState(next);
-    applyTheme(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }, [setTheme, theme]);
-
-  const value: ThemeContextValue = {
-    theme,
-    isLight: theme === 'light',
-    isDark: theme === 'dark',
-    toggleTheme,
-    setTheme,
-  };
-
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return children;
 }
 
+/** @deprecated Mantido para imports legados — sempre light. */
 export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) {
-    throw new Error('useTheme must be used within ThemeProvider');
-  }
-  return ctx;
+  return {
+    theme: 'light' as const,
+    isLight: true,
+    isDark: false,
+    toggleTheme: () => undefined,
+    setTheme: (_theme: 'light' | 'dark') => undefined,
+  };
 }
 
-/** Logo Gooday — branco no dark, brand (#4667F5) no light (via CSS mask). */
+/** Logo Gooday (anexo) — preto no light. */
 export function GoodayLogo({ className = '' }: { className?: string }) {
-  return <span role="img" aria-label="Gooday" className={`gd-logo ${className}`} />;
+  return (
+    <img
+      src="/uploads/gooday-logo.png"
+      alt="Gooday"
+      className={`gd-logo ${className}`}
+      draggable={false}
+    />
+  );
 }

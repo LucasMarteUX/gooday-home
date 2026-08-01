@@ -235,7 +235,7 @@ export function RightRail({ vm }: Props) {
                 type="button"
                 onClick={f.go}
                 className={`h-7 flex-none rounded-full px-3 text-[11px] font-semibold whitespace-nowrap ${
-                  f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+                  f.active ? 'bg-gd-brand text-gd-on-brand' : 'bg-gd-surface text-gd-text-muted'
                 }`}
               >
                 {f.label}

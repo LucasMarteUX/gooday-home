@@ -205,7 +205,7 @@ export function CreateComposer(props: CreateComposerProps) {
           type="button"
           onClick={isStory ? props.publishStory : props.publishPost}
           disabled={!canPublish}
-          className="h-11 min-w-[140px] rounded-xl bg-gd-brand px-6 text-[14px] font-semibold text-white disabled:opacity-40"
+          className="h-11 min-w-[140px] rounded-xl bg-gd-brand px-6 text-[14px] font-semibold text-gd-on-brand disabled:opacity-40"
         >
           {props.isPublishing ? 'Publicando…' : isStory ? 'Compartilhar no story' : 'Compartilhar'}
         </button>

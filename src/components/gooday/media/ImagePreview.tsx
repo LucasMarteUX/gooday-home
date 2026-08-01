@@ -61,7 +61,7 @@ export function ImagePreview({ mode, src, busy, onRetake, onConfirm, onClose }: 
           type="button"
           onClick={onConfirm}
           disabled={busy}
-          className="h-12 flex-1 rounded-2xl bg-gd-brand text-[15px] font-semibold text-white disabled:opacity-40"
+          className="h-12 flex-1 rounded-2xl bg-gd-brand text-[15px] font-semibold text-gd-on-brand disabled:opacity-40"
         >
           Usar foto
         </button>

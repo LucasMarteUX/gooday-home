@@ -220,7 +220,7 @@ export function StoryViewer({ vm }: Props) {
                 type="button"
                 onClick={sendReply}
                 aria-label="Enviar resposta"
-                className="grid h-8 w-8 flex-none place-items-center rounded-full bg-gd-brand text-white"
+                className="grid h-8 w-8 flex-none place-items-center rounded-full bg-gd-brand text-gd-on-brand"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 12l16-8-6 16-3-6z" />

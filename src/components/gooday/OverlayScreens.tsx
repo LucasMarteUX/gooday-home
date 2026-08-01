@@ -1,7 +1,5 @@
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
 import { ScrollFadeRow } from "./StickySidebarColumn";
-import { useTheme } from "@/lib/gooday/theme";
-
 type Props = {
   vm: GoodayHomeViewModel;
 };
@@ -167,7 +165,7 @@ function PersonScreen({ vm }: Props) {
         {person.interests.map((i, idx) => (
           <span
             key={idx}
-            className="inline-flex h-7 items-center rounded-full border border-[#3653D8] px-3 text-xs text-gd-brand-soft"
+            className="inline-flex h-7 items-center rounded-full border border-gd-brand bg-[rgba(231,254,142,0.28)] px-3 text-xs text-gd-text"
           >
             {i.label}
           </span>
@@ -191,7 +189,7 @@ function PersonScreen({ vm }: Props) {
         <button
           type="button"
           onClick={person.toggleFollow}
-          className="h-12 flex-1 rounded-[14px] text-sm font-semibold text-white"
+          className="h-12 flex-1 rounded-[14px] text-sm font-semibold text-gd-on-brand"
           style={{ background: person.followBg }}
         >
           {person.following_state}
@@ -254,7 +252,7 @@ function GroupScreen({ vm }: Props) {
       <button
         type="button"
         onClick={group.join}
-        className="mt-4 h-12 w-full rounded-[14px] text-sm font-semibold text-white"
+        className="mt-4 h-12 w-full rounded-[14px] text-sm font-semibold text-gd-on-brand"
         style={{ background: group.joinBg }}
       >
         {group.joinLabel}
@@ -359,7 +357,7 @@ function MessagesScreen({ vm }: Props) {
           <span className="flex-none text-right">
             <span className="block text-xs text-gd-text-subtle">{c.time}</span>
             {c.unread ? (
-              <span className="mt-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gd-brand px-1.5 text-[11px] font-semibold text-white">
+              <span className="mt-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gd-brand px-1.5 text-[11px] font-semibold text-gd-on-brand">
                 {c.unreadCount}
               </span>
             ) : null}
@@ -447,7 +445,7 @@ function ProfileScreen({ vm }: Props) {
         <button
           type="button"
           onClick={vm.profile.editProfile}
-          className="h-12 flex-1 rounded-[14px] bg-gd-brand text-sm font-semibold text-white"
+          className="h-12 flex-1 rounded-[14px] bg-gd-brand text-sm font-semibold text-gd-on-brand"
         >
           Editar perfil
         </button>
@@ -536,7 +534,7 @@ function EditProfileScreen({ vm }: Props) {
         <button
           type="button"
           onClick={vm.saveProfile}
-          className="h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-white"
+          className="h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-gd-on-brand"
         >
           Salvar alterações
         </button>
@@ -579,7 +577,7 @@ function FollowsScreen({ vm }: Props) {
           <button
             type="button"
             onClick={f.follow}
-            className="h-[34px] flex-none rounded-full px-3.5 text-[13px] font-semibold text-white"
+            className="h-[34px] flex-none rounded-full px-3.5 text-[13px] font-semibold text-gd-on-brand"
             style={{ background: f.btnBg }}
           >
             {f.btnLabel}
@@ -617,7 +615,7 @@ function GroupsScreen({ vm }: Props) {
               type="button"
               onClick={f.go}
               className={`h-8 flex-none rounded-full px-3.5 text-[12px] font-semibold whitespace-nowrap ${
-                f.active ? 'bg-gd-brand text-white' : 'bg-gd-surface text-gd-text-muted'
+                f.active ? 'bg-gd-brand text-gd-on-brand' : 'bg-gd-surface text-gd-text-muted'
               }`}
             >
               {f.label}
@@ -698,7 +696,6 @@ function SettingsRow({
 
 function SettingsScreen({ vm }: Props) {
   const settings = vm.settings!;
-  const { theme, setTheme } = useTheme();
   return (
     <>
       <div className="mb-4 flex items-center gap-3.5 rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-4">
@@ -710,32 +707,6 @@ function SettingsScreen({ vm }: Props) {
       </div>
 
       <section className="rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-1">
-        <p className="px-3 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-gd-text-subtle">
-          Aparência
-        </p>
-        <div className="flex gap-2 px-2 pb-2">
-          <button
-            type="button"
-            onClick={() => setTheme('light')}
-            className={`h-10 flex-1 rounded-xl text-[13px] font-semibold transition-colors ${
-              theme === 'light' ? 'bg-gd-brand text-white' : 'bg-gd-elevated text-gd-text-secondary'
-            }`}
-          >
-            Claro
-          </button>
-          <button
-            type="button"
-            onClick={() => setTheme('dark')}
-            className={`h-10 flex-1 rounded-xl text-[13px] font-semibold transition-colors ${
-              theme === 'dark' ? 'bg-gd-brand text-white' : 'bg-gd-elevated text-gd-text-secondary'
-            }`}
-          >
-            Escuro
-          </button>
-        </div>
-      </section>
-
-      <section className="mt-4 rounded-[20px] border border-[color:var(--gd-hairline)] bg-gd-card p-1">
         <SettingsRow label="Alterar e-mail" hint={settings.email} onClick={settings.openChangeEmail} />
         <div className="mx-3 h-px bg-[color:var(--gd-hairline)]" />
         <SettingsRow label="Alterar senha" hint="••••••••" onClick={settings.openChangePassword} />
@@ -768,7 +739,7 @@ function ChangeEmailScreen({ vm }: Props) {
       <button
         type="button"
         onClick={vm.saveEmail}
-        className="mt-6 h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-white"
+        className="mt-6 h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-gd-on-brand"
       >
         Salvar e-mail
       </button>
@@ -816,7 +787,7 @@ function ChangePasswordScreen({ vm }: Props) {
         <button
           type="button"
           onClick={vm.savePassword}
-          className="mt-2 h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-white"
+          className="mt-2 h-12 w-full rounded-[14px] bg-gd-brand text-sm font-semibold text-gd-on-brand"
         >
           Salvar senha
         </button>

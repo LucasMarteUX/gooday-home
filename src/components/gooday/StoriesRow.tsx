@@ -7,7 +7,7 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
-const STORY_RING = 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)';
+const STORY_RING = 'linear-gradient(135deg,#E7FE8E,#C8E85A 55%,#9FC41A)';
 
 export function StoriesRow({ vm }: Props) {
   const scrollRef = useDragScroll<HTMLElement>();
@@ -40,8 +40,8 @@ export function StoriesRow({ vm }: Props) {
             vm.myStory.openCreate();
           }}
           aria-label="Postar novo story"
-          className="absolute bottom-2.5 left-2.5 z-[1] grid h-10 w-10 place-items-center rounded-full border-2 border-gd-bg text-lg leading-none text-white"
-          style={{ background: vm.myStory.hasStory ? STORY_RING : '#4667F5' }}
+          className="absolute bottom-2.5 left-2.5 z-[1] grid h-10 w-10 place-items-center rounded-full border-2 border-white text-lg font-semibold leading-none text-gd-on-brand"
+          style={{ background: vm.myStory.hasStory ? STORY_RING : '#E7FE8E' }}
         >
           +
         </button>

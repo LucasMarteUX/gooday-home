@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: "Gooday — comunidade de bem-estar",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "Gooday",
   },
   formatDetection: {
@@ -30,13 +30,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#dfe4ea" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e1216" },
-  ],
+  themeColor: "#E7FE8E",
 };
-
-const themeInitScript = `(function(){try{var t=localStorage.getItem('gooday-theme');if(t!=='light'&&t!=='dark')t='dark';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme='dark';}})();`;
 
 export default function RootLayout({
   children,
@@ -44,10 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} h-full w-full bg-gd-bg`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
+    <html lang="pt-BR" className={`${inter.variable} h-full w-full bg-gd-bg`} data-theme="light" style={{ colorScheme: "light" }} suppressHydrationWarning>
       <body className={`${inter.className} mx-auto min-h-full w-full max-w-[1920px] bg-gd-bg font-sans text-gd-text antialiased`}>
         <ThemeProvider>
           <SoftCursor />

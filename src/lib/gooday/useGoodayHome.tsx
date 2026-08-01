@@ -155,8 +155,8 @@ const SHEET_STYLES = {
   primary: {
     height: 48,
     borderRadius: 14,
-    background: '#4667F5',
-    color: '#fff',
+    background: '#E7FE8E',
+    color: '#12161C',
     fontWeight: 600,
     fontSize: 15,
     width: '100%',
@@ -1291,7 +1291,7 @@ export function useGoodayHome({
                             height: 34,
                             padding: '0 12px',
                             borderRadius: 999,
-                            background: '#4667F5',
+                            background: '#E7FE8E',
                             color: '#fff',
                             fontSize: 13,
                             fontWeight: 600,
@@ -1307,7 +1307,7 @@ export function useGoodayHome({
                             width: 8,
                             height: 8,
                             borderRadius: 999,
-                            background: '#4667F5',
+                            background: '#E7FE8E',
                             flex: 'none',
                           }}
                         />
@@ -1611,7 +1611,7 @@ export function useGoodayHome({
             following: personMeta ? String(personMeta.following) : '312',
             posts: personPosts.length + '',
             following_state: following[personKey!] ? 'Seguindo' : 'Seguir',
-            followBg: following[personKey!] ? 'var(--gd-elevated)' : '#4667F5',
+            followBg: following[personKey!] ? 'var(--gd-elevated)' : '#E7FE8E',
             toggleFollow: () =>
               setFollowing((s) => ({ ...s, [personKey!]: !s[personKey!] })),
             message: () => openChat(personKey!),
@@ -1634,7 +1634,7 @@ export function useGoodayHome({
               : group.isPublic
                 ? 'Participar'
                 : 'Solicitar entrada',
-            joinBg: joined[group.name] ? 'var(--gd-elevated)' : '#4667F5',
+            joinBg: joined[group.name] ? 'var(--gd-elevated)' : '#E7FE8E',
             join: () => toggleJoin(group.name),
             openMembers: () => go('members', group.name),
           }
@@ -1740,7 +1740,7 @@ export function useGoodayHome({
       profileTabs: ['Publicações', 'Salvos', 'Grupos', 'Sobre'].map((t) => ({
         label: t,
         color: profileTab === t ? 'var(--gd-text)' : 'var(--gd-text-subtle)',
-        border: profileTab === t ? '2px solid #4667F5' : '2px solid transparent',
+        border: profileTab === t ? '2px solid #E7FE8E' : '2px solid transparent',
         go: () => setProfileTab(t),
       })),
       profileTab,
@@ -1771,7 +1771,7 @@ export function useGoodayHome({
           name: (U[k as keyof typeof U] as UserProfile).name,
           handle: (U[k as keyof typeof U] as UserProfile).handle,
           btnLabel: following[k] ? 'Seguindo' : 'Seguir',
-          btnBg: following[k] ? 'var(--gd-elevated)' : '#4667F5',
+          btnBg: following[k] ? 'var(--gd-elevated)' : '#E7FE8E',
           follow: () => setFollowing((s) => ({ ...s, [k]: !s[k] })),
           open: () => go('person', k),
         }),
@@ -1856,10 +1856,11 @@ export function useGoodayHome({
   function buildRenderVals() {
     const isDesktop = w >= 800;
     const rail = showSuggestions && isDesktop;
-    const brand = '#4667F5';
+    const brand = '#E7FE8E';
     const muted = 'var(--gd-text-muted)';
     const elevated = 'var(--gd-elevated)';
-    const onBrand = '#FFFFFF';
+    const onBrand = '#12161C';
+    const ink = '#12161C';
 
     const stories = storiesList
       .map((s, i) => ({ s, i }))
@@ -1873,7 +1874,7 @@ export function useGoodayHome({
           unseen: !isSeen,
           ring: isSeen
             ? 'var(--gd-border-strong)'
-            : 'linear-gradient(135deg,#7849EC,#4667F5 55%,#39BCE7)',
+            : 'linear-gradient(135deg,#E7FE8E,#C8E85A 55%,#9FC41A)',
           filter: isSeen ? 'grayscale(1) brightness(.75)' : 'none',
           open: () => openStory(i),
         };
@@ -1938,16 +1939,16 @@ export function useGoodayHome({
         reactions: rx.map((e) => ({
           emoji: e,
           count: p.reactions[e],
-          bg: 'rgba(70,103,245,.10)',
-          border: '#2E43AF',
+          bg: 'rgba(231,254,142,.35)',
+          border: '#C8E85A',
         })),
         likes: p.likes,
         comments: p.comments,
         likeColor: p.liked ? 'var(--gd-danger)' : 'var(--gd-text-muted)',
         likeFill: p.liked ? '#F05A67' : 'none',
         likeAnim: popped === p.id ? 'gd-pop 240ms cubic-bezier(0.34,1.56,0.64,1)' : 'none',
-        saveColor: p.saved ? 'var(--gd-brand-light)' : 'var(--gd-text-muted)',
-        saveFill: p.saved ? '#6887FF' : 'none',
+        saveColor: p.saved ? 'var(--gd-brand-soft)' : 'var(--gd-text-muted)',
+        saveFill: p.saved ? '#E7FE8E' : 'none',
         hasPreview: p.commenters.length > 0,
         commenters: p.commenters.map((k) => ({ src: user(k).av })),
         previewLabel: p.comments + ' comentários',
@@ -1977,7 +1978,7 @@ export function useGoodayHome({
       { id: 'home', label: 'Início', icon: 'home' },
       { id: 'search', label: 'Buscar', icon: 'search' },
       { id: 'create', label: 'Criar', icon: 'create' },
-      { id: 'chat', label: 'Mensagens', icon: 'chat' },
+      { id: 'chat', label: 'Salvos', icon: 'pin' },
       { id: 'saved', label: 'Perfil', icon: 'heart' },
     ];
 
@@ -1986,17 +1987,17 @@ export function useGoodayHome({
         return {
           id: t.id,
           label: t.label,
-          color: '#fff',
+          color: ink,
           active: false,
           go: () => openCreatePicker(),
-          icon: <CreateTabIcon brand={brand} size={48} />,
+          icon: <CreateTabIcon size={40} />,
         };
       }
       const active = tab === t.id;
       return {
         id: t.id,
         label: t.label,
-        color: active ? brand : muted,
+        color: ink,
         active,
         go: () => {
           setTab(t.id);
@@ -2009,7 +2010,7 @@ export function useGoodayHome({
             setStack([]);
           }
         },
-        icon: icon(t.icon, active, brand, 22),
+        icon: icon(t.icon, false, ink, 24),
       };
     });
 
@@ -2197,7 +2198,7 @@ export function useGoodayHome({
           open: () => go('person', k),
           btnLabel: f ? 'Seguindo' : 'Seguir',
           btnBg: f ? elevated : brand,
-          btnColor: '#fff',
+          btnColor: onBrand,
           follow: () => setFollowing((x) => ({ ...x, [k]: !x[k] })),
         };
       }).filter((s) => {

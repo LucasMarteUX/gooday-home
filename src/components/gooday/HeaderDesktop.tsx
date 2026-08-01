@@ -1,42 +1,17 @@
 'use client';
 
 import type { GoodayHomeViewModel } from "@/lib/gooday/useGoodayHome";
-import { GoodayLogo, useTheme } from "@/lib/gooday/theme";
+import { GoodayLogo } from "@/lib/gooday/theme";
 
 type Props = {
   vm: GoodayHomeViewModel;
 };
 
-function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-  const isLight = theme === 'light';
-  return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label={isLight ? 'Ativar modo escuro' : 'Ativar modo claro'}
-      title={isLight ? 'Modo escuro' : 'Modo claro'}
-      className="relative grid h-11 w-11 flex-none place-items-center rounded-xl text-gd-text-secondary transition-colors hover:bg-gd-hover"
-    >
-      {isLight ? (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-          <path d="M21 14.5A8.5 8.5 0 1110 3.2 7 7 0 0021 14.5z" />
-        </svg>
-      ) : (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2.5v2.2M12 19.3v2.2M4.7 4.7l1.6 1.6M17.7 17.7l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.7 19.3l1.6-1.6M17.7 6.3l1.6-1.6" />
-        </svg>
-      )}
-    </button>
-  );
-}
-
 export function HeaderDesktop({ vm }: Props) {
   return (
-    <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-desktop)] px-7 py-2 backdrop-blur-2xl min-[800px]:flex">
-      <GoodayLogo className="h-8" />
-      <div className="flex h-9 max-w-[480px] flex-1 items-center gap-2 rounded-full border border-[color:var(--gd-hairline-strong)] bg-gd-surface/80 py-0 pl-3.5 pr-1">
+    <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-desktop)] px-7 py-2.5 backdrop-blur-2xl min-[800px]:flex">
+      <GoodayLogo className="h-9 w-auto" />
+      <div className="flex h-10 max-w-[480px] flex-1 items-center gap-2 rounded-full border border-[color:var(--gd-hairline-strong)] bg-white py-0 pl-3.5 pr-1">
         <input
           readOnly
           onFocus={vm.openSearch}
@@ -48,16 +23,16 @@ export function HeaderDesktop({ vm }: Props) {
           type="button"
           onClick={vm.openSearch}
           aria-label="Buscar"
-          className="grid h-7 w-7 flex-none place-items-center rounded-full bg-gd-brand"
+          className="grid h-8 w-8 flex-none place-items-center rounded-full bg-gd-brand text-gd-on-brand"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />
             <path d="M20 20l-3.2-3.2" />
           </svg>
         </button>
       </div>
       <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
-        <span className="grid h-[18px] w-[18px] flex-none place-items-center text-gd-success" aria-hidden>
+        <span className="grid h-[18px] w-[18px] flex-none place-items-center text-gd-text" aria-hidden>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 22V12" />
             <path d="M12 12C12 7.5 8 4 4 4c0 5 3 8 8 8z" />
@@ -66,7 +41,6 @@ export function HeaderDesktop({ vm }: Props) {
         </span>
         <p className="m-0 truncate text-sm font-normal text-gd-text">{vm.contextMessage}</p>
       </div>
-      <ThemeToggle />
       <button
         type="button"
         onClick={vm.openNotifications}

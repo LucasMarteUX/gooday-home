@@ -44,7 +44,7 @@ export function PeopleSuggestions({ vm, compact }: Props) {
               <button
                 type="button"
                 onClick={s.follow}
-                className="inline-flex h-7 flex-none items-center justify-center whitespace-nowrap rounded-full px-3 text-[11px] font-semibold leading-none text-white"
+                className="inline-flex h-7 flex-none items-center justify-center whitespace-nowrap rounded-full px-3 text-[11px] font-semibold leading-none"
                 style={{ background: s.btnBg, color: s.btnColor }}
               >
                 {s.btnLabel}
@@ -56,7 +56,7 @@ export function PeopleSuggestions({ vm, compact }: Props) {
           <button
             type="button"
             onClick={vm.openAllPeople}
-            className="mt-2 h-10 flex-none rounded-xl border border-[color:var(--gd-hairline-strong)] bg-gd-surface text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-hover-subtle"
+            className="mt-2 h-10 flex-none rounded-xl border border-[color:var(--gd-hairline-strong)] bg-gd-surface text-[13px] font-semibold text-gd-text transition-colors hover:bg-gd-hover-subtle"
           >
             Ver tudo
           </button>

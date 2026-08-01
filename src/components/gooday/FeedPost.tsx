@@ -58,7 +58,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
           {post.tags.map((t, i) => (
             <span
               key={i}
-              className="inline-flex h-[30px] items-center rounded-full border border-[#3653D8] px-3 text-[13px] font-medium text-gd-brand-soft"
+              className="inline-flex h-[30px] items-center rounded-full border border-gd-brand bg-[rgba(231,254,142,0.28)] px-3 text-[13px] font-medium text-gd-text"
             >
               {t.label}
             </span>
