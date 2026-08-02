@@ -1847,7 +1847,7 @@ export function useGoodayHome({
         avatars: c.avs.map((k) => ({ src: user(k).av })),
         badge: joined[c.name] ? 'Participando' : c.isPublic ? 'Público' : 'Privado',
         badgeBg: joined[c.name] ? 'rgba(231,254,142,.35)' : c.isPublic ? 'rgba(31,168,104,.14)' : 'rgba(120,73,236,.14)',
-        badgeColor: joined[c.name] ? '#91A8FF' : c.isPublic ? '#35C47A' : '#B79AFF',
+        badgeColor: joined[c.name] ? 'var(--gd-brand-soft)' : c.isPublic ? '#1fa868' : '#B79AFF',
         open: () => go('group', c.name),
       })),
     };
