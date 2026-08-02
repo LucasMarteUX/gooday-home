@@ -52,7 +52,7 @@ export function HeaderDesktop({ vm }: Props) {
           <path d="M13.7 20a2 2 0 01-3.4 0" />
         </svg>
         {vm.hasUnread ? (
-          <span className="absolute right-2 top-2 h-[9px] w-[9px] rounded-full border-2 border-gd-bg bg-gd-danger" />
+          <span className="absolute right-2 top-2 h-[9px] w-[9px] rounded-full border-2 border-white bg-[color:var(--gd-notif-dot)]" />
         ) : null}
       </button>
       <button

@@ -1241,7 +1241,7 @@ export function useGoodayHome({
               setNotifs((s) => s.map((n) => ({ ...n, unread: false })));
               defer(() => flash('Todas marcadas como lidas'));
             }}
-            style={{ fontSize: 14, fontWeight: 600, color: 'var(--gd-brand-light)', paddingBottom: 8 }}
+            style={{ fontSize: 14, fontWeight: 600, color: 'var(--gd-brand-soft)', paddingBottom: 8 }}
           >
             Marcar todas como lidas
           </button>
@@ -1273,7 +1273,7 @@ export function useGoodayHome({
                         padding: '10px 8px',
                         margin: '0 -8px',
                         borderRadius: 14,
-                        background: n.unread ? 'rgba(70,103,245,.08)' : 'transparent',
+                        background: n.unread ? 'var(--gd-notif-unread)' : 'transparent',
                       }}
                     >
                       <img src={u.av} alt="" style={S.av} />
@@ -1291,8 +1291,8 @@ export function useGoodayHome({
                             height: 34,
                             padding: '0 12px',
                             borderRadius: 999,
-                            background: '#E7FE8E',
-                            color: '#fff',
+                            background: 'var(--gd-brand)',
+                            color: 'var(--gd-on-brand)',
                             fontSize: 13,
                             fontWeight: 600,
                             flex: 'none',
@@ -1307,7 +1307,7 @@ export function useGoodayHome({
                             width: 8,
                             height: 8,
                             borderRadius: 999,
-                            background: '#E7FE8E',
+                            background: 'var(--gd-notif-dot)',
                             flex: 'none',
                           }}
                         />
@@ -1691,8 +1691,8 @@ export function useGoodayHome({
               text: m.t,
               time: m.time,
               align: m.me ? ('flex-end' as const) : ('flex-start' as const),
-              bg: m.me ? '#3653D8' : 'var(--gd-elevated)',
-              color: m.me ? '#fff' : 'var(--gd-text-secondary)',
+              bg: m.me ? 'var(--gd-brand)' : 'var(--gd-elevated)',
+              color: m.me ? 'var(--gd-on-brand)' : 'var(--gd-text-secondary)',
             })),
             draft: msgDraft,
             onDraft: (e: ChangeEvent<HTMLInputElement>) => setMsgDraft(e.target.value),
@@ -1846,7 +1846,7 @@ export function useGoodayHome({
         meta: c.members,
         avatars: c.avs.map((k) => ({ src: user(k).av })),
         badge: joined[c.name] ? 'Participando' : c.isPublic ? 'Público' : 'Privado',
-        badgeBg: joined[c.name] ? 'rgba(70,103,245,.14)' : c.isPublic ? 'rgba(53,196,122,.14)' : 'rgba(120,73,236,.14)',
+        badgeBg: joined[c.name] ? 'rgba(231,254,142,.35)' : c.isPublic ? 'rgba(31,168,104,.14)' : 'rgba(120,73,236,.14)',
         badgeColor: joined[c.name] ? '#91A8FF' : c.isPublic ? '#35C47A' : '#B79AFF',
         open: () => go('group', c.name),
       })),

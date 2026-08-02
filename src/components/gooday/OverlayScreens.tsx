@@ -401,7 +401,7 @@ function ChatScreen({ vm }: Props) {
             aria-label="Enviar"
             className="grid h-12 w-12 place-items-center rounded-full bg-gd-brand"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="text-gd-on-brand">
               <path d="M4 12l16-8-6 16-3-6z" />
             </svg>
           </button>

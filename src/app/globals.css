@@ -27,8 +27,11 @@
   --gd-nav-float: #ffffff;
   --gd-overlay: rgba(255, 255, 255, 0.97);
   --gd-screen: #ffffff;
-  --gd-toast: #2a313c;
-  --gd-toast-text: #f5f6f8;
+  --gd-toast: #ffffff;
+  --gd-toast-text: #12161c;
+  --gd-toast-accent: #e7fe8e;
+  --gd-notif-unread: rgba(231, 254, 142, 0.28);
+  --gd-notif-dot: #6f8a12;
   --gd-hairline: rgba(18, 22, 28, 0.08);
   --gd-hairline-strong: rgba(18, 22, 28, 0.12);
   --gd-shadow: 0 12px 40px rgba(18, 22, 28, 0.1);

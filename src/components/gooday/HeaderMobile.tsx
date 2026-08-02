@@ -34,7 +34,7 @@ export function HeaderMobile({ vm }: Props) {
             <path d="M13.7 20a2 2 0 01-3.4 0" />
           </svg>
           {vm.hasUnread ? (
-            <span className="absolute right-[7px] top-[7px] h-[9px] w-[9px] rounded-full border-2 border-white bg-gd-danger" />
+            <span className="absolute right-[7px] top-[7px] h-[9px] w-[9px] rounded-full border-2 border-white bg-[color:var(--gd-notif-dot)]" />
           ) : null}
         </button>
         <button
