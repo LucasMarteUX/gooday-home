@@ -165,7 +165,7 @@ function PersonScreen({ vm }: Props) {
         {person.interests.map((i, idx) => (
           <span
             key={idx}
-            className="inline-flex h-7 items-center rounded-full border border-gd-brand bg-[rgba(231,254,142,0.28)] px-3 text-xs text-gd-text"
+            className="inline-flex h-7 items-center rounded-full border border-gd-brand bg-gd-brand/20 px-3 text-xs text-gd-text"
           >
             {i.label}
           </span>
@@ -631,22 +631,22 @@ function GroupsScreen({ vm }: Props) {
           <article
             key={i}
             onClick={g.open}
-            className="cursor-pointer rounded-[18px] bg-gd-card p-2.5 transition-colors hover:bg-gd-hover-subtle"
+            className="cursor-pointer rounded-[var(--gd-radius-card)] border border-[color:var(--gd-card-border)] bg-gd-card p-2.5 transition-colors hover:bg-gd-hover-subtle"
           >
-            <div className="relative h-[104px] rounded-xl bg-gd-elevated">
-              <img src={g.img} alt={g.name} className="block h-full w-full rounded-xl object-cover" />
-              <div className="absolute bottom-[-12px] left-2 flex">
-                {g.avatars.map((a, j) => (
-                  <img
-                    key={j}
-                    src={a.src}
-                    alt=""
-                    className="-mr-2 h-[26px] w-[26px] rounded-full border-2 border-gd-card object-cover"
-                  />
-                ))}
-              </div>
+            <div className="h-[104px] overflow-hidden rounded-[var(--gd-radius-media)] bg-gd-elevated">
+              <img src={g.img} alt={g.name} className="block h-full w-full object-cover" />
             </div>
-            <h3 className="mb-1 mt-5 text-sm font-semibold leading-[1.3] tracking-[-0.01em]">{g.name}</h3>
+            <div className="relative z-[1] -mt-3 ml-1.5 flex w-max">
+              {g.avatars.map((a, j) => (
+                <img
+                  key={j}
+                  src={a.src}
+                  alt=""
+                  className="-mr-2 h-[26px] w-[26px] rounded-full border-2 border-gd-card object-cover"
+                />
+              ))}
+            </div>
+            <h3 className="mb-1 mt-2.5 text-sm font-semibold leading-[1.3] tracking-[-0.01em]">{g.name}</h3>
             <p className="m-0 text-xs text-gd-text-subtle">{g.meta}</p>
             <span
               className="mt-2 inline-flex h-[22px] items-center rounded-full px-[9px] text-[11px] font-semibold"

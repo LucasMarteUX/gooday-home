@@ -1,6 +1,6 @@
 'use client';
 
-import { useGoodayHome } from '@/lib/gooday/useGoodayHome';
+import { useGoodayHome, type GoodayHomeProps } from '@/lib/gooday/useGoodayHome';
 import { HeaderDesktop } from './HeaderDesktop';
 import { HeaderMobile } from './HeaderMobile';
 import { StoriesRow } from './StoriesRow';
@@ -15,8 +15,8 @@ import { AvatarMenu } from './AvatarMenu';
 import { Toast } from './Toast';
 import { MediaCaptureOverlay } from './media/MediaCaptureOverlay';
 
-export function GoodayHome() {
-  const { vm } = useGoodayHome();
+export function GoodayHome(props: GoodayHomeProps = {}) {
+  const { vm } = useGoodayHome(props);
 
   return (
     <div className="min-h-dvh w-full bg-gd-bg text-gd-text antialiased selection:bg-gd-brand/30">
@@ -25,12 +25,6 @@ export function GoodayHome() {
 
       <StoriesRow vm={vm} />
 
-      {/*
-        Esquerda: menu nav (hug).
-        Centro: timeline.
-        Direita: painel adaptável (Grupos / Pessoas / …).
-        Gap maior entre timeline e laterais.
-      */}
       <div
         className={[
           'w-full pb-[calc(100px+env(safe-area-inset-bottom))]',

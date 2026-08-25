@@ -12,21 +12,8 @@ import React, {
   type CSSProperties,
   type ReactNode,
 } from 'react';
-import {
-  U,
-  STORIES,
-  COMMUNITIES,
-  POSTS,
-  NOTIFS,
-  CONVERSATIONS,
-  MEMBER_ROLES,
-  EMOJIS,
-  EXTRA_KEYS,
-  USER_META,
-  GROUP_FILTERS,
-  type GroupFilterId,
-  type CommunityData,
-} from './data';
+import { type CommunityData } from './data';
+import { getDataPack, type GoodaySegment } from './segment';
 import {
   renderGoodayIcon,
   CreateTabIcon,
@@ -38,12 +25,14 @@ import type { MediaCaptureResult } from '@/components/gooday/media/MediaCaptureO
 import { EmojiPicker } from '@/components/gooday/EmojiPicker';
 import { removeUploadedMedia, revokePreviewUrl, uploadErrorMessage, uploadMedia } from './media';
 import { useBodyScrollLock } from './uiGuards';
+import { useRouter } from 'next/navigation';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 export type GoodayHomeProps = {
+  segment?: GoodaySegment;
   contextMessage?: string;
   showCommunities?: boolean;
   reactionsEnabled?: boolean;
@@ -155,8 +144,8 @@ const SHEET_STYLES = {
   primary: {
     height: 48,
     borderRadius: 14,
-    background: '#E7FE8E',
-    color: '#12161C',
+    background: 'var(--gd-brand)',
+    color: 'var(--gd-on-brand)',
     fontWeight: 600,
     fontSize: 15,
     width: '100%',
@@ -164,10 +153,6 @@ const SHEET_STYLES = {
 };
 
 type StoryItem = { u: string; img: string; alt: string; time: string; seen: boolean };
-
-function cloneStories(): StoryItem[] {
-  return STORIES.map((s) => ({ ...s }));
-}
 
 function parseTags(text: string): string[] {
   const matches = text.match(/#[\w\u00C0-\u024F]+/g);
@@ -188,22 +173,6 @@ function resetCreateDraft() {
   };
 }
 
-function clonePosts(): Post[] {
-  return POSTS.map((p) => ({
-    ...p,
-    reactions: { ...p.reactions } as Record<string, number>,
-    thread: [...p.thread],
-  }));
-}
-
-function cloneNotifs(): Notification[] {
-  return NOTIFS.map((n) => ({ ...n }));
-}
-
-function cloneConvs(): Conversation[] {
-  return CONVERSATIONS.map((c) => ({ ...c, msgs: c.msgs.slice() }));
-}
-
 function defer(fn: () => void) {
   queueMicrotask(fn);
 }
@@ -216,15 +185,39 @@ export type GoodayHomeViewModel = ReturnType<typeof useGoodayHome>['vm'];
 // ---------------------------------------------------------------------------
 
 export function useGoodayHome({
-  contextMessage = 'Respeite sua mente e trate seu corpo bem.',
+  segment = 'gooday',
+  contextMessage,
   showCommunities = true,
   reactionsEnabled = true,
   showSuggestions = true,
   storyDurationMs = 5000,
 }: GoodayHomeProps = {}) {
+  const pack = getDataPack(segment);
+  const {
+    U,
+    STORIES,
+    COMMUNITIES,
+    POSTS,
+    NOTIFS,
+    CONVERSATIONS,
+    MEMBER_ROLES,
+    EMOJIS,
+    EXTRA_KEYS,
+    USER_META,
+    GROUP_FILTERS,
+  } = pack;
+  const resolvedContextMessage = contextMessage ?? pack.contextMessage;
+  const router = useRouter();
+
   const [w, setW] = useState(1200);
   const [tab, setTab] = useState<TabId>('home');
-  const [posts, setPosts] = useState<Post[]>(clonePosts);
+  const [posts, setPosts] = useState<Post[]>(() =>
+    POSTS.map((p) => ({
+      ...p,
+      reactions: { ...p.reactions } as Record<string, number>,
+      thread: [...p.thread],
+    })),
+  );
   const [popped, setPopped] = useState<string | null>(null);
   const [storyIdx, setStoryIdx] = useState<number | null>(null);
   const [storyP, setStoryP] = useState(0);
@@ -235,7 +228,7 @@ export function useGoodayHome({
   const [sheet, setSheet] = useState<SheetKind>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [notifs, setNotifs] = useState<Notification[]>(cloneNotifs);
+  const [notifs, setNotifs] = useState<Notification[]>(() => NOTIFS.map((n) => ({ ...n })));
   const [following, setFollowing] = useState<Record<string, boolean>>({});
   const [draft, setDraft] = useState('');
   const [comment, setComment] = useState('');
@@ -243,17 +236,15 @@ export function useGoodayHome({
   const [view, setView] = useState<ViewKind>(null);
   const [viewParam, setViewParam] = useState<string | null>(null);
   const [stack, setStack] = useState<StackEntry[]>([]);
-  const [convs, setConvs] = useState<Conversation[]>(cloneConvs);
+  const [convs, setConvs] = useState<Conversation[]>(() =>
+    CONVERSATIONS.map((c) => ({ ...c, msgs: c.msgs.slice() })),
+  );
   const [convKey, setConvKey] = useState<string | null>(null);
   const [msgDraft, setMsgDraft] = useState('');
   const [searchQ, setSearchQ] = useState('');
-  const [joined, setJoined] = useState<Record<string, boolean>>({
-    'Corrida 5K': true,
-    'Nutrição Consciente': true,
-    'Treino Funcional': true,
-  });
+  const [joined, setJoined] = useState<Record<string, boolean>>(() => ({ ...pack.defaultJoined }));
   const [profileTab, setProfileTab] = useState('Publicações');
-  const [storiesList, setStoriesList] = useState<StoryItem[]>(cloneStories);
+  const [storiesList, setStoriesList] = useState<StoryItem[]>(() => STORIES.map((s) => ({ ...s })));
   const [createDraft, setCreateDraft] = useState('');
   const [createMedia, setCreateMedia] = useState('');
   const [createMediaAlt, setCreateMediaAlt] = useState('');
@@ -266,15 +257,10 @@ export function useGoodayHome({
   const [mediaCaptureOpen, setMediaCaptureOpen] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [groupsSearchQ, setGroupsSearchQ] = useState('');
-  const [groupsFilter, setGroupsFilter] = useState<GroupFilterId>('all');
+  const [groupsFilter, setGroupsFilter] = useState<string>('all');
   const [peopleSearchQ, setPeopleSearchQ] = useState('');
   const [railTab, setRailTab] = useState<'groups' | 'people'>('groups');
-  const [edit, setEdit] = useState<EditProfile>({
-    name: 'Marcos Vinícius',
-    user: '@marcos_v',
-    bio: 'Corrida, comida de verdade e rotina leve. Um dia bom por vez.',
-    loc: 'São Paulo, SP',
-  });
+  const [edit, setEdit] = useState<EditProfile>(() => ({ ...pack.defaultEdit }));
   const [accountEmail, setAccountEmail] = useState('marcos.v@email.com');
   const [emailDraft, setEmailDraft] = useState('');
   const [passwordDraft, setPasswordDraft] = useState({
@@ -308,6 +294,11 @@ export function useGoodayHome({
     setSheet(null);
     setMediaCaptureOpen(false);
   }, []);
+
+  const switchSegment = useCallback(() => {
+    setSheet(null);
+    router.push(pack.switchHref);
+  }, [pack.switchHref, router]);
 
   useBodyScrollLock(!!sheet || storyIdx !== null || !!view || mediaCaptureOpen);
 
@@ -1375,6 +1366,9 @@ export function useGoodayHome({
             >
               Ajuda
             </button>
+            <button type="button" onClick={switchSegment} style={S.row}>
+              {pack.switchLabel}
+            </button>
             <button
               type="button"
               onClick={() => setSheet('logout')}
@@ -1475,6 +1469,8 @@ export function useGoodayHome({
     react,
     closeSheet,
     go,
+    switchSegment,
+    pack.switchLabel,
   ]);
 
   function buildScreenVals(isDesktop: boolean) {
@@ -1611,7 +1607,7 @@ export function useGoodayHome({
             following: personMeta ? String(personMeta.following) : '312',
             posts: personPosts.length + '',
             following_state: following[personKey!] ? 'Seguindo' : 'Seguir',
-            followBg: following[personKey!] ? 'var(--gd-elevated)' : '#E7FE8E',
+            followBg: following[personKey!] ? 'var(--gd-elevated)' : 'var(--gd-brand)',
             toggleFollow: () =>
               setFollowing((s) => ({ ...s, [personKey!]: !s[personKey!] })),
             message: () => openChat(personKey!),
@@ -1634,7 +1630,7 @@ export function useGoodayHome({
               : group.isPublic
                 ? 'Participar'
                 : 'Solicitar entrada',
-            joinBg: joined[group.name] ? 'var(--gd-elevated)' : '#E7FE8E',
+            joinBg: joined[group.name] ? 'var(--gd-elevated)' : 'var(--gd-brand)',
             join: () => toggleJoin(group.name),
             openMembers: () => go('members', group.name),
           }
@@ -1740,7 +1736,7 @@ export function useGoodayHome({
       profileTabs: ['Publicações', 'Salvos', 'Grupos', 'Sobre'].map((t) => ({
         label: t,
         color: profileTab === t ? 'var(--gd-text)' : 'var(--gd-text-subtle)',
-        border: profileTab === t ? '2px solid #E7FE8E' : '2px solid transparent',
+        border: profileTab === t ? '2px solid var(--gd-brand)' : '2px solid transparent',
         go: () => setProfileTab(t),
       })),
       profileTab,
@@ -1771,7 +1767,7 @@ export function useGoodayHome({
           name: (U[k as keyof typeof U] as UserProfile).name,
           handle: (U[k as keyof typeof U] as UserProfile).handle,
           btnLabel: following[k] ? 'Seguindo' : 'Seguir',
-          btnBg: following[k] ? 'var(--gd-elevated)' : '#E7FE8E',
+          btnBg: following[k] ? 'var(--gd-elevated)' : 'var(--gd-brand)',
           follow: () => setFollowing((s) => ({ ...s, [k]: !s[k] })),
           open: () => go('person', k),
         }),
@@ -1846,8 +1842,8 @@ export function useGoodayHome({
         meta: c.members,
         avatars: c.avs.map((k) => ({ src: user(k).av })),
         badge: joined[c.name] ? 'Participando' : c.isPublic ? 'Público' : 'Privado',
-        badgeBg: joined[c.name] ? 'rgba(231,254,142,.35)' : c.isPublic ? 'rgba(31,168,104,.14)' : 'rgba(120,73,236,.14)',
-        badgeColor: joined[c.name] ? 'var(--gd-brand-soft)' : c.isPublic ? '#1fa868' : '#B79AFF',
+        badgeBg: joined[c.name] ? 'color-mix(in srgb, var(--gd-brand) 35%, transparent)' : c.isPublic ? 'rgba(66,232,154,.14)' : 'rgba(137,103,255,.14)',
+        badgeColor: joined[c.name] ? 'var(--gd-brand-soft)' : c.isPublic ? '#42e89a' : '#8967ff',
         open: () => go('group', c.name),
       })),
     };
@@ -1856,7 +1852,7 @@ export function useGoodayHome({
   function buildRenderVals() {
     const isDesktop = w >= 800;
     const rail = showSuggestions && isDesktop;
-    const brand = '#E7FE8E';
+    const brand = 'var(--gd-brand)';
     const muted = 'var(--gd-text-muted)';
     const elevated = 'var(--gd-elevated)';
     const onBrand = '#12161C';
@@ -1874,7 +1870,7 @@ export function useGoodayHome({
           unseen: !isSeen,
           ring: isSeen
             ? 'var(--gd-border-strong)'
-            : 'linear-gradient(135deg,#E7FE8E,#C8E85A 55%,#9FC41A)',
+            : 'var(--gd-story-ring)',
           filter: isSeen ? 'grayscale(1) brightness(.75)' : 'none',
           open: () => openStory(i),
         };
@@ -1939,8 +1935,8 @@ export function useGoodayHome({
         reactions: rx.map((e) => ({
           emoji: e,
           count: p.reactions[e],
-          bg: 'rgba(231,254,142,.35)',
-          border: '#C8E85A',
+          bg: 'color-mix(in srgb, var(--gd-brand) 35%, transparent)',
+          border: 'var(--gd-brand-light)',
         })),
         likes: p.likes,
         comments: p.comments,
@@ -1948,7 +1944,7 @@ export function useGoodayHome({
         likeFill: p.liked ? '#F05A67' : 'none',
         likeAnim: popped === p.id ? 'gd-pop 240ms cubic-bezier(0.34,1.56,0.64,1)' : 'none',
         saveColor: p.saved ? 'var(--gd-brand-soft)' : 'var(--gd-text-muted)',
-        saveFill: p.saved ? '#E7FE8E' : 'none',
+        saveFill: p.saved ? 'var(--gd-brand)' : 'none',
         hasPreview: p.commenters.length > 0,
         commenters: p.commenters.map((k) => ({ src: user(k).av })),
         previewLabel: p.comments + ' comentários',
@@ -2159,10 +2155,11 @@ export function useGoodayHome({
     return {
       ...buildScreenVals(isDesktop),
       me: U.me,
+      segment,
       isDesktop,
       isMobile: !isDesktop,
       showRail: rail,
-      contextMessage,
+      contextMessage: resolvedContextMessage,
       showCommunities,
       reactionsEnabled,
       hasUnread: notifs.some((n) => n.unread),
@@ -2347,6 +2344,11 @@ export function useGoodayHome({
                     defer(() => flash('Ajuda — próxima tela'));
                   },
                 },
+                {
+                  label: pack.switchLabel,
+                  color: 'var(--gd-brand-soft)',
+                  go: switchSegment,
+                },
                 { label: 'Sair', color: '#F05A67', go: () => setSheet('logout') },
               ],
             }
@@ -2398,7 +2400,7 @@ export function useGoodayHome({
       accountEmail,
       emailDraft,
       passwordDraft,
-      contextMessage,
+      resolvedContextMessage,
       showCommunities,
       reactionsEnabled,
       showSuggestions,
@@ -2423,6 +2425,8 @@ export function useGoodayHome({
       flash,
       icon,
       openChat,
+      switchSegment,
+      segment,
       toggleJoin,
       sendMsg,
       closeSheet,

@@ -9,7 +9,7 @@ export function MobileNav({ vm }: Props) {
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[45] flex justify-center px-3 min-[800px]:hidden">
       <nav
         aria-label="Navegação principal"
-        className="pointer-events-auto mb-[calc(12px+env(safe-area-inset-bottom))] flex w-full max-w-[420px] items-center justify-around gap-1 rounded-full border border-[color:var(--gd-hairline)] bg-white px-2 py-2 shadow-[var(--gd-shadow)]"
+        className="pointer-events-auto mb-[calc(12px+env(safe-area-inset-bottom))] flex w-full max-w-[420px] items-center justify-around gap-1 rounded-full border border-[color:var(--gd-hairline)] bg-[color:var(--gd-nav-float)] px-2 py-2 shadow-[var(--gd-shadow)]"
       >
         {vm.tabs.map((t) => {
           const isCreate = t.id === "create";

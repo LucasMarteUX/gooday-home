@@ -38,6 +38,180 @@
   --gd-max-width: 1920px;
   --gd-sticky-top: 80px;
   --gd-desktop-scale: 1.08;
+  --gd-radius-card: 22px;
+  --gd-radius-media: 16px;
+  --gd-radius-control: 12px;
+  --gd-radius-story: 20px;
+  --gd-card-border: transparent;
+  --gd-story-ring: linear-gradient(135deg, #e7fe8e, #c8e85a 55%, #9fc41a);
+  --gd-glow: none;
+}
+
+/* Segmento Gamers — design system cyberpunk (não altera Gooday light) */
+[data-theme="gamers"] {
+  color-scheme: dark;
+  --gd-bg: #030709;
+  --gd-card: #0a1218;
+  --gd-card-alt: #0f171d;
+  --gd-surface: #0a1218;
+  --gd-elevated: #151e24;
+  --gd-hover: #222c33;
+  --gd-hover-subtle: #0f171d;
+  --gd-border: #222c33;
+  --gd-border-strong: #303a42;
+  --gd-text: #ffffff;
+  --gd-text-secondary: #c4c8cc;
+  --gd-text-muted: #969da3;
+  --gd-text-subtle: #697178;
+  --gd-brand: #42e89a;
+  --gd-brand-light: #29d9e8;
+  --gd-brand-soft: #42e89a;
+  --gd-on-brand: #030709;
+  --gd-accent: #8967ff;
+  --gd-success: #42e89a;
+  --gd-danger: #f15c6d;
+  --gd-header-mobile: rgba(3, 7, 9, 0.92);
+  --gd-header-desktop: rgba(3, 7, 9, 0.94);
+  --gd-nav-float: rgba(10, 18, 24, 0.94);
+  --gd-overlay: rgba(3, 7, 9, 0.97);
+  --gd-screen: #030709;
+  --gd-toast: #151e24;
+  --gd-toast-text: #ffffff;
+  --gd-toast-accent: #42e89a;
+  --gd-notif-unread: rgba(66, 232, 154, 0.12);
+  --gd-notif-dot: #42e89a;
+  --gd-hairline: rgba(255, 255, 255, 0.08);
+  --gd-hairline-strong: rgba(255, 255, 255, 0.14);
+  --gd-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 40px rgba(66, 232, 154, 0.08);
+  --gd-radius-card: 0px;
+  --gd-radius-media: 0px;
+  --gd-radius-control: 0px;
+  --gd-radius-story: 0px;
+  --gd-card-border: rgba(66, 232, 154, 0.22);
+  --gd-story-ring: linear-gradient(135deg, #42e89a, #29d9e8 45%, #8967ff);
+  --gd-glow: 0 0 32px rgba(66, 232, 154, 0.25);
+}
+
+.gamers-atmosphere {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  background: var(--gd-bg);
+}
+
+.gamers-atmosphere::before,
+.gamers-atmosphere::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+}
+
+.gamers-atmosphere::before {
+  top: -12%;
+  right: -8%;
+  width: min(520px, 70vw);
+  height: min(520px, 70vw);
+  background: radial-gradient(circle, rgba(137, 103, 255, 0.35) 0%, transparent 70%);
+}
+
+.gamers-atmosphere::after {
+  bottom: 10%;
+  left: -10%;
+  width: min(480px, 65vw);
+  height: min(480px, 65vw);
+  background: radial-gradient(circle, rgba(66, 232, 154, 0.22) 0%, rgba(41, 217, 232, 0.14) 40%, transparent 70%);
+}
+
+.gamers-atmosphere > * {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="gamers"] .gd-logo {
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+}
+
+.gd-logo-xp {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  font-family: var(--font-xpzone), ui-monospace, monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--gd-text);
+  text-shadow: 0 0 18px rgba(66, 232, 154, 0.35);
+  user-select: none;
+  white-space: nowrap;
+}
+
+@media (min-width: 800px) {
+  .gd-logo-xp {
+    height: 36px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Cyberpunk: cantos retos em controles/cards (mantém pill só em avatars) */
+[data-theme="gamers"] .rounded-\[22px\],
+[data-theme="gamers"] .rounded-\[20px\],
+[data-theme="gamers"] .rounded-\[18px\],
+[data-theme="gamers"] .rounded-2xl,
+[data-theme="gamers"] .rounded-xl,
+[data-theme="gamers"] .rounded-lg,
+[data-theme="gamers"] .rounded-\[16px\],
+[data-theme="gamers"] .rounded-\[14px\],
+[data-theme="gamers"] .rounded-\[12px\],
+[data-theme="gamers"] .rounded-\[10px\],
+[data-theme="gamers"] .rounded-\[8px\],
+[data-theme="gamers"] .rounded-md,
+[data-theme="gamers"] .rounded-sm {
+  border-radius: 0 !important;
+}
+
+[data-theme="gamers"] header .rounded-full:not(img):not([class*="overflow-hidden"]) {
+  border-radius: 0 !important;
+}
+
+[data-theme="gamers"] article span.rounded-full:not(:has(img)),
+[data-theme="gamers"] article button.rounded-full {
+  border-radius: 0 !important;
+}
+
+[data-theme="gamers"] nav.pointer-events-auto {
+  border-radius: 0 !important;
+  border-color: rgba(66, 232, 154, 0.35);
+  box-shadow: var(--gd-glow);
+  clip-path: polygon(
+    0 8px,
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px)
+  );
+}
+
+[data-theme="gamers"] article.rounded-\[var\(--gd-radius-card\)\],
+[data-theme="gamers"] .bg-gd-card {
+  box-shadow: inset 0 0 0 1px rgba(66, 232, 154, 0.06);
+}
+
+[data-theme="gamers"] .gamers-atmosphere::before {
+  opacity: 0.55;
+}
+
+[data-theme="gamers"] main article img[class*="aspect"] {
+  filter: saturate(1.08) contrast(1.05);
 }
 
 @theme inline {
@@ -190,6 +364,27 @@ html.gd-soft-cursor [data-cursor='interactive'] {
 html.gd-soft-cursor input,
 html.gd-soft-cursor textarea {
   cursor: text !important;
+}
+
+/* Cursor mint no segmento gamers */
+html.gd-soft-cursor[data-theme="gamers"],
+html.gd-soft-cursor[data-theme="gamers"] body,
+html.gd-soft-cursor[data-theme="gamers"] body * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='11' fill='rgba(66,232,154,0.4)' stroke='rgba(255,255,255,0.55)' stroke-width='1.5'/%3E%3C/svg%3E")
+      13 13,
+    auto !important;
+}
+
+html.gd-soft-cursor[data-theme="gamers"] a,
+html.gd-soft-cursor[data-theme="gamers"] button,
+html.gd-soft-cursor[data-theme="gamers"] [role='button'],
+html.gd-soft-cursor[data-theme="gamers"] label,
+html.gd-soft-cursor[data-theme="gamers"] summary,
+html.gd-soft-cursor[data-theme="gamers"] select,
+html.gd-soft-cursor[data-theme="gamers"] [data-cursor='interactive'] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='17.5' fill='rgba(66,232,154,0.5)' stroke='rgba(255,255,255,0.6)' stroke-width='1.5'/%3E%3C/svg%3E")
+      20 20,
+    pointer !important;
 }
 
 /* Inputs/campos em sheets e formulários — tema-aware */

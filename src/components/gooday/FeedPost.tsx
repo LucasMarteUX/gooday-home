@@ -9,7 +9,7 @@ type Props = {
 
 export function FeedPost({ post, reactionsEnabled }: Props) {
   return (
-    <article className="rounded-[22px] bg-gd-card px-3.5 pb-2.5 pt-3.5 min-[800px]:border-b-0">
+    <article className="rounded-[var(--gd-radius-card)] border border-[color:var(--gd-card-border)] bg-gd-card px-3.5 pb-2.5 pt-3.5 min-[800px]:border-b min-[800px]:border-[color:var(--gd-card-border)]">
       <header className="flex items-start gap-3">
         <button type="button" onClick={post.openAuthor} className="cursor-pointer">
           <img
@@ -58,7 +58,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
           {post.tags.map((t, i) => (
             <span
               key={i}
-              className="inline-flex h-[30px] items-center rounded-full border border-gd-brand bg-[rgba(231,254,142,0.28)] px-3 text-[13px] font-medium text-gd-text"
+              className="inline-flex h-[30px] items-center rounded-full border border-gd-brand bg-gd-brand/20 px-3 text-[13px] font-medium text-gd-text"
             >
               {t.label}
             </span>
@@ -70,7 +70,7 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
         <button
           type="button"
           onClick={post.like2x}
-          className="-mx-3.5 mt-3 block w-[calc(100%+1.75rem)] overflow-hidden bg-gd-elevated min-[800px]:mx-0 min-[800px]:mt-3.5 min-[800px]:w-full min-[800px]:rounded-2xl"
+          className="-mx-3.5 mt-3 block w-[calc(100%+1.75rem)] overflow-hidden bg-gd-elevated min-[800px]:mx-0 min-[800px]:mt-3.5 min-[800px]:w-full min-[800px]:rounded-[var(--gd-radius-media)]"
         >
           <img src={post.img} alt={post.alt} className="block aspect-[4/3] w-full object-cover" />
         </button>

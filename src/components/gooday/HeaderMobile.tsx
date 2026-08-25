@@ -8,9 +8,11 @@ type Props = {
 };
 
 export function HeaderMobile({ vm }: Props) {
+  const isGamers = vm.segment === 'gamers';
+
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[color:var(--gd-hairline)] bg-white px-4 pb-2.5 pt-[max(10px,env(safe-area-inset-top))] min-[800px]:hidden">
-      <GoodayLogo />
+    <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-mobile)] px-4 pb-2.5 pt-[max(10px,env(safe-area-inset-top))] min-[800px]:hidden">
+      <GoodayLogo brand={isGamers ? 'xpzone' : 'gooday'} />
       <div className="flex items-center gap-0.5">
         <button
           type="button"
@@ -34,14 +36,14 @@ export function HeaderMobile({ vm }: Props) {
             <path d="M13.7 20a2 2 0 01-3.4 0" />
           </svg>
           {vm.hasUnread ? (
-            <span className="absolute right-[7px] top-[7px] h-[9px] w-[9px] rounded-full border-2 border-white bg-[color:var(--gd-notif-dot)]" />
+            <span className="absolute right-[7px] top-[7px] h-[9px] w-[9px] rounded-full border-2 border-[color:var(--gd-header-mobile)] bg-[color:var(--gd-notif-dot)]" />
           ) : null}
         </button>
         <button
           type="button"
           onClick={vm.openAvatarMenu}
           aria-label="Menu do perfil"
-          className="ml-1 h-9 w-9 overflow-hidden rounded-full border-[1.5px] border-gd-text/15 bg-white"
+          className="ml-1 h-9 w-9 overflow-hidden rounded-full border-[1.5px] border-gd-text/15 bg-gd-elevated"
         >
           <img src={vm.me.av} alt="Seu perfil" className="block h-full w-full object-cover" />
         </button>

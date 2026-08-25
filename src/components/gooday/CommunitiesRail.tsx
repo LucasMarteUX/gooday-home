@@ -11,24 +11,26 @@ function CommunityCard({ c, compact }: { c: Community; compact?: boolean }) {
   return (
     <article
       onClick={c.open}
-      className={`cursor-pointer rounded-[20px] bg-gd-card transition-colors hover:bg-gd-hover-subtle ${
+      className={`cursor-pointer rounded-[var(--gd-radius-card)] border border-[color:var(--gd-card-border)] bg-gd-card transition-colors hover:bg-gd-hover-subtle ${
         compact ? "w-[216px] flex-none scroll-snap-align-start p-3.5" : "min-w-0 p-3.5"
       }`}
     >
-      <div className={`relative rounded-[14px] bg-gd-elevated ${compact ? "h-[120px]" : "aspect-[16/10]"}`}>
-        <img src={c.img} alt={c.name} className="block h-full w-full rounded-[14px] object-cover" />
-        <div className="absolute bottom-[-14px] left-2 flex">
-          {c.avatars.map((a, i) => (
-            <img
-              key={i}
-              src={a.src}
-              alt=""
-              className="-mr-2 h-[28px] w-[28px] rounded-full border-2 border-gd-card object-cover"
-            />
-          ))}
+      <div className={compact ? "h-[120px]" : "aspect-[16/10]"}>
+        <div className="h-full w-full overflow-hidden rounded-[var(--gd-radius-media)] bg-gd-elevated">
+          <img src={c.img} alt={c.name} className="block h-full w-full object-cover" />
         </div>
       </div>
-      <div className="mt-[20px] flex items-center justify-between gap-1.5">
+      <div className="relative z-[1] -mt-3.5 ml-2 flex w-max">
+        {c.avatars.map((a, i) => (
+          <img
+            key={i}
+            src={a.src}
+            alt=""
+            className="-mr-2 h-[28px] w-[28px] rounded-full border-2 border-gd-card object-cover"
+          />
+        ))}
+      </div>
+      <div className="mt-2.5 flex items-center justify-between gap-1.5">
         <h3
           className={`m-0 min-w-0 truncate font-semibold tracking-[-0.01em] ${
             compact ? "text-base leading-[1.3]" : "text-[13px] leading-tight"

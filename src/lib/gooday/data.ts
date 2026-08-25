@@ -161,7 +161,19 @@ export const USER_META: Record<string, UserMeta> = {
   camila: { bio: 'Cross e corrida. PRs pequenos todo mês.', loc: 'Rio de Janeiro, RJ', followers: 1120, following: 256, interests: ['Treino', 'Corrida', 'Força'], cover: IMG('1571019613454-1cb2f99b2d8b', 900, 300) },
 };
 
-export type CommunityCategory = 'corrida' | 'ciclismo' | 'nutricao' | 'yoga' | 'habitos' | 'treino';
+export type CommunityCategory =
+  | 'corrida'
+  | 'ciclismo'
+  | 'nutricao'
+  | 'yoga'
+  | 'habitos'
+  | 'treino'
+  | 'fps'
+  | 'moba'
+  | 'rpg'
+  | 'esports'
+  | 'streaming'
+  | 'hardware';
 
 export type CommunityData = {
   name: string;
