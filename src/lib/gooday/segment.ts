@@ -1,8 +1,12 @@
 import * as gooday from './data';
 import * as gamers from './data/gamers';
+import * as pets from './data/pets';
+import * as church from './data/church';
 import type { GoodayUser, UserMeta, CommunityData } from './data';
 
-export type GoodaySegment = 'gooday' | 'gamers';
+export type GoodaySegment = 'gooday' | 'gamers' | 'pets' | 'church';
+
+export type SegmentSwitch = { label: string; href: string };
 
 export type GoodayDataPack = {
   U: Record<string, GoodayUser>;
@@ -20,8 +24,11 @@ export type GoodayDataPack = {
   defaultEdit: { name: string; user: string; bio: string; loc: string };
   contextMessage: string;
   segmentLabel: string;
+  /** @deprecated Prefer `switches` — mantido para o primeiro destino. */
   switchLabel: string;
+  /** @deprecated Prefer `switches`. */
   switchHref: string;
+  switches: SegmentSwitch[];
 };
 
 const goodayPack: GoodayDataPack = {
@@ -51,6 +58,11 @@ const goodayPack: GoodayDataPack = {
   segmentLabel: 'Gooday',
   switchLabel: 'Ir para XP Zone',
   switchHref: '/gamers',
+  switches: [
+    { label: 'Ir para XP Zone', href: '/gamers' },
+    { label: 'Ir para Petshare', href: '/pets' },
+    { label: 'Ir para ONE', href: '/church' },
+  ],
 };
 
 const gamersPack: GoodayDataPack = {
@@ -80,8 +92,84 @@ const gamersPack: GoodayDataPack = {
   segmentLabel: 'XP Zone',
   switchLabel: 'Ir para Gooday',
   switchHref: '/',
+  switches: [
+    { label: 'Ir para Gooday', href: '/' },
+    { label: 'Ir para Petshare', href: '/pets' },
+    { label: 'Ir para ONE', href: '/church' },
+  ],
+};
+
+const petsPack: GoodayDataPack = {
+  U: pets.U,
+  STORIES: pets.STORIES as unknown as typeof gooday.STORIES,
+  COMMUNITIES: pets.COMMUNITIES,
+  POSTS: pets.POSTS as unknown as typeof gooday.POSTS,
+  NOTIFS: pets.NOTIFS,
+  CONVERSATIONS: pets.CONVERSATIONS,
+  MEMBER_ROLES: pets.MEMBER_ROLES,
+  EMOJIS: pets.EMOJIS,
+  EXTRA_KEYS: pets.EXTRA_KEYS,
+  USER_META: pets.USER_META,
+  GROUP_FILTERS: pets.GROUP_FILTERS,
+  defaultJoined: {
+    'Apaixonados por Gatos': true,
+    'Golden Retriever Brasil': true,
+    'Adoção Responsável': true,
+  },
+  defaultEdit: {
+    name: 'Marcos Vinícius',
+    user: '@marcos_v',
+    bio: 'Tutor de pet, passeios e muita fofura no feed.',
+    loc: 'São Paulo, SP',
+  },
+  contextMessage: 'Compartilhe o carinho com seu pet.',
+  segmentLabel: 'Petshare',
+  switchLabel: 'Ir para Gooday',
+  switchHref: '/',
+  switches: [
+    { label: 'Ir para Gooday', href: '/' },
+    { label: 'Ir para XP Zone', href: '/gamers' },
+    { label: 'Ir para ONE', href: '/church' },
+  ],
+};
+
+const churchPack: GoodayDataPack = {
+  U: church.U,
+  STORIES: church.STORIES as unknown as typeof gooday.STORIES,
+  COMMUNITIES: church.COMMUNITIES,
+  POSTS: church.POSTS as unknown as typeof gooday.POSTS,
+  NOTIFS: church.NOTIFS,
+  CONVERSATIONS: church.CONVERSATIONS,
+  MEMBER_ROLES: church.MEMBER_ROLES,
+  EMOJIS: church.EMOJIS,
+  EXTRA_KEYS: church.EXTRA_KEYS,
+  USER_META: church.USER_META,
+  GROUP_FILTERS: church.GROUP_FILTERS,
+  defaultJoined: {
+    'Jovens ONE': true,
+    'Worship & Música': true,
+    'Voluntários': true,
+  },
+  defaultEdit: {
+    name: 'Gabriel Melo',
+    user: '@gabriel',
+    bio: 'fé · música · design. Encontrando comunidade no caminho.',
+    loc: 'São Paulo, SP',
+  },
+  contextMessage: 'Encontre sua comunidade.',
+  segmentLabel: 'ONE',
+  switchLabel: 'Ir para Gooday',
+  switchHref: '/',
+  switches: [
+    { label: 'Ir para Gooday', href: '/' },
+    { label: 'Ir para XP Zone', href: '/gamers' },
+    { label: 'Ir para Petshare', href: '/pets' },
+  ],
 };
 
 export function getDataPack(segment: GoodaySegment = 'gooday'): GoodayDataPack {
-  return segment === 'gamers' ? gamersPack : goodayPack;
+  if (segment === 'gamers') return gamersPack;
+  if (segment === 'pets') return petsPack;
+  if (segment === 'church') return churchPack;
+  return goodayPack;
 }

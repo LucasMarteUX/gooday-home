@@ -7,12 +7,17 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
-export function HeaderMobile({ vm }: Props) {
-  const isGamers = vm.segment === 'gamers';
+function logoBrand(segment: GoodayHomeViewModel['segment']) {
+  if (segment === 'gamers') return 'xpzone' as const;
+  if (segment === 'pets') return 'petshare' as const;
+  if (segment === 'church') return 'one' as const;
+  return 'gooday' as const;
+}
 
+export function HeaderMobile({ vm }: Props) {
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-mobile)] px-4 pb-2.5 pt-[max(10px,env(safe-area-inset-top))] min-[800px]:hidden">
-      <GoodayLogo brand={isGamers ? 'xpzone' : 'gooday'} />
+      <GoodayLogo brand={logoBrand(vm.segment)} />
       <div className="flex items-center gap-0.5">
         <button
           type="button"

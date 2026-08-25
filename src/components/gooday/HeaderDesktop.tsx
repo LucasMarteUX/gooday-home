@@ -7,8 +7,22 @@ type Props = {
   vm: GoodayHomeViewModel;
 };
 
-function ContextIcon({ gamers }: { gamers: boolean }) {
-  if (gamers) {
+function logoBrand(segment: GoodayHomeViewModel['segment']) {
+  if (segment === 'gamers') return 'xpzone' as const;
+  if (segment === 'pets') return 'petshare' as const;
+  if (segment === 'church') return 'one' as const;
+  return 'gooday' as const;
+}
+
+function searchPlaceholder(segment: GoodayHomeViewModel['segment']) {
+  if (segment === 'gamers') return 'O que quer jogar hoje?';
+  if (segment === 'pets') return 'O que seu pet fez de fofo hoje?';
+  if (segment === 'church') return 'Encontre pessoas, igrejas ou comunidades';
+  return 'O que deseja fazer de bom hoje?';
+}
+
+function ContextIcon({ segment }: { segment: GoodayHomeViewModel['segment'] }) {
+  if (segment === 'gamers') {
     return (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M6.5 10.5h11c2.2 0 3.5 1.6 3.5 3.4v1.2c0 1.8-1.3 3.4-3.5 3.4h-1.2l-1.1 2H8.8l-1.1-2H6.5C4.3 18.5 3 16.9 3 15.1v-1.2c0-1.8 1.3-3.4 3.5-3.4z" />
@@ -16,6 +30,26 @@ function ContextIcon({ gamers }: { gamers: boolean }) {
         <circle cx="15.25" cy="13.6" r="0.85" fill="currentColor" stroke="none" />
         <circle cx="17.15" cy="15.1" r="0.85" fill="currentColor" stroke="none" />
         <path d="M6.8 8.2c.4-1.2 1.5-2 2.8-2M17.2 8.2c-.4-1.2-1.5-2-2.8-2" />
+      </svg>
+    );
+  }
+  if (segment === 'pets') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <ellipse cx="7" cy="7.5" rx="2" ry="2.5" />
+        <ellipse cx="12" cy="5.8" rx="2" ry="2.5" />
+        <ellipse cx="17" cy="7.5" rx="2" ry="2.5" />
+        <path d="M12 10.2c-2.9 0-5.3 2-5.3 4.7 0 1.4 1 2.5 2.3 2.9.6.2 1.2-.1 1.6-.5l.6-.9c.3-.5 1.1-.5 1.4 0l.6.9c.4.4 1 .7 1.6.5 1.3-.4 2.3-1.5 2.3-2.9 0-2.7-2.4-4.7-5.3-4.7z" />
+      </svg>
+    );
+  }
+  if (segment === 'church') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle cx="9" cy="8" r="3" />
+        <circle cx="16" cy="9.5" r="2.5" />
+        <path d="M3.5 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5" />
+        <path d="M14 16.2c1.2-.8 2.6-1.2 4-1.2 1.8 0 3.4.7 4.5 2" />
       </svg>
     );
   }
@@ -29,16 +63,16 @@ function ContextIcon({ gamers }: { gamers: boolean }) {
 }
 
 export function HeaderDesktop({ vm }: Props) {
-  const isGamers = vm.segment === 'gamers';
+  const segment = vm.segment;
 
   return (
     <header className="sticky top-0 z-40 hidden items-center gap-5 border-b border-[color:var(--gd-hairline)] bg-[color:var(--gd-header-desktop)] px-7 py-2.5 backdrop-blur-2xl min-[800px]:flex">
-      <GoodayLogo brand={isGamers ? 'xpzone' : 'gooday'} />
+      <GoodayLogo brand={logoBrand(segment)} />
       <div className="flex h-10 max-w-[480px] flex-1 items-center gap-2 rounded-[var(--gd-radius-control)] border border-[color:var(--gd-hairline-strong)] bg-gd-card py-0 pl-3.5 pr-1">
         <input
           readOnly
           onFocus={vm.openSearch}
-          placeholder={isGamers ? 'O que quer jogar hoje?' : 'O que deseja fazer de bom hoje?'}
+          placeholder={searchPlaceholder(segment)}
           aria-label="Buscar pessoas e grupos"
           className="h-full min-w-0 flex-1 cursor-pointer border-none bg-transparent text-[13px] text-gd-text outline-none placeholder:text-gd-text-subtle"
         />
@@ -56,7 +90,7 @@ export function HeaderDesktop({ vm }: Props) {
       </div>
       <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
         <span className="grid h-[18px] w-[18px] flex-none place-items-center text-gd-brand" aria-hidden>
-          <ContextIcon gamers={isGamers} />
+          <ContextIcon segment={segment} />
         </span>
         <p className="m-0 truncate text-sm font-normal text-gd-text">{vm.contextMessage}</p>
       </div>

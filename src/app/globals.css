@@ -92,6 +92,173 @@
   --gd-glow: 0 0 32px rgba(66, 232, 154, 0.25);
 }
 
+/* Segmento Pets / Petshare — light acolhedor (não altera Gooday nem Gamers) */
+[data-theme="pets"] {
+  color-scheme: light;
+  --gd-bg: #fff6f0;
+  --gd-card: #ffffff;
+  --gd-card-alt: #fff9f5;
+  --gd-surface: #fffaf7;
+  --gd-elevated: #ffe8dc;
+  --gd-hover: #ffddd0;
+  --gd-hover-subtle: #fff1ea;
+  --gd-border: #f0d5c8;
+  --gd-border-strong: #e8bfb0;
+  --gd-text: #3d2c29;
+  --gd-text-secondary: #5a403b;
+  --gd-text-muted: #8a6a62;
+  --gd-text-subtle: #a88980;
+  --gd-brand: #ff8f7a;
+  --gd-brand-light: #ffb4a4;
+  --gd-brand-soft: #e86a55;
+  --gd-on-brand: #ffffff;
+  --gd-accent: #7ec8c3;
+  --gd-success: #5bbf8a;
+  --gd-danger: #e85a6b;
+  --gd-header-mobile: rgba(255, 255, 255, 0.94);
+  --gd-header-desktop: rgba(255, 255, 255, 0.94);
+  --gd-nav-float: rgba(255, 255, 255, 0.96);
+  --gd-overlay: rgba(255, 246, 240, 0.97);
+  --gd-screen: #fff6f0;
+  --gd-toast: #ffffff;
+  --gd-toast-text: #3d2c29;
+  --gd-toast-accent: #ff8f7a;
+  --gd-notif-unread: rgba(255, 143, 122, 0.18);
+  --gd-notif-dot: #ff8f7a;
+  --gd-hairline: rgba(61, 44, 41, 0.08);
+  --gd-hairline-strong: rgba(61, 44, 41, 0.12);
+  --gd-shadow: 0 12px 36px rgba(232, 106, 85, 0.1);
+  --gd-radius-card: 24px;
+  --gd-radius-media: 18px;
+  --gd-radius-control: 14px;
+  --gd-radius-story: 22px;
+  --gd-card-border: rgba(255, 143, 122, 0.16);
+  --gd-story-ring: linear-gradient(135deg, #ff8f7a, #ffb4a4 45%, #7ec8c3);
+  --gd-glow: 0 8px 28px rgba(255, 143, 122, 0.2);
+}
+
+.pets-atmosphere {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(255, 180, 164, 0.35), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 95% 5%, rgba(126, 200, 195, 0.22), transparent 50%),
+    var(--gd-bg);
+}
+
+.pets-atmosphere > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gd-logo-petshare {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 32px;
+  font-family: var(--font-petshare), ui-rounded, system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--gd-brand-soft);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.gd-logo-petshare__paw {
+  display: grid;
+  place-items: center;
+  color: var(--gd-brand);
+}
+
+@media (min-width: 800px) {
+  .gd-logo-petshare {
+    height: 36px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Segmento Church / ONE — dark monocromático (não altera Gooday, Gamers nem Pets) */
+[data-theme="church"] {
+  color-scheme: dark;
+  --gd-bg: #050505;
+  --gd-card: #0b0b0b;
+  --gd-card-alt: #111111;
+  --gd-surface: #0a0a0a;
+  --gd-elevated: #181818;
+  --gd-hover: #1f1f1f;
+  --gd-hover-subtle: #141414;
+  --gd-border: #1a1a1a;
+  --gd-border-strong: #2a2a2a;
+  --gd-text: #ffffff;
+  --gd-text-secondary: #a3a3a3;
+  --gd-text-muted: #686868;
+  --gd-text-subtle: #525252;
+  --gd-brand: #ffffff;
+  --gd-brand-light: #f5f5f5;
+  --gd-brand-soft: #e5e5e5;
+  --gd-on-brand: #050505;
+  --gd-accent: #ffffff;
+  --gd-success: #ffffff;
+  --gd-danger: #f15c6d;
+  --gd-header-mobile: rgba(5, 5, 5, 0.94);
+  --gd-header-desktop: rgba(5, 5, 5, 0.94);
+  --gd-nav-float: rgba(10, 10, 10, 0.96);
+  --gd-overlay: rgba(5, 5, 5, 0.97);
+  --gd-screen: #050505;
+  --gd-toast: #181818;
+  --gd-toast-text: #ffffff;
+  --gd-toast-accent: #ffffff;
+  --gd-notif-unread: rgba(255, 255, 255, 0.1);
+  --gd-notif-dot: #ffffff;
+  --gd-hairline: rgba(255, 255, 255, 0.08);
+  --gd-hairline-strong: rgba(255, 255, 255, 0.14);
+  --gd-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --gd-radius-card: 14px;
+  --gd-radius-media: 12px;
+  --gd-radius-control: 10px;
+  --gd-radius-story: 14px;
+  --gd-card-border: rgba(255, 255, 255, 0.08);
+  --gd-story-ring: linear-gradient(135deg, #ffffff, #a3a3a3 70%);
+  --gd-glow: none;
+}
+
+.church-atmosphere {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  background: var(--gd-bg);
+}
+
+.church-atmosphere > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gd-logo-one {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  font-family: var(--font-one), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #ffffff;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@media (min-width: 800px) {
+  .gd-logo-one {
+    height: 36px;
+    font-size: 1.55rem;
+  }
+}
+
 .gamers-atmosphere {
   position: relative;
   isolation: isolate;

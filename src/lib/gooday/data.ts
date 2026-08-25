@@ -173,7 +173,23 @@ export type CommunityCategory =
   | 'rpg'
   | 'esports'
   | 'streaming'
-  | 'hardware';
+  | 'hardware'
+  | 'gatos'
+  | 'caes'
+  | 'adocao'
+  | 'adestramento'
+  | 'cuidados'
+  | 'exoticos'
+  | 'aves'
+  | 'jovens'
+  | 'worship'
+  | 'casais'
+  | 'familia'
+  | 'criativos'
+  | 'empreendedores'
+  | 'voluntariado'
+  | 'homens'
+  | 'mulheres';
 
 export type CommunityData = {
   name: string;

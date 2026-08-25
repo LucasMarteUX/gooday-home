@@ -295,10 +295,13 @@ export function useGoodayHome({
     setMediaCaptureOpen(false);
   }, []);
 
-  const switchSegment = useCallback(() => {
-    setSheet(null);
-    router.push(pack.switchHref);
-  }, [pack.switchHref, router]);
+  const switchSegment = useCallback(
+    (href?: string) => {
+      setSheet(null);
+      router.push(href || pack.switchHref);
+    },
+    [pack.switchHref, router],
+  );
 
   useBodyScrollLock(!!sheet || storyIdx !== null || !!view || mediaCaptureOpen);
 
@@ -1349,11 +1352,7 @@ export function useGoodayHome({
             >
               Editar perfil
             </button>
-            <button
-              type="button"
-              onClick={() => go('settings')}
-              style={S.row}
-            >
+            <button type="button" onClick={() => go('settings')} style={S.row}>
               Configurações
             </button>
             <button
@@ -1366,9 +1365,11 @@ export function useGoodayHome({
             >
               Ajuda
             </button>
-            <button type="button" onClick={switchSegment} style={S.row}>
-              {pack.switchLabel}
-            </button>
+            {pack.switches.map((sw) => (
+              <button key={sw.href} type="button" onClick={() => switchSegment(sw.href)} style={S.row}>
+                {sw.label}
+              </button>
+            ))}
             <button
               type="button"
               onClick={() => setSheet('logout')}
@@ -1470,7 +1471,7 @@ export function useGoodayHome({
     closeSheet,
     go,
     switchSegment,
-    pack.switchLabel,
+    pack.switches,
   ]);
 
   function buildScreenVals(isDesktop: boolean) {
@@ -2077,12 +2078,14 @@ export function useGoodayHome({
       'cecilia',
     ].concat(EXTRA_KEYS);
 
+    const groupsLabel = segment === 'church' ? 'Comunidades' : 'Grupos';
+
     const navDefs: { id: TabId; label: string; icon: GoodayIconName }[] = [
       { id: 'home', label: 'Início', icon: 'home' },
       { id: 'search', label: 'Buscar', icon: 'search' },
       { id: 'chat', label: 'Mensagens', icon: 'chat' },
       { id: 'create', label: 'Criar', icon: 'create' },
-      { id: 'groups', label: 'Grupos', icon: 'groups' },
+      { id: 'groups', label: groupsLabel, icon: 'groups' },
       { id: 'saved', label: 'Perfil', icon: 'heart' },
     ];
 
@@ -2116,7 +2119,7 @@ export function useGoodayHome({
     });
 
     const railTabs = [
-      { id: 'groups' as const, label: 'Grupos', active: railTab === 'groups', go: () => setRailTab('groups') },
+      { id: 'groups' as const, label: groupsLabel, active: railTab === 'groups', go: () => setRailTab('groups') },
       { id: 'people' as const, label: 'Pessoas', active: railTab === 'people', go: () => setRailTab('people') },
     ];
 
@@ -2344,11 +2347,11 @@ export function useGoodayHome({
                     defer(() => flash('Ajuda — próxima tela'));
                   },
                 },
-                {
-                  label: pack.switchLabel,
+                ...pack.switches.map((sw) => ({
+                  label: sw.label,
                   color: 'var(--gd-brand-soft)',
-                  go: switchSegment,
-                },
+                  go: () => switchSegment(sw.href),
+                })),
                 { label: 'Sair', color: '#F05A67', go: () => setSheet('logout') },
               ],
             }
