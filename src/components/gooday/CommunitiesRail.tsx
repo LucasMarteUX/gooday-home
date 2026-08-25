@@ -183,11 +183,12 @@ function FilterIcon({ active }: { active?: boolean }) {
 
 function GroupsList({ vm }: Props) {
   const lingo = vm.segment === 'language';
+  const en = lingo || vm.segment === 'roam';
   return (
     <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" bottomInset={56} alwaysScrollable>
       {vm.railCommunities.length === 0 ? (
         <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">
-          {lingo ? 'No communities found.' : 'Nenhum grupo encontrado.'}
+          {en ? 'No communities found.' : 'Nenhum grupo encontrado.'}
         </p>
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-2.5">
@@ -201,7 +202,7 @@ function GroupsList({ vm }: Props) {
         onClick={vm.openAllGroups}
         className="mt-1 h-10 flex-none rounded-xl border border-[color:var(--gd-hairline-strong)] bg-gd-card text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-hover-subtle"
       >
-        {lingo ? 'See all' : 'Ver tudo'}
+        {en ? 'See all' : 'Ver tudo'}
       </button>
     </StickySidebarScroll>
   );
@@ -210,10 +211,11 @@ function GroupsList({ vm }: Props) {
 export function CommunitiesCarousel({ vm }: Props) {
   if (!vm.showCommunities) return null;
   const lingo = vm.segment === 'language';
+  const roam = vm.segment === 'roam';
 
   return (
     <section
-      aria-label={lingo ? 'Languages' : 'Comunidades recomendadas'}
+      aria-label={lingo ? 'Languages' : roam ? 'Communities for you' : 'Comunidades recomendadas'}
       className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 pl-6 pr-4"
     >
       {vm.communities.map((c, i) => (

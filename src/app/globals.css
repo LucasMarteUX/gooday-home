@@ -358,6 +358,92 @@
   outline-offset: 2px;
 }
 
+[data-theme="roam"] {
+  color-scheme: light;
+  --gd-bg: #f3f0e9;
+  --gd-card: #ffffff;
+  --gd-card-alt: #f8f6f1;
+  --gd-surface: #ffffff;
+  --gd-elevated: #f8f6f1;
+  --gd-hover: #eae6dd;
+  --gd-hover-subtle: #f8f6f1;
+  --gd-border: #ddd9d0;
+  --gd-border-strong: #d0cbc0;
+  --gd-text: #171715;
+  --gd-text-secondary: #6f6d67;
+  --gd-text-muted: #98958c;
+  --gd-text-subtle: #a8a59c;
+  --gd-brand: #174c3a;
+  --gd-brand-light: #2a6b52;
+  --gd-brand-soft: #123d2e;
+  --gd-on-brand: #ffffff;
+  --gd-accent: #e66e49;
+  --gd-success: #82946f;
+  --gd-danger: #e66e49;
+  --gd-header-mobile: rgba(243, 240, 233, 0.94);
+  --gd-header-desktop: rgba(243, 240, 233, 0.94);
+  --gd-nav-float: rgba(255, 255, 255, 0.96);
+  --gd-overlay: rgba(243, 240, 233, 0.97);
+  --gd-screen: #f3f0e9;
+  --gd-toast: #ffffff;
+  --gd-toast-text: #171715;
+  --gd-toast-accent: #174c3a;
+  --gd-notif-unread: rgba(23, 76, 58, 0.1);
+  --gd-notif-dot: #e66e49;
+  --gd-hairline: rgba(23, 23, 21, 0.08);
+  --gd-hairline-strong: rgba(23, 23, 21, 0.12);
+  --gd-shadow: 0 8px 30px rgba(20, 20, 18, 0.06);
+  --gd-radius-card: 16px;
+  --gd-radius-media: 14px;
+  --gd-radius-control: 12px;
+  --gd-radius-story: 16px;
+  --gd-card-border: #ddd9d0;
+  --gd-story-ring: linear-gradient(135deg, #174c3a, #e66e49 55%, #d5c4a1);
+  --gd-glow: 0 8px 28px rgba(23, 76, 58, 0.14);
+  --roam-sand: #d5c4a1;
+  --roam-sky: #adc9d2;
+  --roam-olive: #82946f;
+  --roam-accent: #e66e49;
+}
+
+.roam-atmosphere {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  font-family: var(--font-roam), ui-sans-serif, system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse 65% 42% at 8% -6%, rgba(23, 76, 58, 0.07), transparent 55%),
+    radial-gradient(ellipse 48% 36% at 96% 4%, rgba(230, 110, 73, 0.08), transparent 50%),
+    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(213, 196, 161, 0.18), transparent 60%),
+    var(--gd-bg);
+}
+
+.roam-atmosphere > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gd-logo-roam {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  font-family: var(--font-roam-display), ui-serif, Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #174c3a;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@media (min-width: 800px) {
+  .gd-logo-roam {
+    height: 36px;
+    font-size: 1.7rem;
+  }
+}
+
 .gamers-atmosphere {
   position: relative;
   isolation: isolate;

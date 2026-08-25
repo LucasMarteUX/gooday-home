@@ -3,12 +3,12 @@
 type Props = {
   className?: string;
   /** Variante tipográfica por segmento. */
-  brand?: 'gooday' | 'xpzone' | 'petshare' | 'one' | 'lingo';
+  brand?: 'gooday' | 'xpzone' | 'petshare' | 'one' | 'lingo' | 'roam';
 };
 
 /**
  * Logo Gooday em PNG — altura controlada via CSS.
- * /gamers → XP Zone · /pets → Petshare · /church → ONE · /language → LINGO
+ * /gamers → XP Zone · /pets → Petshare · /church → ONE · /language → LINGO · /roam → ROAM
  */
 export function GoodayLogo({ className = '', brand = 'gooday' }: Props) {
   if (brand === 'xpzone') {
@@ -47,6 +47,14 @@ export function GoodayLogo({ className = '', brand = 'gooday' }: Props) {
     return (
       <span className={`gd-logo-lingo ${className}`} aria-label="LINGO">
         LINGO
+      </span>
+    );
+  }
+
+  if (brand === 'roam') {
+    return (
+      <span className={`gd-logo-roam ${className}`} aria-label="ROAM">
+        ROAM
       </span>
     );
   }

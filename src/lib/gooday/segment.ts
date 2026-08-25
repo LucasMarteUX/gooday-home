@@ -3,9 +3,10 @@ import * as gamers from './data/gamers';
 import * as pets from './data/pets';
 import * as church from './data/church';
 import * as language from './data/language';
+import * as roam from './data/roam';
 import type { GoodayUser, UserMeta, CommunityData } from './data';
 
-export type GoodaySegment = 'gooday' | 'gamers' | 'pets' | 'church' | 'language';
+export type GoodaySegment = 'gooday' | 'gamers' | 'pets' | 'church' | 'language' | 'roam';
 
 export type SegmentSwitch = { label: string; href: string };
 
@@ -64,6 +65,7 @@ const goodayPack: GoodayDataPack = {
     { label: 'Ir para Petshare', href: '/pets' },
     { label: 'Ir para ONE', href: '/church' },
     { label: 'Ir para LINGO', href: '/language' },
+    { label: 'Ir para ROAM', href: '/roam' },
   ],
 };
 
@@ -99,6 +101,7 @@ const gamersPack: GoodayDataPack = {
     { label: 'Ir para Petshare', href: '/pets' },
     { label: 'Ir para ONE', href: '/church' },
     { label: 'Ir para LINGO', href: '/language' },
+    { label: 'Ir para ROAM', href: '/roam' },
   ],
 };
 
@@ -134,6 +137,7 @@ const petsPack: GoodayDataPack = {
     { label: 'Ir para XP Zone', href: '/gamers' },
     { label: 'Ir para ONE', href: '/church' },
     { label: 'Ir para LINGO', href: '/language' },
+    { label: 'Ir para ROAM', href: '/roam' },
   ],
 };
 
@@ -169,6 +173,7 @@ const churchPack: GoodayDataPack = {
     { label: 'Ir para XP Zone', href: '/gamers' },
     { label: 'Ir para Petshare', href: '/pets' },
     { label: 'Ir para LINGO', href: '/language' },
+    { label: 'Ir para ROAM', href: '/roam' },
   ],
 };
 
@@ -204,6 +209,43 @@ const languagePack: GoodayDataPack = {
     { label: 'Go to XP Zone', href: '/gamers' },
     { label: 'Go to Petshare', href: '/pets' },
     { label: 'Go to ONE', href: '/church' },
+    { label: 'Go to ROAM', href: '/roam' },
+  ],
+};
+
+const roamPack: GoodayDataPack = {
+  U: roam.U,
+  STORIES: roam.STORIES as unknown as typeof gooday.STORIES,
+  COMMUNITIES: roam.COMMUNITIES,
+  POSTS: roam.POSTS as unknown as typeof gooday.POSTS,
+  NOTIFS: roam.NOTIFS,
+  CONVERSATIONS: roam.CONVERSATIONS,
+  MEMBER_ROLES: roam.MEMBER_ROLES,
+  EMOJIS: roam.EMOJIS,
+  EXTRA_KEYS: roam.EXTRA_KEYS,
+  USER_META: roam.USER_META,
+  GROUP_FILTERS: roam.GROUP_FILTERS,
+  defaultJoined: {
+    '🇵🇹 Brasileiros em Portugal': true,
+    '🇨🇦 Toronto Housing': true,
+    '🇯🇵 Japan First Trip': true,
+  },
+  defaultEdit: {
+    name: 'Lucas Martins',
+    user: '@lucas.m',
+    bio: 'From São Paulo 🇧🇷 · Planning Canada 🇨🇦 · Curious about study + remote.',
+    loc: 'São Paulo, Brazil',
+  },
+  contextMessage: 'Explore. Move. Belong.',
+  segmentLabel: 'ROAM',
+  switchLabel: 'Go to Gooday',
+  switchHref: '/',
+  switches: [
+    { label: 'Go to Gooday', href: '/' },
+    { label: 'Go to XP Zone', href: '/gamers' },
+    { label: 'Go to Petshare', href: '/pets' },
+    { label: 'Go to ONE', href: '/church' },
+    { label: 'Go to LINGO', href: '/language' },
   ],
 };
 
@@ -212,5 +254,6 @@ export function getDataPack(segment: GoodaySegment = 'gooday'): GoodayDataPack {
   if (segment === 'pets') return petsPack;
   if (segment === 'church') return churchPack;
   if (segment === 'language') return languagePack;
+  if (segment === 'roam') return roamPack;
   return goodayPack;
 }

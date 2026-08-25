@@ -201,7 +201,16 @@ export type CommunityCategory =
   | 'mandarin'
   | 'conversation'
   | 'business'
-  | 'culture';
+  | 'culture'
+  | 'countries'
+  | 'cities'
+  | 'immigration'
+  | 'travel'
+  | 'study'
+  | 'work'
+  | 'nomads'
+  | 'families'
+  | 'housing';
 
 export type CommunityData = {
   name: string;

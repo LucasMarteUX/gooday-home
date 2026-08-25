@@ -12,6 +12,7 @@ function logoBrand(segment: GoodayHomeViewModel['segment']) {
   if (segment === 'pets') return 'petshare' as const;
   if (segment === 'church') return 'one' as const;
   if (segment === 'language') return 'lingo' as const;
+  if (segment === 'roam') return 'roam' as const;
   return 'gooday' as const;
 }
 

@@ -12,6 +12,7 @@ function logoBrand(segment: GoodayHomeViewModel['segment']) {
   if (segment === 'pets') return 'petshare' as const;
   if (segment === 'church') return 'one' as const;
   if (segment === 'language') return 'lingo' as const;
+  if (segment === 'roam') return 'roam' as const;
   return 'gooday' as const;
 }
 
@@ -20,6 +21,7 @@ function searchPlaceholder(segment: GoodayHomeViewModel['segment']) {
   if (segment === 'pets') return 'O que seu pet fez de fofo hoje?';
   if (segment === 'church') return 'Encontre pessoas, igrejas ou comunidades';
   if (segment === 'language') return 'Search people, languages or communities...';
+  if (segment === 'roam') return 'Where do you want to go?';
   return 'O que deseja fazer de bom hoje?';
 }
 
@@ -61,6 +63,16 @@ function ContextIcon({ segment }: { segment: GoodayHomeViewModel['segment'] }) {
         <circle cx="12" cy="12" r="9" />
         <path d="M3 12h18" />
         <path d="M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z" />
+      </svg>
+    );
+  }
+  if (segment === 'roam') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21" />
+        <path d="M8.2 8.2l1.6 1.6M14.2 14.2l1.6 1.6M14.2 9.8l1.6-1.6M8.2 15.8l1.6-1.6" />
+        <circle cx="12" cy="12" r="2.2" />
       </svg>
     );
   }
