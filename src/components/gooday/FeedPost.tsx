@@ -8,6 +8,11 @@ type Props = {
 };
 
 export function FeedPost({ post, reactionsEnabled }: Props) {
+  const langLine = 'langLine' in post ? (post as { langLine?: string }).langLine : undefined;
+  const correction = 'correction' in post ? (post as { correction?: { from: string; to: string } }).correction : undefined;
+  const voice = 'voice' in post ? (post as { voice?: string }).voice : undefined;
+  const showTranslate = 'showTranslate' in post ? (post as { showTranslate?: boolean }).showTranslate : undefined;
+
   return (
     <article className="rounded-[var(--gd-radius-card)] border border-[color:var(--gd-card-border)] bg-gd-card px-3.5 pb-2.5 pt-3.5 min-[800px]:border-b min-[800px]:border-[color:var(--gd-card-border)]">
       <header className="flex items-start gap-3">
@@ -26,6 +31,9 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
           >
             {post.handle}
           </button>
+          {langLine ? (
+            <p className="mt-0.5 truncate text-[12px] font-medium text-gd-text-muted">{langLine}</p>
+          ) : null}
           <p className="mt-[3px] flex items-center gap-1.5 text-[13px] text-gd-text-subtle">
             <svg width="18" height="10" viewBox="0 0 26 14" fill="none" stroke="currentColor" strokeWidth="1.6">
               <circle cx="7" cy="7" r="5" />
@@ -50,6 +58,31 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
           </svg>
         </button>
       </header>
+
+      {correction ? (
+        <div className="mx-0.5 mt-3 rounded-[14px] border border-[color:var(--gd-border)] bg-gd-elevated/80 p-3">
+          <p className="m-0 text-[11px] font-bold uppercase tracking-wide text-gd-brand">Suggested correction</p>
+          <p className="mt-2 text-[14px] text-gd-text-secondary">
+            <span className="line-through opacity-60">{correction.from}</span>
+            <span className="mx-2 text-gd-brand">→</span>
+            <span className="font-semibold text-gd-text">{correction.to}</span>
+          </p>
+        </div>
+      ) : null}
+
+      {voice ? (
+        <div className="mx-0.5 mt-3 flex items-center gap-3 rounded-[14px] border border-[color:var(--gd-border)] bg-[#EEECFF] px-3.5 py-3">
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-gd-brand text-gd-on-brand" aria-hidden>
+            ▶
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/80">
+              <div className="h-full w-2/5 rounded-full bg-gd-brand" />
+            </div>
+            <p className="mt-1.5 text-[12px] font-medium text-gd-text-muted">{voice}</p>
+          </div>
+        </div>
+      ) : null}
 
       <p className="mx-0.5 mt-3 text-[15px] leading-[1.55] text-gd-text-secondary text-pretty">{post.text}</p>
 
@@ -127,6 +160,16 @@ export function FeedPost({ post, reactionsEnabled }: Props) {
               <circle cx="12" cy="12" r="9" />
               <path d="M9 10h.01M15 10h.01M8.6 14.4a4.4 4.4 0 006.8 0" />
             </svg>
+          </button>
+        ) : null}
+        {showTranslate ? (
+          <button
+            type="button"
+            onClick={post.openComments}
+            aria-label="Translate"
+            className="flex h-11 items-center gap-1.5 rounded-xl px-2.5 text-sm font-medium text-gd-brand"
+          >
+            Translate
           </button>
         ) : null}
         <button

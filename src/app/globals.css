@@ -259,6 +259,105 @@
   }
 }
 
+/* Segmento Language / LINGO — language-first social (não altera outros temas) */
+[data-theme="language"] {
+  color-scheme: light;
+  --gd-bg: #fffdf7;
+  --gd-card: #ffffff;
+  --gd-card-alt: #f6f4ee;
+  --gd-surface: #ffffff;
+  --gd-elevated: #f6f4ee;
+  --gd-hover: #eeece6;
+  --gd-hover-subtle: #faf8f2;
+  --gd-border: #e8e5dd;
+  --gd-border-strong: #dfdceb;
+  --gd-text: #17171b;
+  --gd-text-secondary: #68686f;
+  --gd-text-muted: #96969d;
+  --gd-text-subtle: #a8a8af;
+  --gd-brand: #574fff;
+  --gd-brand-light: #7a74ff;
+  --gd-brand-soft: #473fe8;
+  --gd-on-brand: #ffffff;
+  --gd-accent: #ff6b6b;
+  --gd-success: #35cfa1;
+  --gd-danger: #ff6b6b;
+  --gd-header-mobile: rgba(255, 253, 247, 0.94);
+  --gd-header-desktop: rgba(255, 253, 247, 0.94);
+  --gd-nav-float: rgba(255, 255, 255, 0.96);
+  --gd-overlay: rgba(255, 253, 247, 0.97);
+  --gd-screen: #fffdf7;
+  --gd-toast: #ffffff;
+  --gd-toast-text: #17171b;
+  --gd-toast-accent: #574fff;
+  --gd-notif-unread: rgba(87, 79, 255, 0.12);
+  --gd-notif-dot: #ff6b6b;
+  --gd-hairline: rgba(23, 23, 27, 0.08);
+  --gd-hairline-strong: rgba(23, 23, 27, 0.12);
+  --gd-shadow: 0 8px 30px rgba(23, 23, 27, 0.06);
+  --gd-radius-card: 16px;
+  --gd-radius-media: 14px;
+  --gd-radius-control: 12px;
+  --gd-radius-story: 16px;
+  --gd-card-border: #e8e5dd;
+  --gd-story-ring: linear-gradient(135deg, #574fff, #ff6b6b 50%, #9b6bff);
+  --gd-glow: 0 8px 28px rgba(87, 79, 255, 0.16);
+  --lingo-yellow: #ffc83d;
+  --lingo-coral: #ff6b6b;
+  --lingo-mint: #35cfa1;
+  --lingo-sky: #4ba3ff;
+  --lingo-purple: #9b6bff;
+  --lingo-en: #4b7bff;
+  --lingo-es: #f4b72c;
+  --lingo-fr: #7667db;
+  --lingo-it: #31b87a;
+  --lingo-jp: #ff6666;
+  --lingo-kr: #9a68ee;
+  --lingo-pt: #38b96d;
+  --lingo-de: #57575c;
+}
+
+.language-atmosphere {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 70% 45% at 6% -8%, rgba(87, 79, 255, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 96% 2%, rgba(255, 200, 61, 0.12), transparent 50%),
+    var(--gd-bg);
+}
+
+.language-atmosphere > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gd-logo-lingo {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  font-family: var(--font-lingo), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #574fff;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@media (min-width: 800px) {
+  .gd-logo-lingo {
+    height: 36px;
+    font-size: 1.55rem;
+  }
+}
+
+.lingo-lang-card:focus-visible {
+  outline: 2px solid var(--gd-brand);
+  outline-offset: 2px;
+}
+
 .gamers-atmosphere {
   position: relative;
   isolation: isolate;

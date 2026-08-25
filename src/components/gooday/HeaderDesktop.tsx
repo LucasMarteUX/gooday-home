@@ -11,6 +11,7 @@ function logoBrand(segment: GoodayHomeViewModel['segment']) {
   if (segment === 'gamers') return 'xpzone' as const;
   if (segment === 'pets') return 'petshare' as const;
   if (segment === 'church') return 'one' as const;
+  if (segment === 'language') return 'lingo' as const;
   return 'gooday' as const;
 }
 
@@ -18,6 +19,7 @@ function searchPlaceholder(segment: GoodayHomeViewModel['segment']) {
   if (segment === 'gamers') return 'O que quer jogar hoje?';
   if (segment === 'pets') return 'O que seu pet fez de fofo hoje?';
   if (segment === 'church') return 'Encontre pessoas, igrejas ou comunidades';
+  if (segment === 'language') return 'Search people, languages or communities...';
   return 'O que deseja fazer de bom hoje?';
 }
 
@@ -50,6 +52,15 @@ function ContextIcon({ segment }: { segment: GoodayHomeViewModel['segment'] }) {
         <circle cx="16" cy="9.5" r="2.5" />
         <path d="M3.5 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5" />
         <path d="M14 16.2c1.2-.8 2.6-1.2 4-1.2 1.8 0 3.4.7 4.5 2" />
+      </svg>
+    );
+  }
+  if (segment === 'language') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <path d="M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z" />
       </svg>
     );
   }
@@ -93,6 +104,13 @@ export function HeaderDesktop({ vm }: Props) {
           <ContextIcon segment={segment} />
         </span>
         <p className="m-0 truncate text-sm font-normal text-gd-text">{vm.contextMessage}</p>
+        {segment === 'language' ? (
+          <span className="hidden items-center gap-1.5 rounded-full border border-[color:var(--gd-border)] bg-gd-card px-2.5 py-1 text-[12px] font-semibold text-gd-text min-[1100px]:inline-flex">
+            <span aria-hidden>🔥</span> 12
+            <span className="text-gd-text-muted">·</span>
+            <span aria-hidden>🇺🇸</span> B1
+          </span>
+        ) : null}
       </div>
       <button
         type="button"

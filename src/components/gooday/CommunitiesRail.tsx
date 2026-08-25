@@ -7,7 +7,89 @@ import { PeopleSuggestions } from "./SidebarSuggestions";
 
 type Community = GoodayHomeViewModel["communities"][number];
 
-function CommunityCard({ c, compact }: { c: Community; compact?: boolean }) {
+const LANG_ACCENT: Record<string, string> = {
+  '🇺🇸': 'var(--lingo-en, #4B7BFF)',
+  '🇪🇸': 'var(--lingo-es, #F4B72C)',
+  '🇫🇷': 'var(--lingo-fr, #7667DB)',
+  '🇩🇪': 'var(--lingo-de, #57575C)',
+  '🇮🇹': 'var(--lingo-it, #31B87A)',
+  '🇯🇵': 'var(--lingo-jp, #FF6666)',
+  '🇰🇷': 'var(--lingo-kr, #9A68EE)',
+  '🇧🇷': 'var(--lingo-pt, #38B96D)',
+  '🇬🇧': 'var(--lingo-en, #4B7BFF)',
+};
+
+function splitLangName(name: string) {
+  const m = name.match(/^([\u{1F1E6}-\u{1F1FF}]{2})\s*(.+)$/u);
+  if (m) return { flag: m[1], title: m[2] };
+  return { flag: '🌐', title: name };
+}
+
+function CommunityCard({
+  c,
+  compact,
+  lingo,
+}: {
+  c: Community;
+  compact?: boolean;
+  lingo?: boolean;
+}) {
+  if (lingo) {
+    const { flag, title } = splitLangName(c.name);
+    const accent = LANG_ACCENT[flag] ?? 'var(--gd-brand)';
+    return (
+      <article
+        onClick={c.open}
+        className={`cursor-pointer rounded-[var(--gd-radius-card)] border bg-gd-card transition-colors hover:bg-gd-hover-subtle ${
+          compact ? 'w-[200px] flex-none scroll-snap-align-start p-3.5' : 'min-w-0 p-3.5'
+        }`}
+        style={{ borderColor: accent, borderWidth: 1.5 }}
+      >
+        <div
+          className={`flex items-center gap-3 rounded-[var(--gd-radius-media)] px-3 py-4 ${compact ? 'min-h-[88px]' : 'min-h-[96px]'}`}
+          style={{ background: `color-mix(in srgb, ${accent} 12%, white)` }}
+        >
+          <span className="text-[40px] leading-none" aria-hidden>
+            {flag}
+          </span>
+          <div className="min-w-0">
+            <h3 className="m-0 truncate text-[15px] font-bold tracking-[-0.02em] text-gd-text">{title}</h3>
+            <p className="mt-1 text-[11px] font-medium text-gd-text-secondary">{c.groups}</p>
+          </div>
+        </div>
+        <div className="relative z-[1] -mt-3 ml-2 flex w-max">
+          {c.avatars.map((a, i) => (
+            <img
+              key={i}
+              src={a.src}
+              alt=""
+              className="-mr-2 h-[26px] w-[26px] rounded-full border-2 border-gd-card object-cover"
+            />
+          ))}
+        </div>
+        <div className="mt-2 flex items-center justify-between gap-1.5">
+          <span className="truncate text-[12px] font-medium text-gd-text-muted">{c.members}</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              c.share(e);
+            }}
+            aria-label="Share community"
+            className="grid h-8 w-8 flex-none place-items-center rounded-[10px] text-gd-text-muted"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="18" cy="5" r="2.6" />
+              <circle cx="6" cy="12" r="2.6" />
+              <circle cx="18" cy="19" r="2.6" />
+              <path d="M8.4 10.8l7.2-4.2M8.4 13.2l7.2 4.2" />
+            </svg>
+          </button>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article
       onClick={c.open}
@@ -100,14 +182,17 @@ function FilterIcon({ active }: { active?: boolean }) {
 }
 
 function GroupsList({ vm }: Props) {
+  const lingo = vm.segment === 'language';
   return (
     <StickySidebarScroll fadeColor="var(--gd-bg)" className="gap-3" bottomInset={56} alwaysScrollable>
       {vm.railCommunities.length === 0 ? (
-        <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">Nenhum grupo encontrado.</p>
+        <p className="m-0 px-1 py-6 text-center text-[13px] text-gd-text-subtle">
+          {lingo ? 'No communities found.' : 'Nenhum grupo encontrado.'}
+        </p>
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-2.5">
           {vm.railCommunities.map((c, i) => (
-            <CommunityCard key={i} c={c} />
+            <CommunityCard key={i} c={c} lingo={lingo} />
           ))}
         </div>
       )}
@@ -116,7 +201,7 @@ function GroupsList({ vm }: Props) {
         onClick={vm.openAllGroups}
         className="mt-1 h-10 flex-none rounded-xl border border-[color:var(--gd-hairline-strong)] bg-gd-card text-[13px] font-semibold text-gd-brand-soft transition-colors hover:bg-gd-hover-subtle"
       >
-        Ver tudo
+        {lingo ? 'See all' : 'Ver tudo'}
       </button>
     </StickySidebarScroll>
   );
@@ -124,14 +209,15 @@ function GroupsList({ vm }: Props) {
 
 export function CommunitiesCarousel({ vm }: Props) {
   if (!vm.showCommunities) return null;
+  const lingo = vm.segment === 'language';
 
   return (
     <section
-      aria-label="Comunidades recomendadas"
+      aria-label={lingo ? 'Languages' : 'Comunidades recomendadas'}
       className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 pl-6 pr-4"
     >
       {vm.communities.map((c, i) => (
-        <CommunityCard key={i} c={c} compact />
+        <CommunityCard key={i} c={c} compact lingo={lingo} />
       ))}
     </section>
   );

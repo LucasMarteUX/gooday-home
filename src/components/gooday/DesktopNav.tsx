@@ -51,7 +51,7 @@ export function DesktopNav({ vm }: Props) {
             <span className="grid h-5 w-5 flex-none place-items-center text-current">
               <SettingsIcon />
             </span>
-            <span className="truncate">Configurações</span>
+            <span className="truncate">{vm.segment === 'language' ? 'Settings' : 'Configurações'}</span>
           </button>
         </div>
       </nav>

@@ -2,9 +2,10 @@ import * as gooday from './data';
 import * as gamers from './data/gamers';
 import * as pets from './data/pets';
 import * as church from './data/church';
+import * as language from './data/language';
 import type { GoodayUser, UserMeta, CommunityData } from './data';
 
-export type GoodaySegment = 'gooday' | 'gamers' | 'pets' | 'church';
+export type GoodaySegment = 'gooday' | 'gamers' | 'pets' | 'church' | 'language';
 
 export type SegmentSwitch = { label: string; href: string };
 
@@ -62,6 +63,7 @@ const goodayPack: GoodayDataPack = {
     { label: 'Ir para XP Zone', href: '/gamers' },
     { label: 'Ir para Petshare', href: '/pets' },
     { label: 'Ir para ONE', href: '/church' },
+    { label: 'Ir para LINGO', href: '/language' },
   ],
 };
 
@@ -96,6 +98,7 @@ const gamersPack: GoodayDataPack = {
     { label: 'Ir para Gooday', href: '/' },
     { label: 'Ir para Petshare', href: '/pets' },
     { label: 'Ir para ONE', href: '/church' },
+    { label: 'Ir para LINGO', href: '/language' },
   ],
 };
 
@@ -130,6 +133,7 @@ const petsPack: GoodayDataPack = {
     { label: 'Ir para Gooday', href: '/' },
     { label: 'Ir para XP Zone', href: '/gamers' },
     { label: 'Ir para ONE', href: '/church' },
+    { label: 'Ir para LINGO', href: '/language' },
   ],
 };
 
@@ -164,6 +168,42 @@ const churchPack: GoodayDataPack = {
     { label: 'Ir para Gooday', href: '/' },
     { label: 'Ir para XP Zone', href: '/gamers' },
     { label: 'Ir para Petshare', href: '/pets' },
+    { label: 'Ir para LINGO', href: '/language' },
+  ],
+};
+
+const languagePack: GoodayDataPack = {
+  U: language.U,
+  STORIES: language.STORIES as unknown as typeof gooday.STORIES,
+  COMMUNITIES: language.COMMUNITIES,
+  POSTS: language.POSTS as unknown as typeof gooday.POSTS,
+  NOTIFS: language.NOTIFS,
+  CONVERSATIONS: language.CONVERSATIONS,
+  MEMBER_ROLES: language.MEMBER_ROLES,
+  EMOJIS: language.EMOJIS,
+  EXTRA_KEYS: language.EXTRA_KEYS,
+  USER_META: language.USER_META,
+  GROUP_FILTERS: language.GROUP_FILTERS,
+  defaultJoined: {
+    '🇺🇸 English': true,
+    '🇪🇸 Español': true,
+    '🇺🇸 English for Developers': true,
+  },
+  defaultEdit: {
+    name: 'Lucas Martins',
+    user: '@lucas.m',
+    bio: '🇧🇷 Portuguese — Native · 🇺🇸 English — B1. Learning through people.',
+    loc: 'São Paulo, Brazil',
+  },
+  contextMessage: 'Ready to practice?',
+  segmentLabel: 'LINGO',
+  switchLabel: 'Go to Gooday',
+  switchHref: '/',
+  switches: [
+    { label: 'Go to Gooday', href: '/' },
+    { label: 'Go to XP Zone', href: '/gamers' },
+    { label: 'Go to Petshare', href: '/pets' },
+    { label: 'Go to ONE', href: '/church' },
   ],
 };
 
@@ -171,5 +211,6 @@ export function getDataPack(segment: GoodaySegment = 'gooday'): GoodayDataPack {
   if (segment === 'gamers') return gamersPack;
   if (segment === 'pets') return petsPack;
   if (segment === 'church') return churchPack;
+  if (segment === 'language') return languagePack;
   return goodayPack;
 }

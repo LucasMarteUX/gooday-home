@@ -189,7 +189,19 @@ export type CommunityCategory =
   | 'empreendedores'
   | 'voluntariado'
   | 'homens'
-  | 'mulheres';
+  | 'mulheres'
+  | 'english'
+  | 'spanish'
+  | 'french'
+  | 'german'
+  | 'italian'
+  | 'japanese'
+  | 'korean'
+  | 'portuguese'
+  | 'mandarin'
+  | 'conversation'
+  | 'business'
+  | 'culture';
 
 export type CommunityData = {
   name: string;

@@ -1919,6 +1919,15 @@ export function useGoodayHome({
     const feed = posts.map((p) => {
       const u = user(p.u);
       const rx = Object.keys(p.reactions);
+      const meta = USER_META[p.u];
+      const isLingoFeed = segment === 'language';
+      const isCorrection =
+        isLingoFeed &&
+        (p.tags.some((t) => /correction/i.test(t)) || /soft correction|→/.test(p.text));
+      const isVoice =
+        isLingoFeed &&
+        (/voice practice|pronunciation check|record yourself/i.test(p.text) ||
+          p.tags.some((t) => /voice/i.test(t)));
       return {
         av: u.av,
         handle: u.handle,
@@ -1948,7 +1957,14 @@ export function useGoodayHome({
         saveFill: p.saved ? 'var(--gd-brand)' : 'none',
         hasPreview: p.commenters.length > 0,
         commenters: p.commenters.map((k) => ({ src: user(k).av })),
-        previewLabel: p.comments + ' comentários',
+        previewLabel:
+          segment === 'language' ? p.comments + ' comments' : p.comments + ' comentários',
+        langLine: isLingoFeed ? meta?.bio?.split('.')[0] ?? meta?.interests?.join(' · ') : undefined,
+        showTranslate: isLingoFeed,
+        correction: isCorrection
+          ? { from: 'Yesterday I go to the gym.', to: 'Yesterday I went to the gym.' }
+          : undefined,
+        voice: isVoice ? '▶  ━━━━━━━━  0:18' : undefined,
         toggleLike: () => toggleLike(p.id),
         like2x: () => toggleLike(p.id, true),
         toggleSave: () => toggleSave(p.id),
@@ -1971,13 +1987,22 @@ export function useGoodayHome({
       };
     });
 
-    const tabDefs: { id: TabId; label: string; icon: GoodayIconName }[] = [
-      { id: 'home', label: 'Início', icon: 'home' },
-      { id: 'search', label: 'Buscar', icon: 'search' },
-      { id: 'create', label: 'Criar', icon: 'create' },
-      { id: 'chat', label: 'Salvos', icon: 'pin' },
-      { id: 'saved', label: 'Perfil', icon: 'heart' },
-    ];
+    const tabDefs: { id: TabId; label: string; icon: GoodayIconName }[] =
+      segment === 'language'
+        ? [
+            { id: 'home', label: 'Home', icon: 'home' },
+            { id: 'search', label: 'Languages', icon: 'search' },
+            { id: 'create', label: 'Practice', icon: 'create' },
+            { id: 'chat', label: 'Messages', icon: 'chat' },
+            { id: 'saved', label: 'Profile', icon: 'heart' },
+          ]
+        : [
+            { id: 'home', label: 'Início', icon: 'home' },
+            { id: 'search', label: 'Buscar', icon: 'search' },
+            { id: 'create', label: 'Criar', icon: 'create' },
+            { id: 'chat', label: 'Salvos', icon: 'pin' },
+            { id: 'saved', label: 'Perfil', icon: 'heart' },
+          ];
 
     const tabs = tabDefs.map((t) => {
       if (t.id === 'create') {
@@ -2078,29 +2103,41 @@ export function useGoodayHome({
       'cecilia',
     ].concat(EXTRA_KEYS);
 
-    const groupsLabel = segment === 'church' ? 'Comunidades' : 'Grupos';
+    const groupsLabel =
+      segment === 'church' ? 'Comunidades' : segment === 'language' ? 'Languages' : 'Grupos';
+    const isLingo = segment === 'language';
 
-    const navDefs: { id: TabId; label: string; icon: GoodayIconName }[] = [
-      { id: 'home', label: 'Início', icon: 'home' },
-      { id: 'search', label: 'Buscar', icon: 'search' },
-      { id: 'chat', label: 'Mensagens', icon: 'chat' },
-      { id: 'create', label: 'Criar', icon: 'create' },
-      { id: 'groups', label: groupsLabel, icon: 'groups' },
-      { id: 'saved', label: 'Perfil', icon: 'heart' },
-    ];
+    const navDefs: { id: TabId; label: string; icon: GoodayIconName }[] = isLingo
+      ? [
+          { id: 'home', label: 'Home', icon: 'home' },
+          { id: 'search', label: 'Practice', icon: 'search' },
+          { id: 'groups', label: 'Languages', icon: 'groups' },
+          { id: 'chat', label: 'Messages', icon: 'chat' },
+          { id: 'create', label: 'Create', icon: 'create' },
+          { id: 'saved', label: 'Profile', icon: 'heart' },
+        ]
+      : [
+          { id: 'home', label: 'Início', icon: 'home' },
+          { id: 'search', label: 'Buscar', icon: 'search' },
+          { id: 'chat', label: 'Mensagens', icon: 'chat' },
+          { id: 'create', label: 'Criar', icon: 'create' },
+          { id: 'groups', label: groupsLabel, icon: 'groups' },
+          { id: 'saved', label: 'Perfil', icon: 'heart' },
+        ];
 
     const navItems = navDefs.map((n) => {
       const active = tab === n.id;
+      const activeFg = isLingo ? '#ffffff' : onBrand;
       return {
         id: n.id,
         label: n.label,
         bg: active ? brand : 'transparent',
-        color: active ? onBrand : muted,
+        color: active ? activeFg : muted,
         glyph:
           n.icon === 'create' ? (
-            <CreateIcon active={active} activeColor="var(--gd-text-muted)" size={18} />
+            <CreateIcon active={active} activeColor={isLingo && active ? '#ffffff' : 'var(--gd-text-muted)'} size={18} />
           ) : (
-            icon(n.icon, active, onBrand, 18)
+            icon(n.icon, active, activeFg, 18)
           ),
         go: () => {
           setTab(n.id);
@@ -2119,8 +2156,18 @@ export function useGoodayHome({
     });
 
     const railTabs = [
-      { id: 'groups' as const, label: groupsLabel, active: railTab === 'groups', go: () => setRailTab('groups') },
-      { id: 'people' as const, label: 'Pessoas', active: railTab === 'people', go: () => setRailTab('people') },
+      {
+        id: 'groups' as const,
+        label: isLingo ? 'Languages' : groupsLabel,
+        active: railTab === 'groups',
+        go: () => setRailTab('groups'),
+      },
+      {
+        id: 'people' as const,
+        label: isLingo ? 'People' : 'Pessoas',
+        active: railTab === 'people',
+        go: () => setRailTab('people'),
+      },
     ];
 
     const s = storyIdx === null ? null : storiesList[storyIdx];
